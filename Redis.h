@@ -7,6 +7,8 @@ class Redis {
   private:
     const char* addr;
     int         port;
+    int         Timeout;
+    bool        NoDelay;
     WiFiClient  conn;
     String      checkError(String);
   public:
@@ -14,6 +16,8 @@ class Redis {
     bool    begin(void);
     bool    begin(const char *);
     bool    set(const char *, const char *);
+    bool    setNoDelay(bool val);
+    bool    setTimeout(long val);
     String  get(const char *);
     int     publish(const char *, const char *);
     //bool    subscribe(char *);
