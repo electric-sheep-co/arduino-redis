@@ -8,6 +8,8 @@ Redis::Redis(const char *addr, int port)
 {
     this->addr = addr;
     this->port = port;
+    this->NoDelay = false;
+    this->Timeout = 100;
 }
 
 /**
@@ -41,6 +43,9 @@ bool Redis::begin(const char *password)
 {
     if(this->conn.connect(this->addr, this->port)) 
     {
+        // the NoDelay and Timeout should be specified prior to making the connection
+        this->conn.setNoDelay(this->NoDelay);
+        this->conn.setTimeout(this->Timeout);
         int passwordLength = strlen(password);
         if (passwordLength > 0)
         {
@@ -57,6 +62,44 @@ bool Redis::begin(const char *password)
         return true;
     }
     return false;
+}
+
+/**
+ * Set the noDelay option for the ESP8266 WiFi Client
+ * @param val true or false
+ * @return If it's okay.
+ */
+bool Redis::setNoDelay(bool val)
+{
+    if (this->conn.connected())
+    {
+        // It should be specified prior to making the connection
+        return false;
+    }
+    else
+    {
+        this->NoDelay = val;
+        return true;
+    }
+}
+
+/**
+ * Set the Timeout option for the ESP8266 WiFi Client
+ * @param val timeout duration in milliseconds (long)
+ * @return If it's okay.
+ */
+bool Redis::setTimeout(long val)
+{
+    if (this->conn.connected())
+    {
+        // It should be specified prior to making the connection
+        return false;
+    }
+    else
+    {
+        this->Timeout = val;
+        return true;
+    }
 }
 
 /**
