@@ -7,8 +7,8 @@ class Redis {
   private:
     const char* addr;
     int         port;
-    int         Timeout;
-    bool        NoDelay;
+    int         timeout;
+    bool        noDelay;
     WiFiClient  conn;
     String      checkError(String);
   public:
