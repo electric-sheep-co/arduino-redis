@@ -1,5 +1,13 @@
 #include "Redis.h"
 
+Redis::Redis(void)
+{
+    this->addr = "127.0.0.1";
+    this->port = 6379;
+    this->noDelay = false;
+    this->timeout = 100;
+}
+
 /**
  * @param addr Redis address.
  * @param port Redis port.
@@ -100,6 +108,24 @@ bool Redis::setTimeout(long val)
         this->timeout = val;
         return true;
     }
+}
+
+/**
+ * Set the Redis address
+ * @param addr Redis address.
+ */
+void Redis::setAddr(const char *addr)
+{
+    this->addr = addr;
+}
+
+/**
+ * Set the Redis port
+ * @param addr Redis port.
+ */
+void Redis::setPort(int port)
+{
+    this->port = port;
 }
 
 /**
