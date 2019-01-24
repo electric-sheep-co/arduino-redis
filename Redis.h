@@ -3,30 +3,38 @@
 
 #include <ESP8266WiFi.h>
 
+typedef enum {
+  RedisSuccess = 0,
+  RedisConnectFailure = 1,
+  RedisAuthFailure = 2,
+} RedisReturnValue;
+
 class Redis {
+ public:
+    Redis(const char* addr = "127.0.0.1", 
+        int port = 6379, 
+        bool noDelay = false, 
+        int timeout = 100) :
+	    addr(addr), port(port), 
+	    noDelay(noDelay), timeout(timeout) {}
+    ~Redis() { close(); }
+    Redis(const Redis&) = delete;
+    Redis& operator=(const Redis&) = delete;
+
+    RedisReturnValue connect(const char* password = "");
+    bool set(const char*, const char*);
+    String get(const char*);
+    int publish(const char*, const char*);
+    void close();
+
   private:
-    const char  *addr;
-    int         port;
-    int         timeout;
-    bool        noDelay;
-    WiFiClient  conn;
-    String      checkError(String);
-  public:
-    Redis(void);
-    Redis(const char *, int);
-    bool    begin(void);
-    bool    begin(const char *);
-    bool    set(const char *, const char *);
-    bool    setNoDelay(bool val);
-    bool    setTimeout(long val);
-    void    setAddr(const char *addr);
-    void    setPort(int port);
-    String  get(const char *);
-    int     publish(const char *, const char *);
-    //bool    subscribe(char *);
-    //int     available(void);
-    //String  read(void);
-    void    close(void);
-};
+    const char* addr;
+    int port;
+    int timeout;
+    bool noDelay;
+    WiFiClient conn;
+
+    String checkError(String);
+ };
 
 #endif
