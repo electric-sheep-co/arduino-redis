@@ -33,6 +33,10 @@ RedisReturnValue Redis::connect(const char* password)
             conn.println(passwordLength);
             conn.println(password);
 
+	    int c = 0;
+	    while (!conn.available() && c++ < 100) {
+		    delay(10);
+	    }
             String resp = conn.readStringUntil('\0');
             return resp.indexOf("+OK") == -1 ? RedisAuthFailure : RedisSuccess;
         }
