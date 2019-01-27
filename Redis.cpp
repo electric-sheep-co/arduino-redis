@@ -71,13 +71,8 @@ RedisReturnValue Redis::connect(const char* password)
             authArr.vec.push_back(&auth);
             authArr.vec.push_back(&pass);
             Serial.printf("EMIT!!\n%s\n", authArr.emit().c_str());
-            conn.println("*2");
-            conn.println("$4");
-            conn.println("AUTH");
-            conn.print("$");
-            conn.println(passwordLength);
-            conn.println(password);
-
+            conn.write(authArr.emit().c_str());
+            
             int c = 0;
             while (!conn.available() && c++ < 100) {
                 delay(10);
