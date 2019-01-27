@@ -13,6 +13,42 @@ String Redis::checkError(String resp)
     return "";
 }
 
+#include <vector>
+#include <memory>
+class RedisType {
+public:
+    virtual String emit() = 0;
+};
+
+class RedisBulkString : public RedisType {
+public:
+    String data;
+    virtual String emit() override
+    {
+        String emitStr("$");
+        emitStr += String(data.length());
+        emitStr += "\r\n";
+        emitStr += data;
+        emitStr += "\r\n";
+        return emitStr;
+    }
+};
+
+class RedisArray : public RedisType {
+public:
+    //std::vector<std::shared_ptr<RedisType>> vec;
+    std::vector<RedisType*> vec;
+    virtual String emit() override {
+        String emitStr("*");
+        emitStr += String(vec.size());
+        emitStr += "\r\n";
+        for (auto rTypeInst : vec) {
+            emitStr += rTypeInst->emit();
+        }
+        return emitStr;
+    }
+};
+
 /**
  * Open the Redis connection.
  */
@@ -26,6 +62,15 @@ RedisReturnValue Redis::connect(const char* password)
         int passwordLength = strlen(password);
         if (passwordLength > 0)
         {
+            RedisBulkString auth, pass;
+            auth.data = String("AUTH");
+            pass.data = String(password);
+            RedisArray authArr;
+            //authArr.vec.push_back(std::shared_ptr<RedisType>(&auth));
+            //authArr.vec.push_back(std::shared_ptr<RedisType>(&pass));
+            authArr.vec.push_back(&auth);
+            authArr.vec.push_back(&pass);
+            Serial.printf("EMIT!!\n%s\n", authArr.emit().c_str());
             conn.println("*2");
             conn.println("$4");
             conn.println("AUTH");
@@ -33,10 +78,11 @@ RedisReturnValue Redis::connect(const char* password)
             conn.println(passwordLength);
             conn.println(password);
 
-	    int c = 0;
-	    while (!conn.available() && c++ < 100) {
-		    delay(10);
-	    }
+            int c = 0;
+            while (!conn.available() && c++ < 100) {
+                delay(10);
+            }
+
             String resp = conn.readStringUntil('\0');
             return resp.indexOf("+OK") == -1 ? RedisAuthFailure : RedisSuccess;
         }
