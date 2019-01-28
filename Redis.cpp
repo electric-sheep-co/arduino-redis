@@ -193,7 +193,7 @@ std::shared_ptr<RedisObject> RedisObject::parseType(String data)
         return std::shared_ptr<RedisObject>(new RedisError("INTERNAL ERROR: " + substr));
     }
 
-    return std::shared_ptr<RedisObject>(nullptr);
+    return std::shared_ptr<RedisObject>(new RedisError("INTERNAL ERROR: zero-length data!"));
 }
 
 #pragma mark Redis class implemenation
