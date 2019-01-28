@@ -18,25 +18,39 @@ String Redis::checkError(String resp)
 
 #define CRLF F("\r\n")
 
-class RedisType {
-public:
-    RedisType(char tc) : type_char(tc) {}
+/* The lack of RTTI on Ardunio is unfortunate but understandable.
+ * However, we're not going to let that stop us. So here's our very
+ * basic RedisObject type system */
 
-    static std::shared_ptr<RedisType> parseType(String);
+class RedisObject {
+public:
+    typedef enum {
+        SimpleString = '+',
+        Error = '-',
+        Integer = ':',
+        BulkString = '$',
+        Array = '*'
+    } Type;
+
+    RedisObject(Type tc) : _type(tc) {}
+
+    static std::shared_ptr<RedisObject> parseType(String);
 
     virtual operator String() = 0;
 
+    Type type() const { return _type; } 
+
 protected:
-    char type_char;
+    Type _type;
 };
 
-class RedisSimpleString : public RedisType {
+class RedisSimpleString : public RedisObject {
 public:
-    RedisSimpleString(String d) : data(d), RedisType('+') {}
+    RedisSimpleString(String d) : data(d), RedisObject(Type::SimpleString) {}
 
     virtual operator String() override
     {
-        String emitStr(type_char);
+        String emitStr((char)_type);
         // Simple strings cannot contain CRLF, as they must terminate with CRLF
         // https://redis.io/topics/protocol#resp-simple-strings
         data.replace(CRLF, F(""));
@@ -49,13 +63,13 @@ protected:
     String data;
 };
 
-class RedisBulkString : public RedisType {
+class RedisBulkString : public RedisObject {
 public:
-    RedisBulkString(String d) : data(d), RedisType('$') {}
+    RedisBulkString(String d) : data(d), RedisObject(Type::BulkString) {}
     
     virtual operator String() override
     {
-        String emitStr(type_char);
+        String emitStr((char)_type);
         emitStr += String(data.length());
         emitStr += CRLF;
         emitStr += data;
@@ -67,18 +81,18 @@ protected:
     String data;
 };
 
-class RedisArray : public RedisType {
+class RedisArray : public RedisObject {
 public:
-    RedisArray() : RedisType('*') {}
+    RedisArray() : RedisObject(Type::Array) {}
 
-    void add(std::shared_ptr<RedisType> param) 
+    void add(std::shared_ptr<RedisObject> param) 
     {
         vec.push_back(param);
     }
 
     virtual operator String() override 
     {
-        String emitStr(type_char);
+        String emitStr((char)_type);
         emitStr += String(vec.size());
         emitStr += CRLF;
         for (auto rTypeInst : vec) {
@@ -88,7 +102,7 @@ public:
     }
 
 protected:
-    std::vector<std::shared_ptr<RedisType>> vec;
+    std::vector<std::shared_ptr<RedisObject>> vec;
 };
 
 class RedisError : public RedisSimpleString {
@@ -96,57 +110,76 @@ public:
     RedisError(String d) 
         : RedisSimpleString(d) 
     {
-        type_char = '-';
+        _type = RedisObject::Type::Error;
+    }
+};
+
+class RedisInteger : public RedisSimpleString {
+public:
+    RedisInteger(String d)
+        : RedisSimpleString(d)
+    {
+        _type = RedisObject::Type::Integer;
+    }
+
+    operator int()
+    {
+        return data.substring(1).toInt();
     }
 };
 
 class RedisCommand : public RedisArray {
 public:
     RedisCommand(String command) : RedisArray() {
-        add(std::shared_ptr<RedisType>(new RedisBulkString(command)));
+        add(std::shared_ptr<RedisObject>(new RedisBulkString(command)));
     }
 
     RedisCommand(String command, std::vector<String> args)
         : RedisCommand(command)
     {
         for (auto arg : args) {
-            add(std::shared_ptr<RedisType>(new RedisBulkString(arg)));
+            add(std::shared_ptr<RedisObject>(new RedisBulkString(arg)));
         }
     }
 
-    std::shared_ptr<RedisType> issue(Client& cmdClient) 
+    std::shared_ptr<RedisObject> issue(Client& cmdClient) 
     {
         if (!cmdClient.connected())
-            return std::shared_ptr<RedisType>(new RedisError("not connected or some shit"));
+            return std::shared_ptr<RedisObject>(new RedisError("not connected or some shit"));
 
         auto tAsString = (String)*this;
         Serial.printf("[DEBUG] issue:\n%s\n", tAsString.c_str());
         cmdClient.print(tAsString);
-        return RedisType::parseType(cmdClient.readStringUntil('\0'));
+        return RedisObject::parseType(cmdClient.readStringUntil('\0'));
     }
 
 private:
     String _cmd;
 };
 
-std::shared_ptr<RedisType> RedisType::parseType(String data)
+std::shared_ptr<RedisObject> RedisObject::parseType(String data)
 {
-    RedisType *rv = nullptr;
+    RedisObject *rv = nullptr;
    
     if (data.length()) {
         auto substr = data.substring(1);
+        Serial.printf("[DEBUG] parsing type from string:\n%s\n", data.c_str());
         switch (data.charAt(0)) {
-            case '+': 
+            case RedisObject::Type::SimpleString:
                 rv = new RedisSimpleString(substr);
                 break;
-            case '-': 
+            case RedisObject::Type::Integer:
+                rv = new RedisInteger(substr);
+                break;
+            case RedisObject::Type::Error:
             default:
                 rv = new RedisError(substr);
                 break;
         }
     }
 
-    return std::shared_ptr<RedisType>(rv);
+    Serial.printf("[DEBUG] parsed object of type '%c', substr='%s'\n", (char)rv->type(), ((String)*rv).c_str());
+    return std::shared_ptr<RedisObject>(rv);
 }
 
 RedisReturnValue Redis::connect(const char* password)
@@ -196,24 +229,19 @@ String Redis::get(const char* key)
     return resp.substring(start + 2, start + length + 2);
 }
 
+#include <typeinfo>
+
 int Redis::publish(const char* channel, const char* message)
 {
-    conn.println("*3");
-    conn.println("$7");
-    conn.println("PUBLISH");
-    conn.print("$");
-    conn.println(strlen(channel));
-    conn.println(channel);
-    conn.print("$");
-    conn.println(strlen(message));
-    conn.println(message);
+    auto reply = RedisCommand("PUBLISH", std::vector<String>{channel, message}).issue(conn);
 
-    String resp = conn.readStringUntil('\0');
-    if (checkError(resp) != "")
-    {
-        return -1;
+    switch (reply->type()) {
+        case RedisObject::Type::Error:
+            Serial.printf("[DEBUG] PUBLISH ERROR: \n%s\n", ((String)*reply).c_str());
+            return -1;
+        case RedisObject::Type::Integer:
+            return (RedisInteger)*reply;
     }
-    return resp.substring(1, resp.indexOf("\r\n")).toInt();
 }
 
 void Redis::close(void)
