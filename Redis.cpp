@@ -1,18 +1,20 @@
 #include "Redis.h"
+#include <map>
 #include <vector>
 #include <memory>
+#include <functional>
 
 #define CRLF F("\r\n")
-
-/* The lack of RTTI on Ardunio is unfortunate but understandable.
- * However, we're not going to let that stop us. So here's our very
- * basic RedisObject type system */
 
 class RedisRESPString : public String {
 public:
     RedisRESPString(char c) : String(c) {}
     RedisRESPString(String& s) : String(s) {}
 };
+
+/* The lack of RTTI on Ardunio is unfortunate but understandable.
+ * However, we're not going to let that stop us. So here's our very
+ * basic RedisObject type system */
 
 class RedisObject {
 public:
@@ -116,15 +118,6 @@ protected:
     std::vector<std::shared_ptr<RedisObject>> vec;
 };
 
-class RedisError : public RedisSimpleString {
-public:
-    RedisError(String d) 
-        : RedisSimpleString(d) 
-    {
-        _type = RedisObject::Type::Error;
-    }
-};
-
 class RedisInteger : public RedisSimpleString {
 public:
     RedisInteger(String d)
@@ -136,6 +129,15 @@ public:
     operator int()
     {
         return data.substring(1).toInt();
+    }
+};
+
+class RedisError : public RedisSimpleString {
+public:
+    RedisError(String d) 
+        : RedisSimpleString(d) 
+    {
+        _type = RedisObject::Type::Error;
     }
 };
 
@@ -156,7 +158,7 @@ public:
     std::shared_ptr<RedisObject> issue(Client& cmdClient) 
     {
         if (!cmdClient.connected())
-            return std::shared_ptr<RedisObject>(new RedisError("NOT CONNECTED"));
+            return std::shared_ptr<RedisObject>(new RedisError("INTERNAL ERROR: Client is not connected"));
 
         cmdClient.print((RedisRESPString)*this);
         return RedisObject::parseType(cmdClient.readStringUntil('\0'));
@@ -166,33 +168,32 @@ private:
     String _cmd;
 };
 
+typedef std::map<RedisObject::Type, std::function<RedisObject*(String)>> TypeParseMap;
+
+static TypeParseMap g_TypeParseMap {
+    { RedisObject::Type::SimpleString, [](String substr) { return new RedisSimpleString(substr); } },
+    { RedisObject::Type::BulkString, [](String substr) { return new RedisBulkString((RedisRESPString)substr); } },
+    { RedisObject::Type::Integer, [](String substr) { return new RedisInteger(substr); } },
+    { RedisObject::Type::Array, [](String substr) { return new RedisArray(substr); } },
+    { RedisObject::Type::Error, [](String substr) { return new RedisError(substr); } }
+};
+
 std::shared_ptr<RedisObject> RedisObject::parseType(String data)
 {
     RedisObject *rv = nullptr;
-   
+
     if (data.length()) {
+        auto typeChar = (RedisObject::Type)data.charAt(0);
         auto substr = data.substring(1);
-        switch (data.charAt(0)) {
-            case RedisObject::Type::SimpleString:
-                rv = new RedisSimpleString(substr);
-                break;
-            case RedisObject::Type::Integer:
-                rv = new RedisInteger(substr);
-                break;
-            case RedisObject::Type::Array:
-                rv = new RedisArray(substr);
-                break;
-            case RedisObject::Type::BulkString:
-                rv = new RedisBulkString((RedisRESPString)substr);
-                break;
-            case RedisObject::Type::Error:
-            default:
-                rv = new RedisError(substr);
-                break;
+
+        if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
+            return std::shared_ptr<RedisObject>(g_TypeParseMap[typeChar](substr));
         }
+
+        return std::shared_ptr<RedisObject>(new RedisError("INTERNAL ERROR: " + substr));
     }
 
-    return std::shared_ptr<RedisObject>(rv);
+    return std::shared_ptr<RedisObject>(nullptr);
 }
 
 #pragma mark Redis class implemenation
