@@ -1,18 +1,4 @@
 #include "Redis.h"
-
-/**
- * Check if the response is an error.
- * @return Return the error message or "".
- */
-String Redis::checkError(String resp)
-{
-    if (resp.startsWith("-"))
-    {
-        return resp.substring(1, resp.indexOf("\r\n"));
-    }
-    return "";
-}
-
 #include <vector>
 #include <memory>
 
@@ -42,7 +28,8 @@ public:
 
     static std::shared_ptr<RedisObject> parseType(String);
 
-    virtual operator RedisRESPString() = 0;
+    virtual explicit operator RedisRESPString() = 0;
+    virtual operator String() { return operator RedisRESPString(); }
 
     Type type() const { return _type; } 
 
@@ -54,7 +41,7 @@ class RedisSimpleString : public RedisObject {
 public:
     RedisSimpleString(String d) : data(d), RedisObject(Type::SimpleString) {}
 
-    virtual operator RedisRESPString() override
+    virtual explicit operator RedisRESPString() override
     {
         RedisRESPString emitStr((char)_type);
         // Simple strings cannot contain CRLF, as they must terminate with CRLF
@@ -65,7 +52,7 @@ public:
         return emitStr;
     }
 
-    virtual operator String() { return data; }
+    virtual operator String() override { return data; }
 
 protected:
     String data;
@@ -79,13 +66,14 @@ public:
     {
         auto crlfIndex = rd.indexOf(CRLF);
         if (crlfIndex != -1) {
-            auto expectLen = rd.substring(0, crlfIndex).toInt();
+            auto expectLen = rd.substring(rd.charAt(0) == RedisObject::Type::BulkString ? 1 : 0, 
+                    crlfIndex).toInt();
             auto bStrStart = crlfIndex + String(CRLF).length();
             data = rd.substring(bStrStart, expectLen + bStrStart);
         }
     }
     
-    virtual operator RedisRESPString() override
+    virtual explicit operator RedisRESPString() override
     {
         RedisRESPString emitStr((char)_type);
         emitStr += String(data.length());
@@ -95,7 +83,7 @@ public:
         return emitStr;
     }
 
-    virtual operator String() { return data; }
+    virtual operator String() override { return data; }
 
 protected:
     String data;
@@ -105,7 +93,7 @@ class RedisArray : public RedisObject {
 public:
     RedisArray() : RedisObject(Type::Array) {}
     RedisArray(String d) : RedisArray() {
-        Serial.printf("RedisArray() has this shit!\n%s\n", d.c_str());
+        Serial.printf("TODO RedisArray()!\n%s\n", d.c_str());
     }
 
     void add(std::shared_ptr<RedisObject> param) 
@@ -113,13 +101,13 @@ public:
         vec.push_back(param);
     }
 
-    virtual operator RedisRESPString() override 
+    virtual explicit operator RedisRESPString() override 
     {
         RedisRESPString emitStr((char)_type);
         emitStr += String(vec.size());
         emitStr += CRLF;
         for (auto rTypeInst : vec) {
-            emitStr += *rTypeInst;
+            emitStr += (RedisRESPString)*rTypeInst;
         }
         return emitStr;
     }
@@ -168,11 +156,9 @@ public:
     std::shared_ptr<RedisObject> issue(Client& cmdClient) 
     {
         if (!cmdClient.connected())
-            return std::shared_ptr<RedisObject>(new RedisError("not connected or some shit"));
+            return std::shared_ptr<RedisObject>(new RedisError("NOT CONNECTED"));
 
-        auto tAsString = (RedisRESPString)*this;
-        Serial.printf("[DEBUG] issue:\n%s\n", tAsString.c_str());
-        cmdClient.print(tAsString);
+        cmdClient.print((RedisRESPString)*this);
         return RedisObject::parseType(cmdClient.readStringUntil('\0'));
     }
 
@@ -186,8 +172,6 @@ std::shared_ptr<RedisObject> RedisObject::parseType(String data)
    
     if (data.length()) {
         auto substr = data.substring(1);
-        Serial.printf("[DEBUG] parsing type from string:\n%s\n", data.c_str());
-        Serial.printf("[DEBUG] look at typechar '%c'\n", data.charAt(0));
         switch (data.charAt(0)) {
             case RedisObject::Type::SimpleString:
                 rv = new RedisSimpleString(substr);
@@ -208,9 +192,10 @@ std::shared_ptr<RedisObject> RedisObject::parseType(String data)
         }
     }
 
-    Serial.printf("[DEBUG] parsed object of type '%c', substr='%s'\n", (char)rv->type(), ((RedisRESPString)*rv).c_str());
     return std::shared_ptr<RedisObject>(rv);
 }
+
+#pragma mark Redis class implemenation
 
 RedisReturnValue Redis::connect(const char* password)
 {
@@ -240,15 +225,12 @@ String Redis::get(const char* key)
     return (String)*RedisCommand("GET", std::vector<String>{key}).issue(conn);
 }
 
-#include <typeinfo>
-
 int Redis::publish(const char* channel, const char* message)
 {
     auto reply = RedisCommand("PUBLISH", std::vector<String>{channel, message}).issue(conn);
 
     switch (reply->type()) {
         case RedisObject::Type::Error:
-            Serial.printf("[DEBUG] PUBLISH ERROR: \n%s\n", ((RedisRESPString)*reply).c_str());
             return -1;
         case RedisObject::Type::Integer:
             return (RedisInteger)*reply;
