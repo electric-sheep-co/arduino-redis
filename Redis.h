@@ -12,11 +12,8 @@ typedef enum {
 class Redis {
  public:
     Redis(const char* addr = "127.0.0.1", 
-        int port = 6379, 
-        bool noDelay = false, 
-        int timeout = 100) :
-	    addr(addr), port(port), 
-	    noDelay(noDelay), timeout(timeout) {}
+        int port = 6379) : 
+	    addr(addr), port(port) {}
     ~Redis() { close(); }
     Redis(const Redis&) = delete;
     Redis& operator=(const Redis&) = delete;
@@ -30,8 +27,6 @@ class Redis {
   private:
     const char* addr;
     int port;
-    int timeout;
-    bool noDelay;
     WiFiClient conn;
 
     String checkError(String);
