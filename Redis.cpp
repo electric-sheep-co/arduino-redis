@@ -21,9 +21,11 @@ String Redis::checkError(String resp)
 class RedisType {
 public:
     RedisType(char tc) : type_char(tc) {}
+
     static std::shared_ptr<RedisType> parseType(String);
+
     virtual operator String() = 0;
-// I'm thinking a 'char typeChar' will be needed here...
+
 protected:
     char type_char;
 };
@@ -52,6 +54,7 @@ protected:
 class RedisBulkString : public RedisType {
 public:
     RedisBulkString(String d) : data(d), RedisType('$') {}
+    
     virtual operator String() override
     {
         String emitStr(type_char);
@@ -70,11 +73,13 @@ class RedisArray : public RedisType {
 public:
     RedisArray() : RedisType('*') {}
 
-    void add(std::shared_ptr<RedisType> param) {
+    void add(std::shared_ptr<RedisType> param) 
+    {
         vec.push_back(param);
     }
 
-    virtual operator String() override {
+    virtual operator String() override 
+    {
         String emitStr(type_char);
         emitStr += String(vec.size());
         emitStr += CRLF;
@@ -90,7 +95,9 @@ protected:
 
 class RedisError : public RedisSimpleString {
 public:
-    RedisError(String d) : RedisSimpleString(d) {
+    RedisError(String d) 
+        : RedisSimpleString(d) 
+    {
         type_char = '-';
     }
 };
@@ -101,7 +108,16 @@ public:
         add(std::shared_ptr<RedisType>(new RedisBulkString(command)));
     }
 
-    std::shared_ptr<RedisType> issue(Client& cmdClient) {
+    RedisCommand(String command, std::vector<String> args)
+        : RedisCommand(command)
+    {
+        for (auto arg : args) {
+            add(std::shared_ptr<RedisType>(new RedisBulkString(arg)));
+        }
+    }
+
+    std::shared_ptr<RedisType> issue(Client& cmdClient) 
+    {
         if (!cmdClient.connected())
             return std::shared_ptr<RedisType>(new RedisError("not connected or some shit"));
 
@@ -110,15 +126,9 @@ public:
         cmdClient.print(tAsString);
         return RedisType::parseType(cmdClient.readStringUntil('\0'));
     }
+
 private:
     String _cmd;
-};
-
-class RedisAUTH : public RedisCommand {
-public:
-    RedisAUTH(String password) : RedisCommand("AUTH") {
-        add(std::shared_ptr<RedisType>(new RedisBulkString(password)));
-    }
 };
 
 std::shared_ptr<RedisType> RedisType::parseType(String data)
@@ -126,13 +136,14 @@ std::shared_ptr<RedisType> RedisType::parseType(String data)
     RedisType *rv = nullptr;
    
     if (data.length()) {
+        auto substr = data.substring(1);
         switch (data.charAt(0)) {
             case '+': 
-                rv = new RedisSimpleString(data.substring(1)); 
+                rv = new RedisSimpleString(substr);
                 break;
             case '-': 
             default:
-                rv = new RedisError(data.substring(1)); 
+                rv = new RedisError(substr);
                 break;
         }
     }
@@ -151,9 +162,9 @@ RedisReturnValue Redis::connect(const char* password)
         int passwordLength = strlen(password);
         if (passwordLength > 0)
         {
-            auto reply = RedisAUTH(password).issue(conn);
-            String resp = (String)*reply;
-            return resp.indexOf("+OK") == -1 ? RedisAuthFailure : RedisSuccess;
+            return ((String)*RedisCommand("AUTH", 
+                        std::vector<String>{password}).issue(conn))
+                .indexOf("+OK") == -1 ? RedisAuthFailure : RedisSuccess;
         }
         return RedisSuccess;
     }
@@ -168,18 +179,9 @@ RedisReturnValue Redis::connect(const char* password)
  */
 bool Redis::set(const char* key, const char* value)
 {
-    conn.println("*3");
-    conn.println("$3");
-    conn.println("SET");
-    conn.print("$");
-    conn.println(strlen(key));
-    conn.println(key);
-    conn.print("$");
-    conn.println(strlen(value));
-    conn.println(value);
-
-    String resp = conn.readStringUntil('\0');
-    return resp.indexOf("+OK") != -1;
+    return ((String)*RedisCommand("SET", 
+                std::vector<String>{key, value})
+            .issue(conn)).indexOf("+OK") != -1;
 }
 
 /**
