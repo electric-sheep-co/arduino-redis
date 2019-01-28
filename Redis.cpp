@@ -16,6 +16,8 @@ String Redis::checkError(String resp)
 #include <vector>
 #include <memory>
 
+#define CRLF F("\r\n")
+
 class RedisType {
 public:
     RedisType(char tc) : type_char(tc) {}
@@ -34,12 +36,12 @@ public:
 
     virtual operator String() override
     {
-        String emitStr("+");
+        String emitStr(type_char);
         // Simple strings cannot contain CRLF, as they must terminate with CRLF
         // https://redis.io/topics/protocol#resp-simple-strings
         data.replace("\r\n", "");
         emitStr += data;
-        emitStr += "\r\n";
+        emitStr += CRLF;
         return emitStr;
     }
 
@@ -52,11 +54,11 @@ public:
     RedisBulkString(String d) : data(d), RedisType('$') {}
     virtual operator String() override
     {
-        String emitStr("$");
+        String emitStr(type_char);
         emitStr += String(data.length());
-        emitStr += "\r\n";
+        emitStr += CRLF;
         emitStr += data;
-        emitStr += "\r\n";
+        emitStr += CRLF;
         return emitStr;
     }
 
@@ -67,17 +69,23 @@ protected:
 class RedisArray : public RedisType {
 public:
     RedisArray() : RedisType('*') {}
-    //std::vector<std::shared_ptr<RedisType>> vec;
-    std::vector<RedisType*> vec;
+
+    void add(RedisType* param) {
+        vec.push_back(param);
+    }
+
     virtual operator String() override {
-        String emitStr("*");
+        String emitStr(type_char);
         emitStr += String(vec.size());
-        emitStr += "\r\n";
+        emitStr += CRLF;
         for (auto rTypeInst : vec) {
             emitStr += *rTypeInst;
         }
         return emitStr;
     }
+
+protected:
+    std::vector<RedisType*> vec;
 };
 
 class RedisError : public RedisSimpleString {
@@ -85,20 +93,26 @@ public:
     RedisError(String d) : RedisSimpleString(d) {
         type_char = '-';
     }
-    // only needs to change the type character/byte!
 };
 
-/*
 class RedisCommand : public RedisArray {
 public:
     RedisCommand(String command) : _cmd(command) {}
-    RedisType issueOn(const Stream& cmdStream) {
+
+    /*
+    RedisType issue(const Stream& cmdStream) {
 
     }
+    */
 private:
     String _cmd;
 };
-*/
+
+class RedisAUTH : public RedisCommand {
+public:
+    RedisAUTH(String password) : RedisCommand("AUTH") {
+    }
+};
 
 std::unique_ptr<RedisType> RedisType::parseType(String& data)
 {
@@ -137,8 +151,8 @@ RedisReturnValue Redis::connect(const char* password)
             RedisArray authArr;
             //authArr.vec.push_back(std::shared_ptr<RedisType>(&auth));
             //authArr.vec.push_back(std::shared_ptr<RedisType>(&pass));
-            authArr.vec.push_back(&auth);
-            authArr.vec.push_back(&pass);
+            authArr.add(&auth);
+            authArr.add(&pass);
             auto respStr = (String)authArr;
             Serial.printf("RESPSTR:\n%s\n", respStr.c_str());
             conn.write(respStr.c_str());
