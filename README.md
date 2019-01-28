@@ -1,17 +1,12 @@
 # Arduino Redis Library
 
-An Arduino library for Redis that works on ESP8266.
-It supports get, set, publish, subscribe.
+An Arduino library for Redis. It currently supports get, set & publish.
 
 ### Examples
 
 - Pub_Sub: An example of pub/sub application with the Redis library.
 - Simple: Open the connection, set and get a key then close the connection.
 
-### Question
+### Questions
 
-If you have any question please open an issue.
-
-### Work in progress
-
-- Subscribe function.
+If you have any questions please open an issue.
