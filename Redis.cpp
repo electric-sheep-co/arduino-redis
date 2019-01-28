@@ -30,8 +30,6 @@ protected:
     char type_char;
 };
 
-// need a 'class RedisConcreteType : public RedisType' that implements a shared common ctor()?
-
 class RedisSimpleString : public RedisType {
 public:
     RedisSimpleString(String d) : data(d), RedisType('+') {}
@@ -41,7 +39,7 @@ public:
         String emitStr(type_char);
         // Simple strings cannot contain CRLF, as they must terminate with CRLF
         // https://redis.io/topics/protocol#resp-simple-strings
-        data.replace("\r\n", "");
+        data.replace(CRLF, F(""));
         emitStr += data;
         emitStr += CRLF;
         return emitStr;
@@ -151,10 +149,6 @@ std::shared_ptr<RedisType> RedisType::parseType(String data)
     return std::shared_ptr<RedisType>(rv);
 }
 
-
-/**
- * Open the Redis connection.
- */
 RedisReturnValue Redis::connect(const char* password)
 {
     if(conn.connect(addr, port)) 
@@ -171,24 +165,12 @@ RedisReturnValue Redis::connect(const char* password)
     return RedisConnectFailure;
 }
 
-/**
- * Process the SET command (see https://redis.io/commands/set).
- * @param key The key.
- * @param value The assigned value.
- * @return If it's okay.
- */
 bool Redis::set(const char* key, const char* value)
 {
     return ((String)*RedisCommand("SET", 
                 std::vector<String>{key, value})
             .issue(conn)).indexOf("+OK") != -1;
 }
-
-/**
- * Process the GET command (see https://redis.io/commands/get).
- * @param key The key.
- * @return Found value.
- */
 
 String Redis::get(const char* key) 
 {
@@ -214,12 +196,6 @@ String Redis::get(const char* key)
     return resp.substring(start + 2, start + length + 2);
 }
 
-/**
- * Process the PUBLISH command (see https://redis.io/commands/publish).
- * @param key The channel.
- * @param value The message.
- * @return Number of subscribers which listen this message.
- */
 int Redis::publish(const char* channel, const char* message)
 {
     conn.println("*3");
@@ -240,9 +216,6 @@ int Redis::publish(const char* channel, const char* message)
     return resp.substring(1, resp.indexOf("\r\n")).toInt();
 }
 
-/**
- * Close the Redis connection.
- */
 void Redis::close(void)
 {
     conn.stop();
