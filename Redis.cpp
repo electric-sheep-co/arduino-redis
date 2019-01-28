@@ -15,14 +15,22 @@ String Redis::checkError(String resp)
 
 #include <vector>
 #include <memory>
+
 class RedisType {
 public:
+    RedisType(char tc) : type_char(tc) {}
+    static std::unique_ptr<RedisType> parseType(String&);
     virtual operator String() = 0;
+// I'm thinking a 'char typeChar' will be needed here...
+protected:
+    char type_char;
 };
+
+// need a 'class RedisConcreteType : public RedisType' that implements a shared common ctor()?
 
 class RedisSimpleString : public RedisType {
 public:
-    RedisSimpleString(String d) : data(d) {}
+    RedisSimpleString(String d) : data(d), RedisType('+') {}
 
     virtual operator String() override
     {
@@ -35,13 +43,13 @@ public:
         return emitStr;
     }
 
-private:
+protected:
     String data;
 };
 
 class RedisBulkString : public RedisType {
 public:
-    String data;
+    RedisBulkString(String d) : data(d), RedisType('$') {}
     virtual operator String() override
     {
         String emitStr("$");
@@ -51,10 +59,14 @@ public:
         emitStr += "\r\n";
         return emitStr;
     }
+
+protected:
+    String data;
 };
 
 class RedisArray : public RedisType {
 public:
+    RedisArray() : RedisType('*') {}
     //std::vector<std::shared_ptr<RedisType>> vec;
     std::vector<RedisType*> vec;
     virtual operator String() override {
@@ -68,19 +80,45 @@ public:
     }
 };
 
-//class RedisError : 
+class RedisError : public RedisSimpleString {
+public:
+    RedisError(String d) : RedisSimpleString(d) {
+        type_char = '-';
+    }
+    // only needs to change the type character/byte!
+};
 
+/*
 class RedisCommand : public RedisArray {
 public:
     RedisCommand(String command) : _cmd(command) {}
-/*
     RedisType issueOn(const Stream& cmdStream) {
 
     }
-*/
 private:
     String _cmd;
 };
+*/
+
+std::unique_ptr<RedisType> RedisType::parseType(String& data)
+{
+    RedisType *rv = nullptr;
+   
+    if (data.length()) {
+        switch (data.charAt(0)) {
+            case '+': 
+                rv = new RedisSimpleString(data); 
+                break;
+            case '-': 
+            default:
+                rv = new RedisError(data); 
+                break;
+        }
+    }
+
+    return std::unique_ptr<RedisType>(rv);
+}
+
 
 /**
  * Open the Redis connection.
@@ -95,9 +133,7 @@ RedisReturnValue Redis::connect(const char* password)
         int passwordLength = strlen(password);
         if (passwordLength > 0)
         {
-            RedisBulkString auth, pass;
-            auth.data = String("AUTH");
-            pass.data = String(password);
+            RedisBulkString auth("AUTH"), pass(password);
             RedisArray authArr;
             //authArr.vec.push_back(std::shared_ptr<RedisType>(&auth));
             //authArr.vec.push_back(std::shared_ptr<RedisType>(&pass));
