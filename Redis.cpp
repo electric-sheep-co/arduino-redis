@@ -17,13 +17,32 @@ String Redis::checkError(String resp)
 #include <memory>
 class RedisType {
 public:
-    virtual String emit() = 0;
+    virtual operator String() = 0;
+};
+
+class RedisSimpleString : public RedisType {
+public:
+    RedisSimpleString(String d) : data(d) {}
+
+    virtual operator String() override
+    {
+        String emitStr("+");
+        // Simple strings cannot contain CRLF, as they must terminate with CRLF
+        // https://redis.io/topics/protocol#resp-simple-strings
+        data.replace("\r\n", "");
+        emitStr += data;
+        emitStr += "\r\n";
+        return emitStr;
+    }
+
+private:
+    String data;
 };
 
 class RedisBulkString : public RedisType {
 public:
     String data;
-    virtual String emit() override
+    virtual operator String() override
     {
         String emitStr("$");
         emitStr += String(data.length());
@@ -38,15 +57,29 @@ class RedisArray : public RedisType {
 public:
     //std::vector<std::shared_ptr<RedisType>> vec;
     std::vector<RedisType*> vec;
-    virtual String emit() override {
+    virtual operator String() override {
         String emitStr("*");
         emitStr += String(vec.size());
         emitStr += "\r\n";
         for (auto rTypeInst : vec) {
-            emitStr += rTypeInst->emit();
+            emitStr += *rTypeInst;
         }
         return emitStr;
     }
+};
+
+//class RedisError : 
+
+class RedisCommand : public RedisArray {
+public:
+    RedisCommand(String command) : _cmd(command) {}
+/*
+    RedisType issueOn(const Stream& cmdStream) {
+
+    }
+*/
+private:
+    String _cmd;
 };
 
 /**
@@ -70,8 +103,9 @@ RedisReturnValue Redis::connect(const char* password)
             //authArr.vec.push_back(std::shared_ptr<RedisType>(&pass));
             authArr.vec.push_back(&auth);
             authArr.vec.push_back(&pass);
-            Serial.printf("EMIT!!\n%s\n", authArr.emit().c_str());
-            conn.write(authArr.emit().c_str());
+            auto respStr = (String)authArr;
+            Serial.printf("RESPSTR:\n%s\n", respStr.c_str());
+            conn.write(respStr.c_str());
             
             int c = 0;
             while (!conn.available() && c++ < 100) {
