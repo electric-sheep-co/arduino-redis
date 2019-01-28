@@ -202,6 +202,7 @@ RedisReturnValue Redis::connect(const char* password)
 {
     if(conn.connect(addr, port)) 
     {
+        conn.setTimeout(500);
         int passwordLength = strlen(password);
         if (passwordLength > 0)
         {
@@ -234,7 +235,7 @@ int Redis::publish(const char* channel, const char* message)
         case RedisObject::Type::Error:
             return -1;
         case RedisObject::Type::Integer:
-            return (RedisInteger)*reply;
+            return (int)(RedisInteger)*reply;
     }
 }
 
