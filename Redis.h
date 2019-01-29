@@ -76,6 +76,14 @@ class Redis {
     bool persist(const char* key);
 
     /**
+     * Query remaining time-to-live (time-until-expiry) for 'key'.
+     * @param key The query whose TTL to query.
+     * @return The key's TTL in seconds, or a negative value signaling error:
+     *   -1 if the key exists but has no associated expire, -2 if the key DNE.
+     */
+    int ttl(const char* key);
+
+    /**
      * Close the underlying Client connection to Redis server
      */
     void close();

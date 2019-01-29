@@ -246,7 +246,12 @@ bool Redis::_expire_(const char* key, int arg, const char* cmd_var)
 
 bool Redis::persist(const char* key)
 {
-    return (bool)((RedisInteger)*RedisCommand("PERSIST", ArgList{key}).issue(conn));
+    return (bool)(RedisInteger)*RedisCommand("PERSIST", ArgList{key}).issue(conn);
+}
+
+int Redis::ttl(const char* key)
+{
+    return (int)(RedisInteger)*RedisCommand("TTL", ArgList{key}).issue(conn);
 }
 
 void Redis::close(void)
