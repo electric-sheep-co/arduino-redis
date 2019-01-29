@@ -57,7 +57,23 @@ class Redis {
      * @param seconds The number of seconds (from "now") at which this key will expire.
      * @return 'true' if the expire time was set successfully, 'false' otherwise.
      */
-    bool expire(const char* key, int seconds);
+    bool expire(const char* key, int seconds) { return _expire_(key, seconds, "EXPIRE"); }
+
+    /**
+     * Expire a 'key' at UNIX timestamp 'timestamp' (seconds since January 1, 1970).
+     * @note A timestamp in the past will delete the ket immediately.
+     * @param key The key name for which to set expire time.
+     * @param timestamp The UNIX timestamp at which this key will expire.
+     * @return 'true' if the expire time was set successfully, 'false' otherwise.
+     */
+    bool expire_at(const char* key, int timestamp) { return _expire_(key, timestamp, "EXPIREAT"); }
+
+    /**
+     * Persist 'key'.
+     * @param key The key to persist (remove any expiry).
+     * @return 'true' if the timeout was removed, 'false' if 'key' DNE or had no expiry.
+     */
+    bool persist(const char* key);
 
     /**
      * Close the underlying Client connection to Redis server
@@ -69,7 +85,7 @@ class Redis {
     int port;
     WiFiClient conn;
 
-    String checkError(String);
+    bool _expire_(const char*, int, const char*);
  };
 
 #endif

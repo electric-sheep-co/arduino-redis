@@ -237,10 +237,15 @@ int Redis::publish(const char* channel, const char* message)
     }
 }
 
-bool Redis::expire(const char* key, int seconds)
+bool Redis::_expire_(const char* key, int arg, const char* cmd_var)
 {
-    return (bool)((RedisInteger)*RedisCommand("EXPIRE", 
-        std::vector<String>{key, String(seconds)}).issue(conn));
+    return (bool)((RedisInteger)*RedisCommand(cmd_var, 
+        std::vector<String>{key, String(arg)}).issue(conn));
+}
+
+bool Redis::persist(const char* key)
+{
+    return (bool)((RedisInteger)*RedisCommand("PERSIST", std::vector<String>{key}).issue(conn));
 }
 
 void Redis::close(void)
