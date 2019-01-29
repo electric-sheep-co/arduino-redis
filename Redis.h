@@ -69,6 +69,23 @@ class Redis {
     bool expire_at(const char* key, int timestamp) { return _expire_(key, timestamp, "EXPIREAT"); }
 
     /**
+     * Expire a 'key' in 'milliseconds'.
+     * @param key The key name for which to set expire time.
+     * @param milliseconds The number of milliseconds (from "now") at which this key will expire.
+     * @return 'true' if the expire time was set successfully, 'false' otherwise.
+     */
+    bool pexpire(const char* key, int ms) { return _expire_(key, ms, "PEXPIRE"); }
+
+    /**
+     * Expire a 'key' at UNIX timestamp 'timestamp' (milliseconds since January 1, 1970).
+     * @note A timestamp in the past will delete the key immediately.
+     * @param key The key name for which to set expire time.
+     * @param timestamp The UNIX timestamp at which this key will expire.
+     * @return 'true' if the expire time was set successfully, 'false' otherwise.
+     */
+    bool pexpire_at(const char* key, int timestamp) { return _expire_(key, timestamp, "PEXPIREAT"); }
+
+    /**
      * Persist 'key'.
      * @param key The key to persist (remove any expiry).
      * @return 'true' if the timeout was removed, 'false' if 'key' DNE or had no expiry.
