@@ -1,6 +1,8 @@
 # Arduino Redis Library
 
-An Arduino library for Redis. It currently supports get, set & publish.
+An Arduino library for Redis (currently supporting only the ESP8266; all platforms coming soon). 
+
+Current supported command set: GET, SET & PUBLISH.
 
 ### Examples
 
