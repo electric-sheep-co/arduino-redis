@@ -249,9 +249,9 @@ bool Redis::persist(const char* key)
     return (bool)(RedisInteger)*RedisCommand("PERSIST", ArgList{key}).issue(conn);
 }
 
-int Redis::ttl(const char* key)
+int Redis::_ttl_(const char* key, const char* cmd_var)
 {
-    return (int)(RedisInteger)*RedisCommand("TTL", ArgList{key}).issue(conn);
+    return (int)(RedisInteger)*RedisCommand(cmd_var, ArgList{key}).issue(conn);
 }
 
 void Redis::close(void)
