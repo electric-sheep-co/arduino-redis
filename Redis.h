@@ -61,7 +61,7 @@ class Redis {
 
     /**
      * Expire a 'key' at UNIX timestamp 'timestamp' (seconds since January 1, 1970).
-     * @note A timestamp in the past will delete the ket immediately.
+     * @note A timestamp in the past will delete the key immediately.
      * @param key The key name for which to set expire time.
      * @param timestamp The UNIX timestamp at which this key will expire.
      * @return 'true' if the expire time was set successfully, 'false' otherwise.

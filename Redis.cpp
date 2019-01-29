@@ -139,13 +139,15 @@ public:
     }
 };
 
+typedef std::vector<String> ArgList;
+
 class RedisCommand : public RedisArray {
 public:
     RedisCommand(String command) : RedisArray() {
         add(std::shared_ptr<RedisObject>(new RedisBulkString(command)));
     }
 
-    RedisCommand(String command, std::vector<String> args)
+    RedisCommand(String command, ArgList args)
         : RedisCommand(command)
     {
         for (auto arg : args) {
@@ -205,7 +207,7 @@ RedisReturnValue Redis::connect(const char* password)
         if (passwordLength > 0)
         {
             return ((RedisRESPString)*RedisCommand("AUTH", 
-                        std::vector<String>{password}).issue(conn))
+                        ArgList{password}).issue(conn))
                 .indexOf("+OK") == -1 ? RedisAuthFailure : RedisSuccess;
         }
         return RedisSuccess;
@@ -216,18 +218,18 @@ RedisReturnValue Redis::connect(const char* password)
 bool Redis::set(const char* key, const char* value)
 {
     return ((RedisRESPString)*RedisCommand("SET", 
-                std::vector<String>{key, value})
+                ArgList{key, value})
             .issue(conn)).indexOf("+OK") != -1;
 }
 
 String Redis::get(const char* key) 
 {
-    return (String)*RedisCommand("GET", std::vector<String>{key}).issue(conn);
+    return (String)*RedisCommand("GET", ArgList{key}).issue(conn);
 }
 
 int Redis::publish(const char* channel, const char* message)
 {
-    auto reply = RedisCommand("PUBLISH", std::vector<String>{channel, message}).issue(conn);
+    auto reply = RedisCommand("PUBLISH", ArgList{channel, message}).issue(conn);
 
     switch (reply->type()) {
         case RedisObject::Type::Error:
@@ -239,13 +241,12 @@ int Redis::publish(const char* channel, const char* message)
 
 bool Redis::_expire_(const char* key, int arg, const char* cmd_var)
 {
-    return (bool)((RedisInteger)*RedisCommand(cmd_var, 
-        std::vector<String>{key, String(arg)}).issue(conn));
+    return (bool)((RedisInteger)*RedisCommand(cmd_var, ArgList{key, String(arg)}).issue(conn));
 }
 
 bool Redis::persist(const char* key)
 {
-    return (bool)((RedisInteger)*RedisCommand("PERSIST", std::vector<String>{key}).issue(conn));
+    return (bool)((RedisInteger)*RedisCommand("PERSIST", ArgList{key}).issue(conn));
 }
 
 void Redis::close(void)
