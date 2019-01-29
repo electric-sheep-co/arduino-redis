@@ -18,10 +18,50 @@ class Redis {
     Redis(const Redis&) = delete;
     Redis& operator=(const Redis&) = delete;
 
+    /**
+     * Connect to the host specified in the constructor.
+     * @param password The password to connect with (AUTH).
+     * @returns RedisReturnValue detailing the result
+     */
     RedisReturnValue connect(const char* password = "");
-    bool set(const char*, const char*);
-    String get(const char*);
-    int publish(const char*, const char*);
+
+    /**
+     * Set 'key' to 'value' (SET).
+     * @note Current implementation only supports basic SET without behavioral
+     * modification options added in Redis 2.6.12. To expire a set key, use the
+     * expire() method below.     
+     * @param key The key name to set
+     * @param value The value to set for 'key'
+     * @return 'true' if 'key' was set to 'value', false if error.
+     */
+    bool set(const char* key, const char* value);
+
+    /**
+     * Get 'key' (GET).
+     * @param key The key name to retrieve.
+     * @return The key's value as a string, empty if the key does not exist.
+     */
+    String get(const char* key);
+
+    /**
+     * Publish 'message' to 'channel' (PUBLISH).
+     * @param channel The channel on which to publish the message.
+     * @param message The message to be published to the channel.
+     * @return The number of subscribers to the published message.
+     */
+    int publish(const char* channel, const char* message);
+
+    /**
+     * Expire a 'key' in 'seconds'.
+     * @param key The key name for which to set expire time.
+     * @param seconds The number of seconds (from "now") at which this key will expire.
+     * @return 'true' if the expire time was set successfully, 'false' otherwise.
+     */
+    bool expire(const char* key, int seconds);
+
+    /**
+     * Close the underlying Client connection to Redis server
+     */
     void close();
 
   private:

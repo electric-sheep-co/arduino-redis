@@ -126,10 +126,8 @@ public:
         _type = RedisObject::Type::Integer;
     }
 
-    operator int()
-    {
-        return data.substring(1).toInt();
-    }
+    operator int() { return data.substring(1).toInt(); }
+    operator bool() { return (bool)operator int(); }
 };
 
 class RedisError : public RedisSimpleString {
@@ -237,6 +235,12 @@ int Redis::publish(const char* channel, const char* message)
         case RedisObject::Type::Integer:
             return (int)(RedisInteger)*reply;
     }
+}
+
+bool Redis::expire(const char* key, int seconds)
+{
+    return (bool)((RedisInteger)*RedisCommand("EXPIRE", 
+        std::vector<String>{key, String(seconds)}).issue(conn));
 }
 
 void Redis::close(void)
