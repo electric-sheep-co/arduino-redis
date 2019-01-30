@@ -5,6 +5,9 @@
 #include <functional>
 
 #define CRLF F("\r\n")
+#define ARDUINO_REDIS_SERIAL_TRACE 0
+
+typedef std::vector<String> ArgList;
 
 /* The lack of RTTI on Ardunio is unfortunate but understandable.
  * However, we're not going to let that stop us. So here's our very
@@ -75,7 +78,8 @@ public:
         auto charBuf = new char[dLen + 1];
         bzero(charBuf, dLen + 1);
 
-        if (client.readBytes(charBuf, dLen) != dLen) {
+        auto crlfCstr = String(CRLF).c_str();
+        if (client.readBytes(charBuf, dLen) != dLen || client.find(crlfCstr, 2)) {
             Serial.printf("ERROR! Bad read\n");
             exit(-1);
         }
@@ -144,10 +148,6 @@ public:
     }
 };
 
-typedef std::vector<String> ArgList;
-
-#define ARDUINO_REDIS_SERIAL_TRACE 1
-
 class RedisCommand : public RedisArray {
 public:
     RedisCommand(String command) : RedisArray() {
@@ -199,7 +199,7 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
         auto typeChar = (RedisObject::Type)client.read();
 
 #if ARDUINO_REDIS_SERIAL_TRACE
-        Serial.printf("Parsed type character '%c'\n", typeChar);
+        Serial.printf("Parsed type character '%c' (0x%x)\n", typeChar, typeChar);
 #endif
 
         if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
