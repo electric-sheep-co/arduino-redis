@@ -3,7 +3,7 @@
 An Arduino library for Redis (currently supporting only the ESP8266; all platforms coming soon). 
 
 Currently supported command set: GET, SET, PUBLISH, EXPIRE/EXPIREAT, 
-    PEXPIRE/PEXPIREAT, PERSIST, TTL.
+    PEXPIRE/PEXPIREAT, PERSIST, TTL/PTTL.
 
 ### Examples
 
