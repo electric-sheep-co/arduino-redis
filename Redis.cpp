@@ -126,7 +126,7 @@ public:
         _type = RedisObject::Type::Integer;
     }
 
-    operator int() { return data.substring(1).toInt(); }
+    operator int() { return data.toInt(); }
     operator bool() { return (bool)operator int(); }
 };
 
@@ -140,6 +140,8 @@ public:
 };
 
 typedef std::vector<String> ArgList;
+
+#define ARDUINO_REDIS_SERIAL_TRACE 1
 
 class RedisCommand : public RedisArray {
 public:
@@ -160,8 +162,19 @@ public:
         if (!cmdClient.connected())
             return std::shared_ptr<RedisObject>(new RedisError("INTERNAL ERROR: Client is not connected"));
 
-        cmdClient.print((RedisRESPString)*this);
-        return RedisObject::parseType(cmdClient.readStringUntil('\0'));
+        auto cmdRespStr = (RedisRESPString)*this;
+#if ARDUINO_REDIS_SERIAL_TRACE
+        Serial.printf("---- CMD ----\n%s", cmdRespStr.c_str());
+#endif
+        cmdClient.print(cmdRespStr);
+        //auto retRespStr = cmdClient.readStringUntil(0);//'\r');
+        auto retRespStr = cmdClient.readStringUntil('\r');
+        retRespStr += cmdClient.readStringUntil('\n');
+        //cmdClient.find('\n');
+#if ARDUINO_REDIS_SERIAL_TRACE
+        Serial.printf("---- RET ----\n%s\n-------------\n", retRespStr.c_str());
+#endif
+        return RedisObject::parseType(retRespStr);
     }
 
 private:
@@ -202,7 +215,6 @@ RedisReturnValue Redis::connect(const char* password)
 {
     if(conn.connect(addr, port)) 
     {
-        conn.setTimeout(500);
         int passwordLength = strlen(password);
         if (passwordLength > 0)
         {
