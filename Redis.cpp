@@ -5,12 +5,9 @@
 #include <functional>
 
 #define CRLF F("\r\n")
+#define ARDUINO_REDIS_SERIAL_TRACE 0
 
-class RedisRESPString : public String {
-public:
-    RedisRESPString(char c) : String(c) {}
-    RedisRESPString(String& s) : String(s) {}
-};
+typedef std::vector<String> ArgList;
 
 /* The lack of RTTI on Ardunio is unfortunate but understandable.
  * However, we're not going to let that stop us. So here's our very
@@ -19,33 +16,46 @@ public:
 class RedisObject {
 public:
     typedef enum {
+        NoType = ' ',
         SimpleString = '+',
         Error = '-',
         Integer = ':',
         BulkString = '$',
-        Array = '*'
+        Array = '*',
+        InternalError = '!'
     } Type;
 
+    RedisObject() {}
     RedisObject(Type tc) : _type(tc) {}
+    RedisObject(Type tc, Client& c) : _type(tc) { init(c); }
+    
+    ~RedisObject() {}
 
-    static std::shared_ptr<RedisObject> parseType(String);
+    static std::shared_ptr<RedisObject> parseType(Client&);
 
-    virtual explicit operator RedisRESPString() = 0;
-    virtual operator String() { return operator RedisRESPString(); }
+    virtual void init(Client& client)
+    {
+        data = client.readStringUntil('\r');
+        client.read(); // discard '\n' 
+    }
+
+    virtual String RESP() = 0;
+    virtual operator String() { return data; }
 
     Type type() const { return _type; } 
 
 protected:
-    Type _type;
+    String data;
+    Type _type = Type::NoType;
 };
 
 class RedisSimpleString : public RedisObject {
 public:
-    RedisSimpleString(String d) : data(d), RedisObject(Type::SimpleString) {}
+    RedisSimpleString(Client& c) : RedisObject(Type::SimpleString, c) {}
 
-    virtual explicit operator RedisRESPString() override
+    virtual String RESP() override
     {
-        RedisRESPString emitStr((char)_type);
+        String emitStr((char)_type);
         // Simple strings cannot contain CRLF, as they must terminate with CRLF
         // https://redis.io/topics/protocol#resp-simple-strings
         data.replace(CRLF, F(""));
@@ -53,63 +63,59 @@ public:
         emitStr += CRLF;
         return emitStr;
     }
-
-    virtual operator String() override { return data; }
-
-protected:
-    String data;
 };
 
 class RedisBulkString : public RedisObject {
 public:
-    RedisBulkString(String d) : data(d), RedisObject(Type::BulkString) {}
+    RedisBulkString(Client& c) : RedisObject(Type::BulkString) { init(c); }
+    RedisBulkString(String& s) : RedisObject(Type::BulkString) { data = s; }
 
-    RedisBulkString(RedisRESPString rd) : RedisObject(Type::BulkString)
+    virtual void init(Client& client) override
     {
-        auto crlfIndex = rd.indexOf(CRLF);
-        if (crlfIndex != -1) {
-            auto expectLen = rd.substring(rd.charAt(0) == RedisObject::Type::BulkString ? 1 : 0, 
-                    crlfIndex).toInt();
-            auto bStrStart = crlfIndex + String(CRLF).length();
-            data = rd.substring(bStrStart, expectLen + bStrStart);
+        RedisObject::init(client);
+
+        auto dLen = String(data).toInt();
+        auto charBuf = new char[dLen + 1];
+        bzero(charBuf, dLen + 1);
+
+        auto crlfCstr = String(CRLF).c_str();
+        if (client.readBytes(charBuf, dLen) != dLen || client.find(crlfCstr, 2)) {
+            Serial.printf("ERROR! Bad read\n");
+            exit(-1);
         }
+
+        data = String(charBuf);
+        delete [] charBuf;
     }
-    
-    virtual explicit operator RedisRESPString() override
+   
+    virtual String RESP() override
     {
-        RedisRESPString emitStr((char)_type);
+        String emitStr((char)_type);
         emitStr += String(data.length());
         emitStr += CRLF;
         emitStr += data;
         emitStr += CRLF;
         return emitStr;
     }
-
-    virtual operator String() override { return data; }
-
-protected:
-    String data;
 };
 
 class RedisArray : public RedisObject {
 public:
     RedisArray() : RedisObject(Type::Array) {}
-    RedisArray(String d) : RedisArray() {
-        Serial.printf("TODO RedisArray()!\n%s\n", d.c_str());
-    }
+    RedisArray(Client& c) : RedisObject(Type::Array, c) {}
 
     void add(std::shared_ptr<RedisObject> param) 
     {
         vec.push_back(param);
     }
 
-    virtual explicit operator RedisRESPString() override 
+    virtual String RESP() override 
     {
-        RedisRESPString emitStr((char)_type);
+        String emitStr((char)_type);
         emitStr += String(vec.size());
         emitStr += CRLF;
         for (auto rTypeInst : vec) {
-            emitStr += (RedisRESPString)*rTypeInst;
+            emitStr += rTypeInst->RESP();
         }
         return emitStr;
     }
@@ -120,24 +126,25 @@ protected:
 
 class RedisInteger : public RedisSimpleString {
 public:
-    RedisInteger(String d)
-        : RedisSimpleString(d)
-    {
-        _type = RedisObject::Type::Integer;
-    }
-
-    operator int()
-    {
-        return data.substring(1).toInt();
-    }
+    RedisInteger(Client& c) : RedisSimpleString(c) { _type = Type::Integer; }
+    operator int() { return data.toInt(); }
+    operator bool() { return (bool)operator int(); }
 };
 
 class RedisError : public RedisSimpleString {
 public:
-    RedisError(String d) 
-        : RedisSimpleString(d) 
+    RedisError(Client& c) : RedisSimpleString(c) { _type = Type::Error; }
+};
+
+class RedisInternalError : public RedisObject
+{
+public:
+    RedisInternalError(String err) : RedisObject(Type::InternalError) { data = err; }
+    RedisInternalError(const char* err) : RedisInternalError(String(err)) {}
+
+    virtual String RESP() override
     {
-        _type = RedisObject::Type::Error;
+        return "INTERNAL ERROR: " + data;
     }
 };
 
@@ -147,7 +154,7 @@ public:
         add(std::shared_ptr<RedisObject>(new RedisBulkString(command)));
     }
 
-    RedisCommand(String command, std::vector<String> args)
+    RedisCommand(String command, ArgList args)
         : RedisCommand(command)
     {
         for (auto arg : args) {
@@ -158,42 +165,50 @@ public:
     std::shared_ptr<RedisObject> issue(Client& cmdClient) 
     {
         if (!cmdClient.connected())
-            return std::shared_ptr<RedisObject>(new RedisError("INTERNAL ERROR: Client is not connected"));
+            return std::shared_ptr<RedisObject>(new RedisInternalError("Client is not connected"));
 
-        cmdClient.print((RedisRESPString)*this);
-        return RedisObject::parseType(cmdClient.readStringUntil('\0'));
+        auto cmdRespStr = RESP();
+#if ARDUINO_REDIS_SERIAL_TRACE
+        Serial.printf("----- CMD ----\n%s---- /CMD ----\n", cmdRespStr.c_str());
+#endif
+        cmdClient.print(cmdRespStr);
+        return RedisObject::parseType(cmdClient);
     }
 
 private:
     String _cmd;
 };
 
-typedef std::map<RedisObject::Type, std::function<RedisObject*(String)>> TypeParseMap;
+typedef std::map<RedisObject::Type, std::function<RedisObject*(Client&)>> TypeParseMap;
 
 static TypeParseMap g_TypeParseMap {
-    { RedisObject::Type::SimpleString, [](String substr) { return new RedisSimpleString(substr); } },
-    { RedisObject::Type::BulkString, [](String substr) { return new RedisBulkString((RedisRESPString)substr); } },
-    { RedisObject::Type::Integer, [](String substr) { return new RedisInteger(substr); } },
-    { RedisObject::Type::Array, [](String substr) { return new RedisArray(substr); } },
-    { RedisObject::Type::Error, [](String substr) { return new RedisError(substr); } }
+    { RedisObject::Type::SimpleString, [](Client& c) { return new RedisSimpleString(c); } },
+    { RedisObject::Type::BulkString, [](Client& c) { return new RedisBulkString(c); } },
+    { RedisObject::Type::Integer, [](Client& c) { return new RedisInteger(c); } },
+    { RedisObject::Type::Array, [](Client& c) { return new RedisArray(c); } },
+    { RedisObject::Type::Error, [](Client& c) { return new RedisError(c); } }
 };
 
-std::shared_ptr<RedisObject> RedisObject::parseType(String data)
+std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
 {
-    RedisObject *rv = nullptr;
-
-    if (data.length()) {
-        auto typeChar = (RedisObject::Type)data.charAt(0);
-        auto substr = data.substring(1);
-
-        if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
-            return std::shared_ptr<RedisObject>(g_TypeParseMap[typeChar](substr));
+    if (client.connected()) {
+        while (!client.available()) {
+            delay(1);
         }
 
-        return std::shared_ptr<RedisObject>(new RedisError("INTERNAL ERROR: " + substr));
-    }
+        auto typeChar = (RedisObject::Type)client.read();
 
-    return std::shared_ptr<RedisObject>(new RedisError("INTERNAL ERROR: zero-length data!"));
+#if ARDUINO_REDIS_SERIAL_TRACE
+        Serial.printf("Parsed type character '%c' (0x%x)\n", typeChar, typeChar);
+#endif
+
+        if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
+            return std::shared_ptr<RedisObject>(g_TypeParseMap[typeChar](client));
+        }
+
+        return std::shared_ptr<RedisObject>(new RedisInternalError("Unable to find type: " + typeChar));
+    }
+    return std::shared_ptr<RedisObject>(new RedisInternalError("Not connected"));
 }
 
 #pragma mark Redis class implemenation
@@ -202,13 +217,12 @@ RedisReturnValue Redis::connect(const char* password)
 {
     if(conn.connect(addr, port)) 
     {
-        conn.setTimeout(500);
         int passwordLength = strlen(password);
         if (passwordLength > 0)
         {
-            return ((RedisRESPString)*RedisCommand("AUTH", 
-                        std::vector<String>{password}).issue(conn))
-                .indexOf("+OK") == -1 ? RedisAuthFailure : RedisSuccess;
+            auto cmdRet = RedisCommand("AUTH", ArgList{password}).issue(conn);
+            return cmdRet->type() == RedisObject::Type::SimpleString && (String)*cmdRet == "OK" 
+                ? RedisSuccess : RedisAuthFailure;
         }
         return RedisSuccess;
     }
@@ -217,26 +231,39 @@ RedisReturnValue Redis::connect(const char* password)
 
 bool Redis::set(const char* key, const char* value)
 {
-    return ((RedisRESPString)*RedisCommand("SET", 
-                std::vector<String>{key, value})
-            .issue(conn)).indexOf("+OK") != -1;
+    return ((String)*RedisCommand("SET", ArgList{key, value}).issue(conn)).indexOf("OK") != -1;
 }
 
 String Redis::get(const char* key) 
 {
-    return (String)*RedisCommand("GET", std::vector<String>{key}).issue(conn);
+    return (String)*RedisCommand("GET", ArgList{key}).issue(conn);
 }
 
 int Redis::publish(const char* channel, const char* message)
 {
-    auto reply = RedisCommand("PUBLISH", std::vector<String>{channel, message}).issue(conn);
+    auto reply = RedisCommand("PUBLISH", ArgList{channel, message}).issue(conn);
 
     switch (reply->type()) {
         case RedisObject::Type::Error:
             return -1;
         case RedisObject::Type::Integer:
-            return (int)(RedisInteger)*reply;
+            return (int)*((RedisInteger*)reply.get());
     }
+}
+
+bool Redis::_expire_(const char* key, int arg, const char* cmd_var)
+{
+    return (bool)*(RedisInteger*)RedisCommand(cmd_var, ArgList{key, String(arg)}).issue(conn).get();
+}
+
+bool Redis::persist(const char* key)
+{
+    return (bool)*(RedisInteger*)RedisCommand("PERSIST", ArgList{key}).issue(conn).get();
+}
+
+int Redis::_ttl_(const char* key, const char* cmd_var)
+{
+    return (int)*(RedisInteger*)RedisCommand(cmd_var, ArgList{key}).issue(conn).get();
 }
 
 void Redis::close(void)
