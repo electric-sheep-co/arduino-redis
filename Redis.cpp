@@ -64,19 +64,22 @@ public:
 
 class RedisBulkString : public RedisObject {
 public:
-    RedisBulkString(Client& c) : RedisObject(Type::BulkString, c) {}
+    RedisBulkString(Client& c) : RedisObject(Type::BulkString) { init(c); }
     RedisBulkString(String& s) : RedisObject(Type::BulkString) { data = s; }
 
     virtual void init(Client& client) override
     {
         RedisObject::init(client);
+
         auto dLen = String(data).toInt();
-        auto charBuf = new char[dLen];
-        Serial.printf("%d bytes alloc'ed at %p\n", dLen, charBuf);
+        auto charBuf = new char[dLen + 1];
+        bzero(charBuf, dLen + 1);
+
         if (client.readBytes(charBuf, dLen) != dLen) {
             Serial.printf("ERROR! Bad read\n");
             exit(-1);
         }
+
         data = String(charBuf);
         delete [] charBuf;
     }
@@ -166,20 +169,9 @@ public:
 
         auto cmdRespStr = RESP();
 #if ARDUINO_REDIS_SERIAL_TRACE
-        Serial.printf("---- CMD ----\n%s", cmdRespStr.c_str());
+        Serial.printf("----- CMD ----\n%s---- /CMD ----\n", cmdRespStr.c_str());
 #endif
         cmdClient.print(cmdRespStr);
-
-/*
-        //auto retRespStr = cmdClient.readStringUntil(0);//'\r');
-        auto retRespStr = cmdClient.readStringUntil('\r');
-        retRespStr += cmdClient.readStringUntil('\n');
-        //cmdClient.find('\n');
-#if ARDUINO_REDIS_SERIAL_TRACE
-        Serial.printf("---- RET ----\n%s\n-------------\n", retRespStr.c_str());
-#endif
-        return RedisObject::parseType(retRespStr);
-*/
         return RedisObject::parseType(cmdClient);
     }
 
@@ -199,14 +191,24 @@ static TypeParseMap g_TypeParseMap {
 
 std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
 {
-    auto typeChar = (RedisObject::Type)client.read();
-    Serial.printf("parseType got typeChar='%c'\n", typeChar);
+    if (client.connected()) {
+        while (!client.available()) {
+            delay(1);
+        }
 
-    if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
-        return std::shared_ptr<RedisObject>(g_TypeParseMap[typeChar](client));
+        auto typeChar = (RedisObject::Type)client.read();
+
+#if ARDUINO_REDIS_SERIAL_TRACE
+        Serial.printf("Parsed type character '%c'\n", typeChar);
+#endif
+
+        if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
+            return std::shared_ptr<RedisObject>(g_TypeParseMap[typeChar](client));
+        }
+
+        return std::shared_ptr<RedisObject>(new RedisInternalError("Unable to find type: " + typeChar));
     }
-
-    return std::shared_ptr<RedisObject>(new RedisInternalError("Unable to find type: " + typeChar));
+    return std::shared_ptr<RedisObject>(new RedisInternalError("Not connected"));
 }
 
 #pragma mark Redis class implemenation
@@ -219,7 +221,6 @@ RedisReturnValue Redis::connect(const char* password)
         if (passwordLength > 0)
         {
             auto cmdRet = RedisCommand("AUTH", ArgList{password}).issue(conn);
-            Serial.printf("AUTH ret type '%c' -> '%s'\n", cmdRet->type(), ((String)*cmdRet).c_str());
             return cmdRet->type() == RedisObject::Type::SimpleString && (String)*cmdRet == "OK" 
                 ? RedisSuccess : RedisAuthFailure;
         }
