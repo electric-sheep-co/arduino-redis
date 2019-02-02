@@ -5,7 +5,7 @@
 
 RedisReturnValue Redis::authenticate(const char* password)
 {
-    if(!conn.connected())
+    if(conn.connected())
     {
         int passwordLength = strlen(password);
         if (passwordLength > 0)
