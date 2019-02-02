@@ -26,7 +26,7 @@ void setup()
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
 
-    if (redis.begin(REDIS_PASSWORD)) 
+    if (redis.connect(REDIS_PASSWORD)) 
     {
         Serial.println("Connected to the Redis server!");
     } 
