@@ -3,7 +3,7 @@
 
 #pragma mark Redis class implemenation
 
-RedisReturnValue Redis::connect(const char* password)
+RedisReturnValue Redis::authenticate(const char* password)
 {
     if(!conn.connected())
     {
@@ -56,9 +56,4 @@ bool Redis::persist(const char* key)
 int Redis::_ttl_(const char* key, const char* cmd_var)
 {
     return (int)*(RedisInteger*)RedisCommand(cmd_var, ArgList{key}).issue(conn).get();
-}
-
-void Redis::close(void)
-{
-    conn.stop();
 }

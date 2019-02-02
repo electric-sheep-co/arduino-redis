@@ -19,16 +19,16 @@ class Redis {
      */
     Redis(Client& client) : conn(client) {}
 
-    ~Redis() { close(); }
+    ~Redis() {}
     Redis(const Redis&) = delete;
     Redis& operator=(const Redis&) = delete;
 
     /**
-     * Connect to the host specified in the constructor.
-     * @param password The password to connect with (AUTH).
+     * Authenticate with the given password.
+     * @param password The password with which to authenticate.
      * @returns RedisReturnValue detailing the result
      */
-    RedisReturnValue connect(const char* password = "");
+    RedisReturnValue authenticate(const char* password);
 
     /**
      * Set 'key' to 'value'.
@@ -91,8 +91,8 @@ class Redis {
     bool pexpire_at(const char* key, int timestamp) { return _expire_(key, timestamp, "PEXPIREAT"); }
 
     /**
-     * Persist 'key'.
-     * @param key The key to persist (remove any expiry).
+     * Persist 'key' (remove any expiry).
+     * @param key The key to persist.
      * @return 'true' if the timeout was removed, 'false' if 'key' DNE or had no expiry.
      */
     bool persist(const char* key);
@@ -112,11 +112,6 @@ class Redis {
      *   -1 if the key exists but has no associated expire, -2 if the key DNE.
      */
     int pttl(const char* key) { return _ttl_(key, "PTTL"); }
-
-    /**
-     * Close the underlying Client connection to Redis server
-     */
-    void close();
 
   private:
     Client& conn;

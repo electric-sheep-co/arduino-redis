@@ -33,7 +33,7 @@ void setup()
     }
 
     Redis redis(redisConn);
-    auto connRet = redis.connect(REDIS_PASSWORD);
+    auto connRet = redis.authenticate(REDIS_PASSWORD);
     if (connRet == RedisSuccess)
     {
         Serial.println("Connected to the Redis server!");
