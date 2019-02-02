@@ -1,4 +1,5 @@
 #include <Redis.h>
+#include <ESP8266WiFi.h>
 
 #define WIFI_SSID "SSID"
 #define WIFI_PASSWORD "PASSWORD"
@@ -6,8 +7,6 @@
 #define REDIS_ADDR "127.0.0.1"
 #define REDIS_PORT 6379
 #define REDIS_PASSWORD ""
-
-Redis redis(REDIS_ADDR, REDIS_PORT);
 
 void setup()
 {
@@ -26,13 +25,22 @@ void setup()
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
 
-    if (redis.connect(REDIS_PASSWORD))
+    WiFiClient redisConn;
+    if (!redisConn.connect(REDIS_ADDR, REDIS_PORT))
+    {
+        Serial.println("Failed to connect to the Redis server!");
+        return;
+    }
+
+    Redis redis(redisConn);
+    auto connRet = redis.authenticate(REDIS_PASSWORD);
+    if (connRet == RedisSuccess)
     {
         Serial.println("Connected to the Redis server!");
     }
     else
     {
-        Serial.println("Failed to connect to the Redis server!");
+        Serial.printf("Failed to authenticate to the Redis server! Errno: %d\n", (int)connRet);
         return;
     }
 

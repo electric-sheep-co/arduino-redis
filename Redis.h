@@ -1,36 +1,34 @@
 #ifndef REDIS_H
 #define REDIS_H
 
-#include <ESP8266WiFi.h>
+#include "Arduino.h"
+#include "Client.h"
 
 typedef enum {
   RedisSuccess = 0,
-  RedisConnectFailure = 1,
+  RedisNotConnectedFailure = 1,
   RedisAuthFailure = 2,
 } RedisReturnValue;
 
 class Redis {
  public:
     /**
-     * Create a Redis connection to host at 'addr' on 'port'.
-     * @param addr Host address, defaults to '127.0.0.1' (not very useful)
-     * @param port Redis port, defaults to Redis standard 6379
+     * Create a Redis connection using Client instance 'c'.
+     * @param client A Client instance representing the connection to a Redis server.
      * @returns An initialized but unconnected (see connect()) Redis instance
      */
-    Redis(const char* addr = "127.0.0.1", 
-        int port = 6379) : 
-	    addr(addr), port(port) {}
+    Redis(Client& client) : conn(client) {}
 
-    ~Redis() { close(); }
+    ~Redis() {}
     Redis(const Redis&) = delete;
     Redis& operator=(const Redis&) = delete;
 
     /**
-     * Connect to the host specified in the constructor.
-     * @param password The password to connect with (AUTH).
+     * Authenticate with the given password.
+     * @param password The password with which to authenticate.
      * @returns RedisReturnValue detailing the result
      */
-    RedisReturnValue connect(const char* password = "");
+    RedisReturnValue authenticate(const char* password);
 
     /**
      * Set 'key' to 'value'.
@@ -93,8 +91,8 @@ class Redis {
     bool pexpire_at(const char* key, int timestamp) { return _expire_(key, timestamp, "PEXPIREAT"); }
 
     /**
-     * Persist 'key'.
-     * @param key The key to persist (remove any expiry).
+     * Persist 'key' (remove any expiry).
+     * @param key The key to persist.
      * @return 'true' if the timeout was removed, 'false' if 'key' DNE or had no expiry.
      */
     bool persist(const char* key);
@@ -115,15 +113,8 @@ class Redis {
      */
     int pttl(const char* key) { return _ttl_(key, "PTTL"); }
 
-    /**
-     * Close the underlying Client connection to Redis server
-     */
-    void close();
-
   private:
-    const char* addr;
-    int port;
-    WiFiClient conn;
+    Client& conn;
 
     bool _expire_(const char*, int, const char*);
     int _ttl_(const char*, const char*);

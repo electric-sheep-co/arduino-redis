@@ -3,9 +3,9 @@
 
 #pragma mark Redis class implemenation
 
-RedisReturnValue Redis::connect(const char* password)
+RedisReturnValue Redis::authenticate(const char* password)
 {
-    if(conn.connect(addr, port)) 
+    if(conn.connected())
     {
         int passwordLength = strlen(password);
         if (passwordLength > 0)
@@ -18,7 +18,7 @@ RedisReturnValue Redis::connect(const char* password)
         return RedisSuccess;
     }
 
-    return RedisConnectFailure;
+    return RedisNotConnectedFailure;
 }
 
 bool Redis::set(const char* key, const char* value)
@@ -56,9 +56,4 @@ bool Redis::persist(const char* key)
 int Redis::_ttl_(const char* key, const char* cmd_var)
 {
     return (int)*(RedisInteger*)RedisCommand(cmd_var, ArgList{key}).issue(conn).get();
-}
-
-void Redis::close(void)
-{
-    conn.stop();
 }
