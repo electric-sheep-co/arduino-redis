@@ -1,6 +1,6 @@
 # Arduino Redis Library
 
-An Arduino library for Redis.
+A Redis library for Arduino.
 
 Currently supported command set: GET, SET, PUBLISH, EXPIRE/EXPIREAT, 
     PEXPIRE/PEXPIREAT, PERSIST, TTL/PTTL.
