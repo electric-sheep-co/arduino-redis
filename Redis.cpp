@@ -5,7 +5,7 @@
 
 RedisReturnValue Redis::connect(const char* password)
 {
-    if(conn.connect(addr, port)) 
+    if(!conn.connected())
     {
         int passwordLength = strlen(password);
         if (passwordLength > 0)
@@ -18,7 +18,7 @@ RedisReturnValue Redis::connect(const char* password)
         return RedisSuccess;
     }
 
-    return RedisConnectFailure;
+    return RedisNotConnectedFailure;
 }
 
 bool Redis::set(const char* key, const char* value)
