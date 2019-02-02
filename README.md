@@ -1,6 +1,9 @@
 # Arduino Redis Library
 
-A Redis library for Arduino.
+[![Arduino](https://www.vectorlogo.zone/logos/arduino/arduino-ar21.svg)](https://www.arduino.cc)
+[![Redis](https://www.vectorlogo.zone/logos/redis/redis-ar21.svg)](https://redis.io/)
+
+A [Redis](https://redis.io/) library for [Arduino](https://www.arduino.cc).
 
 Currently supported command set: GET, SET, PUBLISH, EXPIRE/EXPIREAT, 
     PEXPIRE/PEXPIREAT, PERSIST, TTL/PTTL.
