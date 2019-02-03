@@ -5,13 +5,9 @@
 
 A [Redis](https://redis.io/) client library for [Arduino](https://www.arduino.cc).
 
-Currently supported command set: GET, SET, PUBLISH, EXPIRE/EXPIREAT, 
-    PEXPIRE/PEXPIREAT, PERSIST, TTL/PTTL.
+### [Current documentation](http://arduino-redis.com)
 
-### Examples
-
-- Pub_Sub: An example of publish application with the Redis library.
-- Simple: Open the connection, set and get a key then close the connection.
+### [Examples](./examples)
 
 ### Questions
 
