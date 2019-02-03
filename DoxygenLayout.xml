@@ -4,6 +4,7 @@
   <navindex>
     <tab type="mainpage" visible="yes" title="Home" />
     <tab type="user" url="@ref Redis" title="Primary Documentation" />
+    <tab type="user" title="Latest Release" url="https://github.com/electric-sheep-co/arduino-redis/releases/latest" />
     <tab type="user" url="@ref md_README" title="README" />
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="no" title="" intro=""/>

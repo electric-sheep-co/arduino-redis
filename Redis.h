@@ -4,6 +4,12 @@
  *
  *  Primary interface documentation: @ref Redis
  *
+ *  Project page on GitHub: https://github.com/electric-sheep-co/arduino-redis
+ *
+ *  Available in the Arduino IDE Library Manager (search for "redis")
+ *
+ *  Latest release always available at: https://github.com/electric-sheep-co/arduino-redis/releases/latest
+ *
  *  Internal documentation for library developers: @ref RedisObject
  *
  *  @authors Ryan Joseph (Electric Sheep) <ryan@electricsheep.co>
