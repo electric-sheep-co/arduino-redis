@@ -5,6 +5,10 @@
 
 A [Redis](https://redis.io/) client library for [Arduino](https://www.arduino.cc).
 
+Available via the [Arduino Library Manager](https://www.arduino.cc/en/guide/libraries): simply search for "redis".
+
+Latest release always available for direct download [here](https://github.com/electric-sheep-co/arduino-redis/releases/latest).
+
 ### [Current documentation](http://arduino-redis.com)
 
 ### [Examples](./examples)
