@@ -14,6 +14,7 @@
  *
  *  @authors Ryan Joseph (Electric Sheep) <ryan@electricsheep.co>
  *  @authors Remi Caumette
+ *  @authors Robert Oostenveld
  */
 
 #ifndef REDIS_H

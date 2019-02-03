@@ -12,3 +12,8 @@ A [Redis](https://redis.io/) client library for [Arduino](https://www.arduino.cc
 ### Questions
 
 If you have any questions please [open an issue here](https://github.com/electric-sheep-co/arduino-redis/issues/new) or email [arduino-redis@electricsheep.co](mailto:arduino-redis@electricsheep.co).
+
+### Authors
+* Ryan Joseph (Electric Sheep) <ryan@electricsheep.co>
+* Remi Caumette
+* Robert Oostenveld
