@@ -1,3 +1,15 @@
+/** @mainpage Arduino-Redis
+ *
+ *  A Redis library for Arduino.
+ *
+ *  Primary interface documentation: @ref Redis
+ *
+ *  Internal documentation for library developers: @ref RedisObject
+ *
+ *  @authors Ryan Joseph (Electric Sheep) <ryan@electricsheep.co>
+ *  @authors Remi Caumette
+ */
+
 #ifndef REDIS_H
 #define REDIS_H
 
@@ -10,6 +22,17 @@ typedef enum {
   RedisAuthFailure = 2,
 } RedisReturnValue;
 
+/** Redis-for-Arduino client interface.
+ *
+ *  This is the primary (and currently sole) user-consumable interface
+ *  class.
+ *
+ *  It has a constructor that takes a reference to any instance
+ *  of a Client subclass, allowing it to be used with any communication
+ *  framework that abstracts the client bytestream in this way (such as
+ *  the builtin Ethernet class as well as WiFiClient for devices 
+ *  such as the ESP8266).
+ */
 class Redis {
  public:
     /**
