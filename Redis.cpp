@@ -31,6 +31,11 @@ String Redis::get(const char* key)
     return RedisCommand("GET", ArgList{key}).issue_scalar<String>(conn);
 }
 
+bool Redis::del(const char* key)
+{
+    return RedisCommand("DEL", ArgList{key}).issue_scalar<bool>(conn);
+}
+
 int Redis::publish(const char* channel, const char* message)
 {
     return RedisCommand("PUBLISH", ArgList{channel, message}).issue_scalar<int>(conn);
@@ -50,3 +55,4 @@ int Redis::_ttl_(const char* key, const char* cmd_var)
 {
     return RedisCommand(cmd_var, ArgList{key}).issue_scalar<int>(conn);
 }
+

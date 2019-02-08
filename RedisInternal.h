@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "Client.h"
-#include <limits.h>
 #include <map>
 #include <vector>
 #include <memory>
@@ -16,7 +15,7 @@ typedef std::vector<String> ArgList;
 
 /** A basic object model for the Redis serialization protocol (RESP): https://redis.io/topics/protocol.
  * 
- * RedisObject is an abstract class and should never be concretely instantiated.
+ * RedisObject is abstract so cannot be instantiated.
  */
 
 /* The lack of RTTI on Ardunio is unfortunate but completely understandable. 

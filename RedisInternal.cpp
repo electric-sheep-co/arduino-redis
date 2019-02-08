@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "RedisInternal.h"
 
 void RedisObject::init(Client& client)
@@ -123,6 +124,7 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
 
         if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
             auto retVal = g_TypeParseMap[typeChar](client);
+
             if (!retVal || retVal->type() == RedisObject::Type::Error) {
                 String err = retVal ? (String)*retVal : "(nil)";
                 return std::shared_ptr<RedisObject>(new RedisInternalError(err));
