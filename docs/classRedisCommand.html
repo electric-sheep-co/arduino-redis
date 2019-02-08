@@ -69,7 +69,7 @@ $(function() {
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A Command (a specialized Array subclass): <a href="https://redis.io/topics/protocol#sending-commands-to-a-redis-server">https://redis.io/topics/protocol#sending-commands-to-a-redis-server</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00125">125</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00124">124</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -81,6 +81,22 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3e4b6d140df664837f707387dde77883"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca229979f7552d4facbd3ca1529563df"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classRedisObject.html">RedisObject</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedisCommand.html#aca229979f7552d4facbd3ca1529563df">issue</a> (Client &amp;cmdClient)</td></tr>
 <tr class="separator:aca229979f7552d4facbd3ca1529563df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99a13af66dddb0da5cee1e11c731e057"><td class="memTemplParams" colspan="2"><a id="a99a13af66dddb0da5cee1e11c731e057"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a99a13af66dddb0da5cee1e11c731e057"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>issue_typed</b> (Client &amp;cmdClient)</td></tr>
+<tr class="separator:a99a13af66dddb0da5cee1e11c731e057"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7eef2c4af96c48edb47b071857418cb8"><td class="memTemplParams" colspan="2"><a id="a7eef2c4af96c48edb47b071857418cb8"></a>
+template&lt;&gt; </td></tr>
+<tr class="memitem:a7eef2c4af96c48edb47b071857418cb8"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><b>issue_typed</b> (Client &amp;cmdClient)</td></tr>
+<tr class="separator:a7eef2c4af96c48edb47b071857418cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84a02bd8b3ef143958b7fa9732230087"><td class="memTemplParams" colspan="2"><a id="a84a02bd8b3ef143958b7fa9732230087"></a>
+template&lt;&gt; </td></tr>
+<tr class="memitem:a84a02bd8b3ef143958b7fa9732230087"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>issue_typed</b> (Client &amp;cmdClient)</td></tr>
+<tr class="separator:a84a02bd8b3ef143958b7fa9732230087"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0916ba7e9f8551a0a9d7858608240fce"><td class="memTemplParams" colspan="2"><a id="a0916ba7e9f8551a0a9d7858608240fce"></a>
+template&lt;&gt; </td></tr>
+<tr class="memitem:a0916ba7e9f8551a0a9d7858608240fce"><td class="memTemplItemLeft" align="right" valign="top">String&#160;</td><td class="memTemplItemRight" valign="bottom"><b>issue_typed</b> (Client &amp;cmdClient)</td></tr>
+<tr class="separator:a0916ba7e9f8551a0a9d7858608240fce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classRedisArray"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classRedisArray')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classRedisArray.html">RedisArray</a></td></tr>
 <tr class="memitem:a97e5ab558f6dcadf27bfd753ec0a2d1c inherit pub_methods_classRedisArray"><td class="memItemLeft" align="right" valign="top"><a id="a97e5ab558f6dcadf27bfd753ec0a2d1c"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>RedisArray</b> (Client &amp;c)</td></tr>
@@ -171,14 +187,14 @@ Inheritance diagram for RedisCommand:</div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A shared pointer of a "RedisObject" representing a concrete subclass instantiated as a result of parsing the <a class="el" href="classRedis.html">Redis</a> server return value. Check RedisObject::type() to determine concrete type. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00059">59</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00060">60</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Feb 3 2019 11:55:18 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Feb 7 2019 21:37:50 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

@@ -13,9 +13,8 @@
 
 typedef std::vector<String> ArgList;
 
-/** A basic object model for the Redis serialization protocol (RESP): https://redis.io/topics/protocol.
- * 
- * RedisObject is an abstract class and should never be concretely instantiated.
+/** A basic object model for the Redis serialization protocol (RESP):
+ *      https://redis.io/topics/protocol
  */
 
 /* The lack of RTTI on Ardunio is unfortunate but completely understandable. 
@@ -143,8 +142,10 @@ public:
      */
     std::shared_ptr<RedisObject> issue(Client& cmdClient);
 
-private:
-    String _cmd;
-};
+    template <typename T>
+    T issue_typed(Client& cmdClient);
 
+private:
+    String _err;
+};
 #endif // REDIS_INTERNAL_H

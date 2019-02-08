@@ -26,34 +26,74 @@ bool Redis::set(const char* key, const char* value)
     return ((String)*RedisCommand("SET", ArgList{key, value}).issue(conn)).indexOf("OK") != -1;
 }
 
+#define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed<t>(conn)
+
 String Redis::get(const char* key) 
 {
-    return (String)*RedisCommand("GET", ArgList{key}).issue(conn);
+    TRCMD(String, "GET", key);
+}
+
+bool Redis::del(const char* key)
+{
+    TRCMD(bool, "DEL", key);
+}
+
+int Redis::append(const char* key, const char* value)
+{
+    TRCMD(int, "APPEND", key, value);
 }
 
 int Redis::publish(const char* channel, const char* message)
 {
-    auto reply = RedisCommand("PUBLISH", ArgList{channel, message}).issue(conn);
+    TRCMD(int, "PUBLISH", channel, message);
+}
 
-    switch (reply->type()) {
-        case RedisObject::Type::Error:
-            return -1;
-        case RedisObject::Type::Integer:
-            return (int)*((RedisInteger*)reply.get());
-    }
+bool Redis::exists(const char* key)
+{
+    TRCMD(bool, "EXISTS", key);
 }
 
 bool Redis::_expire_(const char* key, int arg, const char* cmd_var)
 {
-    return (bool)*(RedisInteger*)RedisCommand(cmd_var, ArgList{key, String(arg)}).issue(conn).get();
+    TRCMD(bool, cmd_var, key, String(arg));
 }
 
 bool Redis::persist(const char* key)
 {
-    return (bool)*(RedisInteger*)RedisCommand("PERSIST", ArgList{key}).issue(conn).get();
+    TRCMD(bool, "PERSIST", key);
 }
 
 int Redis::_ttl_(const char* key, const char* cmd_var)
 {
-    return (int)*(RedisInteger*)RedisCommand(cmd_var, ArgList{key}).issue(conn).get();
+    TRCMD(int, cmd_var, key);
+}
+
+bool Redis::_hset_(const char* key, const char* field, const char* value, const char* cmd_var)
+{
+    TRCMD(int, cmd_var, key, field, value);
+}
+
+String Redis::hget(const char* key, const char* field) 
+{ 
+    TRCMD(String, "HGET", key, field); 
+}
+
+bool Redis::hdel(const char* key, const char* field) 
+{ 
+    TRCMD(bool, "HDEL", key, field); 
+}
+
+int Redis::hlen(const char* key) 
+{ 
+    TRCMD(int, "HLEN", key); 
+}
+
+int Redis::hstrlen(const char* key, const char* field)
+{
+    TRCMD(int, "HSTRLEN", key, field);
+}
+
+bool Redis::hexists(const char* key, const char* field)
+{
+    TRCMD(bool, "HEXISTS", key, field);
 }

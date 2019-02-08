@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "RedisInternal.h"
 
 void RedisObject::init(Client& client)
@@ -66,7 +67,36 @@ std::shared_ptr<RedisObject> RedisCommand::issue(Client& cmdClient)
     Serial.printf("----- CMD ----\n%s---- /CMD ----\n", cmdRespStr.c_str());
 #endif
     cmdClient.print(cmdRespStr);
-    return RedisObject::parseType(cmdClient);
+    auto ret = RedisObject::parseType(cmdClient);
+    if (ret && ret->type() == RedisObject::Type::InternalError)
+        _err = (String)*ret;
+    return ret;
+}
+
+template <>
+int RedisCommand::issue_typed<int>(Client& cmdClient)
+{
+    auto cmdRet = issue(cmdClient);
+    if (!cmdRet)
+        return INT_MAX - 0x0f;
+    if (cmdRet->type() != RedisObject::Type::Integer)
+        return INT_MAX - 0xf0;
+    return (int)*((RedisInteger*)cmdRet.get());
+}
+
+template <>
+bool RedisCommand::issue_typed<bool>(Client& cmdClient)
+{
+    auto cmdRet = issue(cmdClient);
+    if (cmdRet && cmdRet->type() == RedisObject::Type::Integer)
+        return (bool)*((RedisInteger*)cmdRet.get());
+    return false;
+}
+
+template <>
+String RedisCommand::issue_typed<String>(Client& cmdClient)
+{
+    return (String)*issue(cmdClient);
 }
 
 typedef std::map<RedisObject::Type, std::function<RedisObject*(Client&)>> TypeParseMap;
@@ -93,7 +123,14 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
 #endif
 
         if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
-            return std::shared_ptr<RedisObject>(g_TypeParseMap[typeChar](client));
+            auto retVal = g_TypeParseMap[typeChar](client);
+
+            if (!retVal || retVal->type() == RedisObject::Type::Error) {
+                String err = retVal ? (String)*retVal : "(nil)";
+                return std::shared_ptr<RedisObject>(new RedisInternalError(err));
+            }
+
+            return std::shared_ptr<RedisObject>(retVal);
         }
 
         return std::shared_ptr<RedisObject>(new RedisInternalError("Unable to find type: " + typeChar));
