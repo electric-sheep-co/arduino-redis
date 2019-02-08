@@ -31,21 +31,18 @@ typedef enum {
 
 /** Redis-for-Arduino client interface.
  *
- *  This is the primary (and currently sole) user-consumable interface
- *  class.
- *
- *  It has a constructor that takes a reference to any instance
- *  of a Client subclass, allowing it to be used with any communication
- *  framework that abstracts the client bytestream in this way (such as
- *  the builtin Ethernet class as well as WiFiClient for devices 
+ *  The sole constructor takes a reference to any instance
+ *  of a Client subclass, allowing it to be used with any library
+ *  that abstracts the client bytestream in this way (such as
+ *  the built-in Ethernet class or the WiFiClient for devices 
  *  such as the ESP8266).
  */
 class Redis {
 public:
     /**
-     * Create a Redis connection using Client instance 'c'.
+     * Create a Redis connection using Client reference `client`.
      * @param client A Client instance representing the connection to a Redis server.
-     * @returns An initialized but unconnected (see connect()) Redis instance
+     * @returns An initialized Redis client using `client` to communicate with the server.
      */
     Redis(Client& client) : conn(client) {}
 
@@ -61,20 +58,20 @@ public:
     RedisReturnValue authenticate(const char* password);
 
     /**
-     * Set 'key' to 'value'.
+     * Set `key` to `value`.
      * @note Current implementation only supports basic SET without behavioral
      * modification options added in Redis 2.6.12. To expire a set key, use the
      * expire() method below.     
      * @param key The key name to set
-     * @param value The value to set for 'key'
-     * @return 'true' if 'key' was set to 'value', false if error.
+     * @param value The value to set for `key`
+     * @return `true` if `key` was set to `value`, false if error.
      */
     bool set(const char* key, const char* value);
 
     /**
-     * Get 'key'.
+     * Get `key`.
      * @param key The key name to retrieve.
-     * @return The key's value as a string, empty if the key does not exist.
+     * @return The key`s value as a string, empty if the key does not exist.
      */
     String get(const char* key);
 
@@ -101,7 +98,7 @@ public:
     int append(const char* key, const char* value);
 
     /**
-     * Publish 'message' to 'channel'.
+     * Publish `message` to `channel`.
      * @param channel The channel on which to publish the message.
      * @param message The message to be published to the channel.
      * @return The number of subscribers to the published message.
@@ -109,48 +106,48 @@ public:
     int publish(const char* channel, const char* message);
 
     /**
-     * Expire a 'key' in 'seconds'.
+     * Expire a `key` in `seconds`.
      * @param key The key name for which to set expire time.
      * @param seconds The number of seconds (from "now") at which this key will expire.
-     * @return 'true' if the expire time was set successfully, 'false' otherwise.
+     * @return `true` if the expire time was set successfully, `false` otherwise.
      */
     bool expire(const char* key, int seconds) { return _expire_(key, seconds, "EXPIRE"); }
 
     /**
-     * Expire a 'key' at UNIX timestamp 'timestamp' (seconds since January 1, 1970).
+     * Expire a `key` at UNIX timestamp `timestamp` (seconds since January 1, 1970).
      * @note A timestamp in the past will delete the key immediately.
      * @param key The key name for which to set expire time.
      * @param timestamp The UNIX timestamp at which this key will expire.
-     * @return 'true' if the expire time was set successfully, 'false' otherwise.
+     * @return `true` if the expire time was set successfully, `false` otherwise.
      */
     bool expire_at(const char* key, int timestamp) { return _expire_(key, timestamp, "EXPIREAT"); }
 
     /**
-     * Expire a 'key' in 'milliseconds'.
+     * Expire a `key` in `milliseconds`.
      * @param key The key name for which to set expire time.
      * @param milliseconds The number of milliseconds (from "now") at which this key will expire.
-     * @return 'true' if the expire time was set successfully, 'false' otherwise.
+     * @return `true` if the expire time was set successfully, `false` otherwise.
      */
     bool pexpire(const char* key, int ms) { return _expire_(key, ms, "PEXPIRE"); }
 
     /**
-     * Expire a 'key' at UNIX timestamp 'timestamp' (milliseconds since January 1, 1970).
+     * Expire a `key` at UNIX timestamp `timestamp` (milliseconds since January 1, 1970).
      * @note A timestamp in the past will delete the key immediately.
      * @param key The key name for which to set expire time.
      * @param timestamp The UNIX timestamp at which this key will expire.
-     * @return 'true' if the expire time was set successfully, 'false' otherwise.
+     * @return `true` if the expire time was set successfully, `false` otherwise.
      */
     bool pexpire_at(const char* key, int timestamp) { return _expire_(key, timestamp, "PEXPIREAT"); }
 
     /**
-     * Persist 'key' (remove any expiry).
+     * Persist `key` (remove any expiry).
      * @param key The key to persist.
-     * @return 'true' if the timeout was removed, 'false' if 'key' DNE or had no expiry.
+     * @return `true` if the timeout was removed, `false` if `key` DNE or had no expiry.
      */
     bool persist(const char* key);
 
     /**
-     * Query remaining time-to-live (time-until-expiry) for 'key'.
+     * Query remaining time-to-live (time-until-expiry) for `key`.
      * @param key The query whose TTL to query.
      * @return The key's TTL in seconds, or a negative value signaling error:
      *   -1 if the key exists but has no associated expire, -2 if the key DNE.
@@ -158,9 +155,9 @@ public:
     int ttl(const char* key) { return _ttl_(key, "TTL"); }
 
     /**
-     * Query remaining time-to-live (time-until-expiry) for 'key'.
+     * Query remaining time-to-live (time-until-expiry) for `key`.
      * @param key The query whose TTL to query.
-     * @return The key's TTL in milliseconds, or a negative value signaling error:
+     * @return The key`s TTL in milliseconds, or a negative value signaling error:
      *   -1 if the key exists but has no associated expire, -2 if the key DNE.
      */
     int pttl(const char* key) { return _ttl_(key, "PTTL"); }
@@ -187,7 +184,7 @@ public:
      * Gets `field` stored in hash at `key`.
      * @param key
      * @param field
-     * @return The field's value.
+     * @return The field`s value.
      */
     String hget(const char* key, const char* field);
     /**

@@ -68,10 +68,9 @@ $(function() {
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Redis-for-Arduino client interface.</p>
-<p>This is the primary (and currently sole) user-consumable interface class.</p>
-<p>It has a constructor that takes a reference to any instance of a Client subclass, allowing it to be used with any communication framework that abstracts the client bytestream in this way (such as the builtin Ethernet class as well as WiFiClient for devices such as the ESP8266). </p>
+<p>The sole constructor takes a reference to any instance of a Client subclass, allowing it to be used with any library that abstracts the client bytestream in this way (such as the built-in Ethernet class or the WiFiClient for devices such as the ESP8266). </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00043">43</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00040">40</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -150,15 +149,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Create a <a class="el" href="classRedis.html">Redis</a> connection using Client instance 'c'. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Create a <a class="el" href="classRedis.html">Redis</a> connection using Client reference <code>client</code>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">client</td><td>A Client instance representing the connection to a <a class="el" href="classRedis.html">Redis</a> server. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>An initialized but unconnected (see connect()) <a class="el" href="classRedis.html">Redis</a> instance </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>An initialized <a class="el" href="classRedis.html">Redis</a> client using <code>client</code> to communicate with the server. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00050">50</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00047">47</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -315,16 +314,16 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Expire a 'key' in 'seconds'. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Expire a <code>key</code> in <code>seconds</code>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key name for which to set expire time. </td></tr>
     <tr><td class="paramname">seconds</td><td>The number of seconds (from "now") at which this key will expire. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>'true' if the expire time was set successfully, 'false' otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00117">117</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00114">114</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -361,7 +360,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Expire a 'key' at UNIX timestamp 'timestamp' (seconds since January 1, 1970). </p><dl class="section note"><dt>Note</dt><dd>A timestamp in the past will delete the key immediately. </dd></dl>
+<p>Expire a <code>key</code> at UNIX timestamp <code>timestamp</code> (seconds since January 1, 1970). </p><dl class="section note"><dt>Note</dt><dd>A timestamp in the past will delete the key immediately. </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key name for which to set expire time. </td></tr>
@@ -369,9 +368,9 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>'true' if the expire time was set successfully, 'false' otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00126">126</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00123">123</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -390,13 +389,13 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get 'key'. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Get <code>key</code>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key name to retrieve. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The key's value as a string, empty if the key does not exist. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The key`s value as a string, empty if the key does not exist. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00031">31</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
@@ -472,7 +471,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The field's value. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The field`s value. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00076">76</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
@@ -554,7 +553,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if set, <code>false</code> if was updated </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00175">175</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00172">172</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -607,7 +606,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if set, <code>false</code> if <code>field</code> already existed </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00184">184</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00181">181</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -664,13 +663,13 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Persist 'key' (remove any expiry). </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Persist <code>key</code> (remove any expiry). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key to persist. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>'true' if the timeout was removed, 'false' if 'key' DNE or had no expiry. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the timeout was removed, <code>false</code> if <code>key</code> DNE or had no expiry. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00061">61</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
@@ -709,16 +708,16 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Expire a 'key' in 'milliseconds'. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Expire a <code>key</code> in <code>milliseconds</code>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key name for which to set expire time. </td></tr>
     <tr><td class="paramname">milliseconds</td><td>The number of milliseconds (from "now") at which this key will expire. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>'true' if the expire time was set successfully, 'false' otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00134">134</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00131">131</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -755,7 +754,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Expire a 'key' at UNIX timestamp 'timestamp' (milliseconds since January 1, 1970). </p><dl class="section note"><dt>Note</dt><dd>A timestamp in the past will delete the key immediately. </dd></dl>
+<p>Expire a <code>key</code> at UNIX timestamp <code>timestamp</code> (milliseconds since January 1, 1970). </p><dl class="section note"><dt>Note</dt><dd>A timestamp in the past will delete the key immediately. </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key name for which to set expire time. </td></tr>
@@ -763,9 +762,9 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>'true' if the expire time was set successfully, 'false' otherwise. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00143">143</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00140">140</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -792,15 +791,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Query remaining time-to-live (time-until-expiry) for 'key'. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Query remaining time-to-live (time-until-expiry) for <code>key</code>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The query whose TTL to query. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The key's TTL in milliseconds, or a negative value signaling error: -1 if the key exists but has no associated expire, -2 if the key DNE. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The key`s TTL in milliseconds, or a negative value signaling error: -1 if the key exists but has no associated expire, -2 if the key DNE. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00166">166</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00163">163</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -829,7 +828,7 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Publish 'message' to 'channel'. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Publish <code>message</code> to <code>channel</code>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channel</td><td>The channel on which to publish the message. </td></tr>
     <tr><td class="paramname">message</td><td>The message to be published to the channel. </td></tr>
@@ -867,15 +866,15 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set 'key' to 'value'. </p><dl class="section note"><dt>Note</dt><dd>Current implementation only supports basic SET without behavioral modification options added in <a class="el" href="classRedis.html">Redis</a> 2.6.12. To expire a set key, use the <a class="el" href="classRedis.html#a821419ef0401582307d7c26a4764cdf8">expire()</a> method below. </dd></dl>
+<p>Set <code>key</code> to <code>value</code>. </p><dl class="section note"><dt>Note</dt><dd>Current implementation only supports basic SET without behavioral modification options added in <a class="el" href="classRedis.html">Redis</a> 2.6.12. To expire a set key, use the <a class="el" href="classRedis.html#a821419ef0401582307d7c26a4764cdf8">expire()</a> method below. </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key name to set </td></tr>
-    <tr><td class="paramname">value</td><td>The value to set for 'key' </td></tr>
+    <tr><td class="paramname">value</td><td>The value to set for <code>key</code> </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>'true' if 'key' was set to 'value', false if error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if <code>key</code> was set to <code>value</code>, false if error. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00024">24</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
@@ -904,7 +903,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Query remaining time-to-live (time-until-expiry) for 'key'. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Query remaining time-to-live (time-until-expiry) for <code>key</code>. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The query whose TTL to query. </td></tr>
   </table>
@@ -912,14 +911,14 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The key's TTL in seconds, or a negative value signaling error: -1 if the key exists but has no associated expire, -2 if the key DNE. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00158">158</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00155">155</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 7 2019 21:15:01 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Feb 7 2019 21:20:00 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>
