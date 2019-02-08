@@ -86,6 +86,21 @@ public:
     bool del(const char* key);
 
     /**
+     * Determine if `key` exists.
+     * @param key
+     * @return `true` if `key` exists.
+     */
+    bool exists(const char* key);
+
+    /**
+     * Appends `value` to `key`.
+     * @param key
+     * @param value
+     * @return The length of the string after the append operation.
+     */
+    int append(const char* key, const char* value);
+
+    /**
      * Publish 'message' to 'channel'.
      * @param channel The channel on which to publish the message.
      * @param message The message to be published to the channel.
@@ -254,7 +269,9 @@ Redis::TestResults Redis::runTests(bool logToSerial, String prefix, bool retainD
         } },
         { "hstrlen", [this](const char* k) { 
             return hset(k, "hsr", k) && hstrlen(k, "hsr") == strlen(k); 
-        } }
+        } },
+        { "append", [this](const char* k) { return append(k, "foo") == 3; } },
+        { "exists", [this](const char* k) { return set(k, k) && exists(k); } }
     };
 
     if (logToSerial) {

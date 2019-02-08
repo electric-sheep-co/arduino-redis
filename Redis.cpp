@@ -38,9 +38,19 @@ bool Redis::del(const char* key)
     TRCMD(bool, "DEL", key);
 }
 
+int Redis::append(const char* key, const char* value)
+{
+    TRCMD(int, "APPEND", key, value);
+}
+
 int Redis::publish(const char* channel, const char* message)
 {
     TRCMD(int, "PUBLISH", channel, message);
+}
+
+bool Redis::exists(const char* key)
+{
+    TRCMD(bool, "EXISTS", key);
 }
 
 bool Redis::_expire_(const char* key, int arg, const char* cmd_var)
