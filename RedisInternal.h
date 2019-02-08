@@ -13,9 +13,8 @@
 
 typedef std::vector<String> ArgList;
 
-/** A basic object model for the Redis serialization protocol (RESP): https://redis.io/topics/protocol.
- * 
- * RedisObject is abstract so cannot be instantiated.
+/** A basic object model for the Redis serialization protocol (RESP):
+ *      https://redis.io/topics/protocol
  */
 
 /* The lack of RTTI on Ardunio is unfortunate but completely understandable. 
