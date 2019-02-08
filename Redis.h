@@ -210,6 +210,14 @@ public:
      */
     int hstrlen(const char* key, const char* field);
 
+    /**
+     * Determine if `field` exists in hash at `key`.
+     * @param key
+     * @param field
+     * @return `true` if `key` exists.
+     */
+    bool hexists(const char* key, const char* field);
+
 #if ARDUINO_REDIS_TEST
     typedef struct {
         int total;
@@ -253,7 +261,7 @@ Redis::TestResults Redis::runTests(bool logToSerial, String prefix, bool retainD
             auto t = ttl(k);
             return sr && t > 5 && t < 7;
         } },
-        { "hset", [this](const char* k) { return hset(k, "TEST-FIELD", "H!"); } },
+        { "hset", [this](const char* k) { return hset(k, "TF", "H!") && hexists(k, "TF"); } },
         { "hsetget", [this](const char* k) { 
             return hset(k, "TF", "HH") && hget(k, "TF") == "HH"; 
         } },

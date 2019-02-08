@@ -92,3 +92,8 @@ int Redis::hstrlen(const char* key, const char* field)
 {
     TRCMD(int, "HSTRLEN", key, field);
 }
+
+bool Redis::hexists(const char* key, const char* field)
+{
+    TRCMD(bool, "HEXISTS", key, field);
+}
