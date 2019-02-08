@@ -28,32 +28,25 @@ bool Redis::set(const char* key, const char* value)
 
 String Redis::get(const char* key) 
 {
-    return (String)*RedisCommand("GET", ArgList{key}).issue(conn);
+    return RedisCommand("GET", ArgList{key}).issue_scalar<String>(conn);
 }
 
 int Redis::publish(const char* channel, const char* message)
 {
-    auto reply = RedisCommand("PUBLISH", ArgList{channel, message}).issue(conn);
-
-    switch (reply->type()) {
-        case RedisObject::Type::Error:
-            return -1;
-        case RedisObject::Type::Integer:
-            return (int)*((RedisInteger*)reply.get());
-    }
+    return RedisCommand("PUBLISH", ArgList{channel, message}).issue_scalar<int>(conn);
 }
 
 bool Redis::_expire_(const char* key, int arg, const char* cmd_var)
 {
-    return (bool)*(RedisInteger*)RedisCommand(cmd_var, ArgList{key, String(arg)}).issue(conn).get();
+    return RedisCommand(cmd_var, ArgList{key, String(arg)}).issue_scalar<bool>(conn);
 }
 
 bool Redis::persist(const char* key)
 {
-    return (bool)*(RedisInteger*)RedisCommand("PERSIST", ArgList{key}).issue(conn).get();
+    return RedisCommand("PERSIST", ArgList{key}).issue_scalar<bool>(conn);
 }
 
 int Redis::_ttl_(const char* key, const char* cmd_var)
 {
-    return (int)*(RedisInteger*)RedisCommand(cmd_var, ArgList{key}).issue(conn).get();
+    return RedisCommand(cmd_var, ArgList{key}).issue_scalar<int>(conn);
 }

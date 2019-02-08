@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "Client.h"
+#include <limits.h>
 #include <map>
 #include <vector>
 #include <memory>
@@ -143,8 +144,10 @@ public:
      */
     std::shared_ptr<RedisObject> issue(Client& cmdClient);
 
-private:
-    String _cmd;
-};
+    template <typename T>
+    T issue_scalar(Client& cmdClient);
 
+private:
+    String _err;
+};
 #endif // REDIS_INTERNAL_H
