@@ -122,6 +122,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a515e8fa538e89d22597417007dda4d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10e6b67224a140d6ff2aca5eaedfaaa2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a10e6b67224a140d6ff2aca5eaedfaaa2">hstrlen</a> (const char *key, const char *field)</td></tr>
 <tr class="separator:a10e6b67224a140d6ff2aca5eaedfaaa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a715bd10eff2b0a578553257c0e441e98"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a715bd10eff2b0a578553257c0e441e98">hexists</a> (const char *key, const char *field)</td></tr>
+<tr class="separator:a715bd10eff2b0a578553257c0e441e98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 
 <p><code>#include &lt;<a class="el" href="Redis_8h_source.html">Redis.h</a>&gt;</code></p>
@@ -436,6 +438,44 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if deleted </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00081">81</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a715bd10eff2b0a578553257c0e441e98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a715bd10eff2b0a578553257c0e441e98">&#9670;&nbsp;</a></span>hexists()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Redis::hexists </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>field</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Determine if <code>field</code> exists in hash at <code>key</code>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">field</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> if <code>key</code> exists. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00096">96</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -918,7 +958,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 7 2019 21:20:00 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Feb 7 2019 21:37:50 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

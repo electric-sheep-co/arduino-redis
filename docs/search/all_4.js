@@ -1,6 +1,7 @@
 var searchData=
 [
   ['hdel',['hdel',['../classRedis.html#a56cc4e4346fe931f530307aa38c6f6aa',1,'Redis']]],
+  ['hexists',['hexists',['../classRedis.html#a715bd10eff2b0a578553257c0e441e98',1,'Redis']]],
   ['hget',['hget',['../classRedis.html#a8b4815c244144e6df785930b74ca2bc5',1,'Redis']]],
   ['hlen',['hlen',['../classRedis.html#a515e8fa538e89d22597417007dda4d08',1,'Redis']]],
   ['hset',['hset',['../classRedis.html#a0196f7a101bf0969808c1de68a760ef9',1,'Redis']]],
