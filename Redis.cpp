@@ -26,33 +26,59 @@ bool Redis::set(const char* key, const char* value)
     return ((String)*RedisCommand("SET", ArgList{key, value}).issue(conn)).indexOf("OK") != -1;
 }
 
+#define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed<t>(conn)
+
 String Redis::get(const char* key) 
 {
-    return RedisCommand("GET", ArgList{key}).issue_scalar<String>(conn);
+    TRCMD(String, "GET", key);
 }
 
 bool Redis::del(const char* key)
 {
-    return RedisCommand("DEL", ArgList{key}).issue_scalar<bool>(conn);
+    TRCMD(bool, "DEL", key);
 }
 
 int Redis::publish(const char* channel, const char* message)
 {
-    return RedisCommand("PUBLISH", ArgList{channel, message}).issue_scalar<int>(conn);
+    TRCMD(int, "PUBLISH", channel, message);
 }
 
 bool Redis::_expire_(const char* key, int arg, const char* cmd_var)
 {
-    return RedisCommand(cmd_var, ArgList{key, String(arg)}).issue_scalar<bool>(conn);
+    TRCMD(bool, cmd_var, key, String(arg));
 }
 
 bool Redis::persist(const char* key)
 {
-    return RedisCommand("PERSIST", ArgList{key}).issue_scalar<bool>(conn);
+    TRCMD(bool, "PERSIST", key);
 }
 
 int Redis::_ttl_(const char* key, const char* cmd_var)
 {
-    return RedisCommand(cmd_var, ArgList{key}).issue_scalar<int>(conn);
+    TRCMD(int, cmd_var, key);
 }
 
+bool Redis::_hset_(const char* key, const char* field, const char* value, const char* cmd_var)
+{
+    TRCMD(int, cmd_var, key, field, value);
+}
+
+String Redis::hget(const char* key, const char* field) 
+{ 
+    TRCMD(String, "HGET", key, field); 
+}
+
+bool Redis::hdel(const char* key, const char* field) 
+{ 
+    TRCMD(bool, "HDEL", key, field); 
+}
+
+int Redis::hlen(const char* key) 
+{ 
+    TRCMD(int, "HLEN", key); 
+}
+
+int Redis::hstrlen(const char* key, const char* field)
+{
+    TRCMD(int, "HSTRLEN", key, field);
+}

@@ -74,7 +74,7 @@ std::shared_ptr<RedisObject> RedisCommand::issue(Client& cmdClient)
 }
 
 template <>
-int RedisCommand::issue_scalar<int>(Client& cmdClient)
+int RedisCommand::issue_typed<int>(Client& cmdClient)
 {
     auto cmdRet = issue(cmdClient);
     if (!cmdRet)
@@ -85,7 +85,7 @@ int RedisCommand::issue_scalar<int>(Client& cmdClient)
 }
 
 template <>
-bool RedisCommand::issue_scalar<bool>(Client& cmdClient)
+bool RedisCommand::issue_typed<bool>(Client& cmdClient)
 {
     auto cmdRet = issue(cmdClient);
     if (cmdRet && cmdRet->type() == RedisObject::Type::Integer)
@@ -94,7 +94,7 @@ bool RedisCommand::issue_scalar<bool>(Client& cmdClient)
 }
 
 template <>
-String RedisCommand::issue_scalar<String>(Client& cmdClient)
+String RedisCommand::issue_typed<String>(Client& cmdClient)
 {
     return (String)*issue(cmdClient);
 }

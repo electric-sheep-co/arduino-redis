@@ -144,7 +144,7 @@ public:
     std::shared_ptr<RedisObject> issue(Client& cmdClient);
 
     template <typename T>
-    T issue_scalar(Client& cmdClient);
+    T issue_typed(Client& cmdClient);
 
 private:
     String _err;

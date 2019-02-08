@@ -150,13 +150,63 @@ public:
      */
     int pttl(const char* key) { return _ttl_(key, "PTTL"); }
 
+    /**
+     * Set `field` in hash at `key` to `value`.
+     * @param key
+     * @param field
+     * @param value
+     * @return `true` if set, `false` if was updated
+     */
+    bool hset(const char* key, const char* field, const char* value) { return _hset_(key, field, value, "HSET"); }
+
+    /**
+     * Set `field` in hash at `key` to `value` i.f.f. `field` does not yet exist.
+     * @param key
+     * @param field
+     * @param value
+     * @return `true` if set, `false` if `field` already existed
+     */
+     bool hsetnx(const char* key, const char* field, const char* value) { return _hset_(key, field, value, "HSETNX"); }
+
+    /**
+     * Gets `field` stored in hash at `key`.
+     * @param key
+     * @param field
+     * @return The field's value.
+     */
+    String hget(const char* key, const char* field);
+    /**
+     * Delete the `field` stored in hash at `key`.
+     * @param key
+     * @param field
+     * @return `true` if deleted
+     */
+    bool hdel(const char* key, const char* field);
+
+    /**
+     * Gets the number of fields stored in hash at `key`.
+     * @param key
+     * @return The number of fields.
+     */
+    int hlen(const char* key);
+
+    /**
+     * Gets the length of the string at `field` in hash named `key`.
+     * @param key
+     * @param field
+     * @return The field's string length value.
+     */
+    int hstrlen(const char* key, const char* field);
+
 #if ARDUINO_REDIS_TEST
     typedef struct {
         int total;
         int passed;
     } TestResults;
 
-    TestResults runTests(String prefix = "com.arduino-redis.test", bool logToSerial = false);
+    TestResults runTests(bool logToSerial = false, 
+        String prefix = "__com.arduino-redis.test", 
+        bool retainData = false);
 #endif // ARDUINO_REDIS_TEST
 
 private:
@@ -164,15 +214,18 @@ private:
 
     bool _expire_(const char*, int, const char*);
     int _ttl_(const char*, const char*);
+    bool _hset_(const char*, const char*, const char*, const char*);
 };
 
 #if ARDUINO_REDIS_TEST
 #include <map>
 
-Redis::TestResults Redis::runTests(String prefix, bool logToSerial) 
+/* tests are not expected to pass if retainData = true */
+Redis::TestResults Redis::runTests(bool logToSerial, String prefix, bool retainData) 
 {
     /* These are NOT executed in definition order! */
-    std::map<String, std::function<bool(const char*)>> g_Tests {
+    std::map<String, std::function<bool(const char*)>> g_Tests 
+    {
         { "set", [this](const char* k) { return set(k, "!"); } },
         { "setget", [this](const char* k) { return set(k, "!") == 1 && get(k) == "!"; } },
         { "expire", [this](const char* k) { 
@@ -187,6 +240,20 @@ Redis::TestResults Redis::runTests(String prefix, bool logToSerial)
             delay(4000);
             auto t = ttl(k);
             return sr && t > 5 && t < 7;
+        } },
+        { "hset", [this](const char* k) { return hset(k, "TEST-FIELD", "H!"); } },
+        { "hsetget", [this](const char* k) { 
+            return hset(k, "TF", "HH") && hget(k, "TF") == "HH"; 
+        } },
+        { "hlen", [this](const char* k) {
+            for (int i = 0; i < 10; i++) {
+                auto fv = String(i);
+                hset(k, String("field-" + fv).c_str(), fv.c_str());
+            }
+            return hlen(k) == 10;
+        } },
+        { "hstrlen", [this](const char* k) { 
+            return hset(k, "hsr", k) && hstrlen(k, "hsr") == strlen(k); 
         } }
     };
 
@@ -211,10 +278,11 @@ Redis::TestResults Redis::runTests(String prefix, bool logToSerial)
     }
 
     if (logToSerial)
-        Serial.printf("Redis tests finished: %d passed of %d total\n", pass, total);
+        Serial.printf("Result: %d passed / %d total\n", pass, total);
 
-    for (auto& kv : g_Tests)
-        (void)del(pFunc(kv.first).c_str());
+    if (!retainData)
+        for (auto& kv : g_Tests)
+            (void)del(pFunc(kv.first).c_str());
 
     return { .total = total, .passed = pass };
 }
