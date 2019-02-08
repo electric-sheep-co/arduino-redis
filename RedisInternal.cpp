@@ -128,7 +128,7 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
                 return std::shared_ptr<RedisObject>(new RedisInternalError(err));
             }
 
-            return std::shared_ptr<RedisObject>(g_TypeParseMap[typeChar](client));
+            return std::shared_ptr<RedisObject>(retVal);
         }
 
         return std::shared_ptr<RedisObject>(new RedisInternalError("Unable to find type: " + typeChar));
