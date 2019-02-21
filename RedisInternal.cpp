@@ -4,7 +4,6 @@
 void RedisObject::init(Client& client)
 {
     data = client.readStringUntil('\r');
-    Serial.printf("RedisObject::init has data '%s'\n", data.c_str());
     client.read(); // discard '\n' 
 }
 
@@ -29,8 +28,8 @@ void RedisBulkString::init(Client& client)
 
     auto crlfCstr = String(CRLF).c_str();
     auto readB = client.readBytes(charBuf, dLen);
-    if (readB != dLen) {//|| client.find(crlfCstr, 2)) {
-        (void)client.find(crlfCstr, 2);
+    (void)client.find(crlfCstr, 2);
+    if (readB != dLen) {
         Serial.printf("ERROR! Bad read (%d ?= %d)\n", readB, dLen);
         exit(-1);
     }
@@ -51,19 +50,16 @@ String RedisBulkString::RESP()
 
 void RedisArray::init(Client& client)
 {
-    Serial.printf("ARRAY INIT!! I HAVE %d ELEMENTS TO GET!\n", data.toInt());
-    for (int i = 0; i < data.toInt(); i++) {
-        Serial.printf("Adding %d...\n", i);
+    for (int i = 0; i < data.toInt(); i++)
         add(RedisObject::parseType(client));
-        auto last = vec.back();
-        if (last->type() == RedisObject::Type::BulkString) {
-            Serial.printf("%d> '%s'\n", i, ((String)*last.get()).c_str());
-        }
-    }
-    //auto numElements = client.readString();
-    //Serial.printf("ARRAY HAS '%s' ELEMENTS!\n", numElements.c_str());
-    //auto bs1 = new RedisBulkString(client);
-    //Serial.printf("BULKY! '%s'\n", ((String)*bs1).c_str());
+}
+
+std::vector<String> RedisArray::strings() const
+{
+    std::vector<String> rv;
+    for (auto ro : vec)
+        rv.push_back((String)*ro.get());
+    return rv;
 }
 
 String RedisArray::RESP()
@@ -150,7 +146,6 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
                 return std::shared_ptr<RedisObject>(new RedisInternalError(err));
             }
 
-            Serial.println("GOOD NEW OBJ!");
             return std::shared_ptr<RedisObject>(retVal);
         }
 

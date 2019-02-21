@@ -23,6 +23,8 @@
 #include "Arduino.h"
 #include "Client.h"
 
+#include <vector>
+
 typedef enum {
   RedisSuccess = 0,
   RedisNotConnectedFailure = 1,
@@ -218,7 +220,7 @@ public:
      */
     bool hexists(const char* key, const char* field);
 
-    String lrange(const char* key, int start, int stop);
+    std::vector<String> lrange(const char* key, int start, int stop);
 
 #if ARDUINO_REDIS_TEST
     typedef struct {
