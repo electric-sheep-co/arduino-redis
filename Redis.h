@@ -218,6 +218,8 @@ public:
      */
     bool hexists(const char* key, const char* field);
 
+    String lrange(const char* key, int start, int stop);
+
 #if ARDUINO_REDIS_TEST
     typedef struct {
         int total;

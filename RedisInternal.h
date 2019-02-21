@@ -9,7 +9,7 @@
 #include <functional>
 
 #define CRLF F("\r\n")
-#define ARDUINO_REDIS_SERIAL_TRACE 0
+#define ARDUINO_REDIS_SERIAL_TRACE 1
 
 typedef std::vector<String> ArgList;
 
@@ -86,9 +86,11 @@ public:
 class RedisArray : public RedisObject {
 public:
     RedisArray() : RedisObject(Type::Array) {}
-    RedisArray(Client& c) : RedisObject(Type::Array, c) {}
+    RedisArray(Client& c) : RedisObject(Type::Array, c) { init(c); }
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
+
+    virtual void init(Client& client) override;
 
     virtual String RESP() override;
 

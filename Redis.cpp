@@ -97,3 +97,11 @@ bool Redis::hexists(const char* key, const char* field)
 {
     TRCMD(bool, "HEXISTS", key, field);
 }
+
+String Redis::lrange(const char* key, int start, int stop)
+{
+    auto rc = new RedisCommand("LRANGE", ArgList{key, String(start), String(stop)});
+    auto rv = rc->issue(conn);
+    Serial.printf("GOT RV TYPE '%c'\n", (char)rv->type());
+    return "";
+}
