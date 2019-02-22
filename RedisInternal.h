@@ -9,7 +9,7 @@
 #include <functional>
 
 #define CRLF F("\r\n")
-#define ARDUINO_REDIS_SERIAL_TRACE 0
+#define ARDUINO_REDIS_SERIAL_TRACE 1
 
 typedef std::vector<String> ArgList;
 

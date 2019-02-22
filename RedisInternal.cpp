@@ -4,6 +4,7 @@
 void RedisObject::init(Client& client)
 {
     data = client.readStringUntil('\r');
+    Serial.printf("RedisObject::init got %d bytes of data\n", data.length());
     client.read(); // discard '\n' 
 }
 
@@ -27,8 +28,10 @@ void RedisBulkString::init(Client& client)
     bzero(charBuf, dLen + 1);
 
     auto crlfCstr = String(CRLF).c_str();
+    Serial.printf("BULKSTRING wants %d bytes...\n", dLen);
     auto readB = client.readBytes(charBuf, dLen);
-    (void)client.find(crlfCstr, 2);
+    Serial.printf("BULKSTRING got %d bytes\n", readB);
+   // (void)client.find(crlfCstr, 2);
     if (readB != dLen) {
         Serial.printf("ERROR! Bad read (%d ?= %d)\n", readB, dLen);
         exit(-1);
@@ -133,6 +136,10 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
         }
 
         auto typeChar = (RedisObject::Type)client.read();
+	while (typeChar == '\r' || typeChar == '\n') {
+		Serial.printf("!!!!!*****!!!!!***** DISCARDING 0x%x!!\n", typeChar);
+		typeChar = (RedisObject::Type)client.read();
+	}
 
 #if ARDUINO_REDIS_SERIAL_TRACE
         Serial.printf("Parsed type character '%c' (0x%x)\n", typeChar, typeChar);
