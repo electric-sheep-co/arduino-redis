@@ -1,10 +1,22 @@
 #include <limits.h>
 #include "RedisInternal.h"
 
+void pbytes(uint8_t* bytes, ssize_t len, const char* header = nullptr)
+{
+    Serial.printf("[%d bytes] %s\n", header ? header : "");
+    for (int i = 0; i < len; i++)
+    {
+        if (!(i%40)) Serial.printf("%08x> ", i);
+        Serial.printf("%02x ", *(bytes + i));
+        if (!((i-1)%40)) Serial.printf("\n");
+    }
+}
+
 void RedisObject::init(Client& client)
 {
     data = client.readStringUntil('\r');
-    Serial.printf("RedisObject::init got %d bytes of data\n", data.length());
+    pbytes((uint8_t*)data.c_str(), data.length(), "RedisObject::init()::readStringUntil");
+    //Serial.printf("RedisObject::init got %d bytes of data\n", data.length());
     client.read(); // discard '\n' 
 }
 
@@ -28,10 +40,11 @@ void RedisBulkString::init(Client& client)
     bzero(charBuf, dLen + 1);
 
     auto crlfCstr = String(CRLF).c_str();
-    Serial.printf("BULKSTRING wants %d bytes...\n", dLen);
+    //Serial.printf("BULKSTRING wants %d bytes...\n", dLen);
     auto readB = client.readBytes(charBuf, dLen);
-    Serial.printf("BULKSTRING got %d bytes\n", readB);
+    //Serial.printf("BULKSTRING got %d bytes\n", readB);
    // (void)client.find(crlfCstr, 2);
+    pbytes((uint8_t*)charBuf, readB, "RedisBulkString::init()::readBytes");
     if (readB != dLen) {
         Serial.printf("ERROR! Bad read (%d ?= %d)\n", readB, dLen);
         exit(-1);
@@ -135,14 +148,15 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
             delay(1);
         }
 
-        auto typeChar = (RedisObject::Type)client.read();
-	while (typeChar == '\r' || typeChar == '\n') {
-		Serial.printf("!!!!!*****!!!!!***** DISCARDING 0x%x!!\n", typeChar);
-		typeChar = (RedisObject::Type)client.read();
-	}
+        int readB = 0;
+        RedisObject::Type typeChar = RedisObject::Type::NoType;
+        do {
+            typeChar = (RedisObject::Type)client.read();
+            ++readB;
+        } while (typeChar == '\r' || typeChar == '\n');
 
 #if ARDUINO_REDIS_SERIAL_TRACE
-        Serial.printf("Parsed type character '%c' (0x%x)\n", typeChar, typeChar);
+        Serial.printf("Parsed type character '%c' (after %d reads) (0x%x)\n", typeChar, readB, typeChar);
 #endif
 
         if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {

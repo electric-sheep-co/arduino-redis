@@ -25,7 +25,7 @@ class RedisObject {
 public:
     /** Denote a basic Redis type, with NoType and InternalError defined specifically for this API */
     typedef enum {
-        NoType = ' ',
+        NoType = '\0',
         SimpleString = '+',
         Error = '-',
         Integer = ':',
