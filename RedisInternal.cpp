@@ -1,5 +1,6 @@
-#include <limits.h>
 #include "RedisInternal.h"
+#include <map>
+#include <limits.h>
 
 #if ARDUINO_REDIS_SERIAL_TRACE
 void pbytes(uint8_t* bytes, ssize_t len, const char* header = nullptr)

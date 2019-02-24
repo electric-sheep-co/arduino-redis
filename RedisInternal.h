@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "Client.h"
-#include <map>
 #include <vector>
 #include <memory>
 #include <functional>
