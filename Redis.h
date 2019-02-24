@@ -73,7 +73,7 @@ public:
     /**
      * Get `key`.
      * @param key The key name to retrieve.
-     * @return The key`s value as a string, empty if the key does not exist.
+     * @return The key`s value as a string, null if the key does not exist.
      */
     String get(const char* key);
 

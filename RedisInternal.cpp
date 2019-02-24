@@ -1,22 +1,36 @@
 #include <limits.h>
 #include "RedisInternal.h"
 
+#if ARDUINO_REDIS_SERIAL_TRACE
 void pbytes(uint8_t* bytes, ssize_t len, const char* header = nullptr)
 {
-    Serial.printf("[%d bytes] %s\n", header ? header : "");
+    Serial.println();
+    const uint _break = 20;
+    Serial.printf("[%d bytes] %s\n", len, header ? header : "");
     for (int i = 0; i < len; i++)
     {
-        if (!(i%40)) Serial.printf("%08x> ", i);
+        if (!(i%_break)) Serial.printf("[H] %08x> ", i);
         Serial.printf("%02x ", *(bytes + i));
-        if (!((i-1)%40)) Serial.printf("\n");
+        if (!((i+1)%_break)) Serial.printf("\n");
     }
+    Serial.println();
+    for (int i = 0; i < len; i++)
+    {
+        if (!(i%_break)) Serial.printf("[C] %08x> ", i);
+        Serial.printf("% 2c ", *(bytes + i));
+        if (!((i+1)%_break)) Serial.printf("\n");
+    }
+    Serial.println();
+    Serial.println();
 }
+#else
+#define pbytes
+#endif
 
 void RedisObject::init(Client& client)
 {
     data = client.readStringUntil('\r');
     pbytes((uint8_t*)data.c_str(), data.length(), "RedisObject::init()::readStringUntil");
-    //Serial.printf("RedisObject::init got %d bytes of data\n", data.length());
     client.read(); // discard '\n' 
 }
 
@@ -36,14 +50,18 @@ void RedisBulkString::init(Client& client)
     RedisObject::init(client);
 
     auto dLen = data.toInt();
+
+    // "Null Bulk String" -- https://redis.io/topics/protocol#resp-bulk-strings
+    if (dLen == -1) {
+        data = (const char*)nullptr;
+        return;
+    }
+
     auto charBuf = new char[dLen + 1];
     bzero(charBuf, dLen + 1);
 
     auto crlfCstr = String(CRLF).c_str();
-    //Serial.printf("BULKSTRING wants %d bytes...\n", dLen);
     auto readB = client.readBytes(charBuf, dLen);
-    //Serial.printf("BULKSTRING got %d bytes\n", readB);
-   // (void)client.find(crlfCstr, 2);
     pbytes((uint8_t*)charBuf, readB, "RedisBulkString::init()::readBytes");
     if (readB != dLen) {
         Serial.printf("ERROR! Bad read (%d ?= %d)\n", readB, dLen);
@@ -144,19 +162,22 @@ static TypeParseMap g_TypeParseMap {
 std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
 {
     if (client.connected()) {
-        while (!client.available()) {
-            delay(1);
-        }
+        while (!client.available());
 
+#if ARDUINO_REDIS_SERIAL_TRACE
         int readB = 0;
+#endif
         RedisObject::Type typeChar = RedisObject::Type::NoType;
         do {
             typeChar = (RedisObject::Type)client.read();
+#if ARDUINO_REDIS_SERIAL_TRACE
             ++readB;
-        } while (typeChar == '\r' || typeChar == '\n');
+#endif
+        } while (typeChar == -1 || typeChar == '\r' || typeChar == '\n');
 
 #if ARDUINO_REDIS_SERIAL_TRACE
-        Serial.printf("Parsed type character '%c' (after %d reads) (0x%x)\n", typeChar, readB, typeChar);
+        Serial.printf("Parsed type character '%c' (after %d reads) (0x%x, %dd)\n", 
+            typeChar, readB, typeChar, (int)typeChar);
 #endif
 
         if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
