@@ -66,6 +66,7 @@ protected:
 class RedisSimpleString : public RedisObject {
 public:
     RedisSimpleString(Client& c) : RedisObject(Type::SimpleString, c) {}
+    ~RedisSimpleString() {}
 
     virtual String RESP() override;
 };
@@ -75,6 +76,7 @@ class RedisBulkString : public RedisObject {
 public:
     RedisBulkString(Client& c) : RedisObject(Type::BulkString) { init(c); }
     RedisBulkString(String& s) : RedisObject(Type::BulkString) { data = s; }
+    ~RedisBulkString() {}
 
     virtual void init(Client& client) override;
    
@@ -84,8 +86,9 @@ public:
 /** An Array: https://redis.io/topics/protocol#resp-arrays */
 class RedisArray : public RedisObject {
 public:
-    RedisArray() : RedisObject(Type::Array) {}
-    RedisArray(Client& c) : RedisObject(Type::Array, c) { init(c); }
+    RedisArray() : RedisObject(Type::Array) {Serial.printf("RedisArray<%p> bCTOR %d\n", this, ESP.getFreeHeap());}
+    RedisArray(Client& c) : RedisObject(Type::Array, c) { Serial.printf("RedisArray<%p> CTOR %d\n", this, ESP.getFreeHeap()); init(c); }
+    ~RedisArray();
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
 
@@ -103,6 +106,8 @@ protected:
 class RedisInteger : public RedisSimpleString {
 public:
     RedisInteger(Client& c) : RedisSimpleString(c) { _type = Type::Integer; }
+    ~RedisInteger() {}
+
     operator int() { return data.toInt(); }
     operator bool() { return (bool)operator int(); }
 };
@@ -111,6 +116,7 @@ public:
 class RedisError : public RedisSimpleString {
 public:
     RedisError(Client& c) : RedisSimpleString(c) { _type = Type::Error; }
+    ~RedisError() {}
 };
 
 /** An internal API error. Call RESP() to get the error string. */
@@ -119,6 +125,7 @@ class RedisInternalError : public RedisObject
 public:
     RedisInternalError(String err) : RedisObject(Type::InternalError) { data = err; }
     RedisInternalError(const char* err) : RedisInternalError(String(err)) {}
+    ~RedisInternalError() {}
 
     virtual String RESP() override { return "INTERNAL ERROR: " + data; }
 };
@@ -126,17 +133,19 @@ public:
 /** A Command (a specialized Array subclass): https://redis.io/topics/protocol#sending-commands-to-a-redis-server */
 class RedisCommand : public RedisArray {
 public:
-    RedisCommand(String command) : RedisArray() {
+    RedisCommand(String command) : RedisArray() {Serial.printf("RedisCommand<%p> CTOR %d\n", this, ESP.getFreeHeap());
         add(std::shared_ptr<RedisObject>(new RedisBulkString(command)));
     }
 
     RedisCommand(String command, ArgList args)
         : RedisCommand(command)
-    {
+    {Serial.printf("RedisCommand<%p> CTOR %d\n", this, ESP.getFreeHeap());
         for (auto arg : args) {
             add(std::shared_ptr<RedisObject>(new RedisBulkString(arg)));
         }
     }
+
+    ~RedisCommand() {Serial.printf("RedisCommand<%p> DTOR %d\n", this, ESP.getFreeHeap());}
 
     /** Issue the command on the bytestream represented by `cmdClient`.
      *  @param cmdClient The client object representing the bytestream connection to a Redis server.

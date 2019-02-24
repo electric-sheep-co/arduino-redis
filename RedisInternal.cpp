@@ -85,8 +85,21 @@ String RedisBulkString::RESP()
 
 void RedisArray::init(Client& client)
 {
-    for (int i = 0; i < data.toInt(); i++)
+    Serial.printf("RedisArray<%p> INIT %d\n", this, ESP.getFreeHeap());
+    auto _s = ESP.getFreeHeap();
+    Serial.printf("RedisArray::init() START %d\n", _s);
+    for (int i = 0; i < data.toInt(); i++) {
+        //Serial.printf("RedisArray::init() START %d %d\n", i, _s - ESP.getFreeHeap());
         add(RedisObject::parseType(client));
+        //Serial.printf("RedisArray::init() END   %d %d\n", i, _s-ESP.getFreeHeap());
+    }
+    Serial.printf("RedisArray::init() END   %d\n", _s-ESP.getFreeHeap());
+}
+
+RedisArray::~RedisArray()
+{
+    Serial.printf("RedisArray<%p> DTOR %d\n", this, ESP.getFreeHeap());
+    vec.empty();
 }
 
 std::vector<String> RedisArray::strings() const
@@ -121,6 +134,8 @@ std::shared_ptr<RedisObject> RedisCommand::issue(Client& cmdClient)
     auto ret = RedisObject::parseType(cmdClient);
     if (ret && ret->type() == RedisObject::Type::InternalError)
         _err = (String)*ret;
+    if (ret->type() == RedisObject::Type::Array)
+        Serial.printf("ISSUE GOT AN ARRAY BACK %p %ld\n", ret.get(), ret.use_count());
     return ret;
 }
 
@@ -156,7 +171,7 @@ static TypeParseMap g_TypeParseMap {
     { RedisObject::Type::SimpleString, [](Client& c) { return new RedisSimpleString(c); } },
     { RedisObject::Type::BulkString, [](Client& c) { return new RedisBulkString(c); } },
     { RedisObject::Type::Integer, [](Client& c) { return new RedisInteger(c); } },
-    { RedisObject::Type::Array, [](Client& c) { return new RedisArray(c); } },
+    { RedisObject::Type::Array, [](Client& c) { auto _n = new RedisArray(c); Serial.printf("PARSED AN ARRAY! RETURNING %p!\n", _n); return _n; } },
     { RedisObject::Type::Error, [](Client& c) { return new RedisError(c); } }
 };
 
@@ -189,6 +204,7 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
                 return std::shared_ptr<RedisObject>(new RedisInternalError(err));
             }
 
+            Serial.printf("RedisObject::parseType() has retVal=%p (type='%c'), wrapping and returning\n", retVal, retVal->type());
             return std::shared_ptr<RedisObject>(retVal);
         }
 
