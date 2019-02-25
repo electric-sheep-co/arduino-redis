@@ -6,7 +6,7 @@
 void pbytes(uint8_t* bytes, ssize_t len, const char* header = nullptr)
 {
     Serial.println();
-    const uint _break = 20;
+    const uint _break = 0x20;
     Serial.printf("[%d bytes] %s\n", len, header ? header : "");
     for (int i = 0; i < len; i++)
     {

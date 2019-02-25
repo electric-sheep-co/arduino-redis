@@ -8,7 +8,7 @@
 #include <functional>
 
 #define CRLF F("\r\n")
-#define ARDUINO_REDIS_SERIAL_TRACE  1
+#define ARDUINO_REDIS_SERIAL_TRACE  0
 
 #define sprint(fmt, ...) do { if (ARDUINO_REDIS_SERIAL_TRACE) Serial.printf("[TRACE] " fmt, ##__VA_ARGS__); } while (0)
 
@@ -35,11 +35,11 @@ public:
         InternalError = '!'
     } Type;
 
-    RedisObject() {sprint("RedisObject CTOR1 %p\n", this);}
-    RedisObject(Type tc) : _type(tc) {sprint("RedisObject CTOR2 %p\n", this);}
-    RedisObject(Type tc, Client& c) : _type(tc) { sprint("RedisObject !!CTOR3!! %p\n", this);init(c); }
+    RedisObject() {}
+    RedisObject(Type tc) : _type(tc) {}
+    RedisObject(Type tc, Client& c) : _type(tc) { init(c); }
     
-    virtual ~RedisObject() {sprint("RedisObject DTOR %p\n", this);}
+    virtual ~RedisObject() {}
 
     static std::shared_ptr<RedisObject> parseType(Client&);
 
@@ -67,8 +67,8 @@ protected:
 /** A Simple String: https://redis.io/topics/protocol#resp-simple-strings */
 class RedisSimpleString : public RedisObject {
 public:
-    RedisSimpleString(Client& c) : RedisObject(Type::SimpleString, c) {sprint("RedisSimpleString CTOR1 %p\n", this);}
-    ~RedisSimpleString() override {sprint("RedisSimpleString DTOR %p\n", this);}
+    RedisSimpleString(Client& c) : RedisObject(Type::SimpleString, c) {}
+    ~RedisSimpleString() override {}
 
     virtual String RESP() override;
 };
@@ -76,9 +76,9 @@ public:
 /** A Bulk String: https://redis.io/topics/protocol#resp-bulk-strings */
 class RedisBulkString : public RedisObject {
 public:
-    RedisBulkString(Client& c) : RedisObject(Type::BulkString, c) {sprint("RedisBulkString CTOR1 %p\n", this); init(c); }
-    RedisBulkString(String& s) : RedisObject(Type::BulkString) { sprint("RedisBulkString CTOR2 %p\n", this);data = s; }
-    ~RedisBulkString() override {sprint("RedisBulkString DTOR %p\n", this);}
+    RedisBulkString(Client& c) : RedisObject(Type::BulkString, c) { init(c); }
+    RedisBulkString(String& s) : RedisObject(Type::BulkString) { data = s; }
+    ~RedisBulkString() override {}
 
     virtual void init(Client& client) override;
    
@@ -88,8 +88,8 @@ public:
 /** An Array: https://redis.io/topics/protocol#resp-arrays */
 class RedisArray : public RedisObject {
 public:
-    RedisArray() : RedisObject(Type::Array) {sprint("RedisArray CTOR1 %p\n", this);}
-    RedisArray(Client& c) : RedisObject(Type::Array, c) {sprint("RedisArray CTOR2 %p\n", this); init(c); }
+    RedisArray() : RedisObject(Type::Array) {}
+    RedisArray(Client& c) : RedisObject(Type::Array, c) { init(c); }
     ~RedisArray() override;
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
@@ -107,8 +107,8 @@ protected:
 /** An Integer: https://redis.io/topics/protocol#resp-integers */
 class RedisInteger : public RedisSimpleString {
 public:
-    RedisInteger(Client& c) : RedisSimpleString(c) { sprint("RedisInteger CTOR1 %p\n", this);_type = Type::Integer; }
-    ~RedisInteger() override {sprint("RedisInteger DTOR %p\n", this);}
+    RedisInteger(Client& c) : RedisSimpleString(c) { _type = Type::Integer; }
+    ~RedisInteger() override {}
 
     operator int() { return data.toInt(); }
     operator bool() { return (bool)operator int(); }
@@ -135,19 +135,19 @@ public:
 /** A Command (a specialized Array subclass): https://redis.io/topics/protocol#sending-commands-to-a-redis-server */
 class RedisCommand : public RedisArray {
 public:
-    RedisCommand(String command) : RedisArray() {sprint("RedisCommand<%p> CTOR %d\n", this, ESP.getFreeHeap());
+    RedisCommand(String command) : RedisArray() {
         add(std::shared_ptr<RedisObject>(new RedisBulkString(command)));
     }
 
     RedisCommand(String command, ArgList args)
         : RedisCommand(command)
-    {sprint("RedisCommand<%p> CTOR %d\n", this, ESP.getFreeHeap());
+    {
         for (auto arg : args) {
             add(std::shared_ptr<RedisObject>(new RedisBulkString(arg)));
         }
     }
 
-    ~RedisCommand() override {sprint("RedisCommand<%p> DTOR %d\n", this, ESP.getFreeHeap());}
+    ~RedisCommand() override {}
 
     /** Issue the command on the bytestream represented by `cmdClient`.
      *  @param cmdClient The client object representing the bytestream connection to a Redis server.
