@@ -8,7 +8,9 @@
 #include <functional>
 
 #define CRLF F("\r\n")
-#define ARDUINO_REDIS_SERIAL_TRACE 0
+#define ARDUINO_REDIS_SERIAL_TRACE  0
+
+#define sprint(fmt, ...) do { if (ARDUINO_REDIS_SERIAL_TRACE) Serial.printf("[TRACE] " fmt, ##__VA_ARGS__); } while (0)
 
 typedef std::vector<String> ArgList;
 
@@ -86,8 +88,8 @@ public:
 /** An Array: https://redis.io/topics/protocol#resp-arrays */
 class RedisArray : public RedisObject {
 public:
-    RedisArray() : RedisObject(Type::Array) {Serial.printf("RedisArray<%p> bCTOR %d\n", this, ESP.getFreeHeap());}
-    RedisArray(Client& c) : RedisObject(Type::Array, c) { Serial.printf("RedisArray<%p> CTOR %d\n", this, ESP.getFreeHeap()); init(c); }
+    RedisArray() : RedisObject(Type::Array) {sprint("RedisArray<%p> bCTOR %d\n", this, ESP.getFreeHeap());}
+    RedisArray(Client& c) : RedisObject(Type::Array, c) { sprint("RedisArray<%p> CTOR %d\n", this, ESP.getFreeHeap()); init(c); }
     ~RedisArray();
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
@@ -133,19 +135,19 @@ public:
 /** A Command (a specialized Array subclass): https://redis.io/topics/protocol#sending-commands-to-a-redis-server */
 class RedisCommand : public RedisArray {
 public:
-    RedisCommand(String command) : RedisArray() {Serial.printf("RedisCommand<%p> CTOR %d\n", this, ESP.getFreeHeap());
+    RedisCommand(String command) : RedisArray() {sprint("RedisCommand<%p> CTOR %d\n", this, ESP.getFreeHeap());
         add(std::shared_ptr<RedisObject>(new RedisBulkString(command)));
     }
 
     RedisCommand(String command, ArgList args)
         : RedisCommand(command)
-    {Serial.printf("RedisCommand<%p> CTOR %d\n", this, ESP.getFreeHeap());
+    {sprint("RedisCommand<%p> CTOR %d\n", this, ESP.getFreeHeap());
         for (auto arg : args) {
             add(std::shared_ptr<RedisObject>(new RedisBulkString(arg)));
         }
     }
 
-    ~RedisCommand() {Serial.printf("RedisCommand<%p> DTOR %d\n", this, ESP.getFreeHeap());}
+    ~RedisCommand() {sprint("RedisCommand<%p> DTOR %d\n", this, ESP.getFreeHeap());}
 
     /** Issue the command on the bytestream represented by `cmdClient`.
      *  @param cmdClient The client object representing the bytestream connection to a Redis server.

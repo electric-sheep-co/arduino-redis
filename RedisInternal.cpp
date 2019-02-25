@@ -85,20 +85,20 @@ String RedisBulkString::RESP()
 
 void RedisArray::init(Client& client)
 {
-    Serial.printf("RedisArray<%p> INIT %d\n", this, ESP.getFreeHeap());
+    sprint("RedisArray<%p> INIT %d\n", this, ESP.getFreeHeap());
     auto _s = ESP.getFreeHeap();
-    Serial.printf("RedisArray::init() START %d\n", _s);
+    sprint("RedisArray::init() START %d\n", _s);
     for (int i = 0; i < data.toInt(); i++) {
-        //Serial.printf("RedisArray::init() START %d %d\n", i, _s - ESP.getFreeHeap());
+        //sprint("RedisArray::init() START %d %d\n", i, _s - ESP.getFreeHeap());
         add(RedisObject::parseType(client));
-        //Serial.printf("RedisArray::init() END   %d %d\n", i, _s-ESP.getFreeHeap());
+        //sprint("RedisArray::init() END   %d %d\n", i, _s-ESP.getFreeHeap());
     }
-    Serial.printf("RedisArray::init() END   %d\n", _s-ESP.getFreeHeap());
+    sprint("RedisArray::init() END   %d\n", _s-ESP.getFreeHeap());
 }
 
 RedisArray::~RedisArray()
 {
-    Serial.printf("RedisArray<%p> DTOR %d\n", this, ESP.getFreeHeap());
+    sprint("RedisArray<%p> DTOR %d\n", this, ESP.getFreeHeap());
     vec.empty();
 }
 
@@ -127,15 +127,13 @@ std::shared_ptr<RedisObject> RedisCommand::issue(Client& cmdClient)
         return std::shared_ptr<RedisObject>(new RedisInternalError("Client is not connected"));
 
     auto cmdRespStr = RESP();
-#if ARDUINO_REDIS_SERIAL_TRACE
-    Serial.printf("----- CMD ----\n%s---- /CMD ----\n", cmdRespStr.c_str());
-#endif
+    sprint("----- CMD ----\n%s---- /CMD ----\n", cmdRespStr.c_str());
     cmdClient.print(cmdRespStr);
     auto ret = RedisObject::parseType(cmdClient);
     if (ret && ret->type() == RedisObject::Type::InternalError)
         _err = (String)*ret;
     if (ret->type() == RedisObject::Type::Array)
-        Serial.printf("ISSUE GOT AN ARRAY BACK %p %ld\n", ret.get(), ret.use_count());
+        sprint("ISSUE GOT AN ARRAY BACK %p %ld\n", ret.get(), ret.use_count());
     return ret;
 }
 
@@ -171,7 +169,7 @@ static TypeParseMap g_TypeParseMap {
     { RedisObject::Type::SimpleString, [](Client& c) { return new RedisSimpleString(c); } },
     { RedisObject::Type::BulkString, [](Client& c) { return new RedisBulkString(c); } },
     { RedisObject::Type::Integer, [](Client& c) { return new RedisInteger(c); } },
-    { RedisObject::Type::Array, [](Client& c) { auto _n = new RedisArray(c); Serial.printf("PARSED AN ARRAY! RETURNING %p!\n", _n); return _n; } },
+    { RedisObject::Type::Array, [](Client& c) { auto _n = new RedisArray(c); sprint("PARSED AN ARRAY! RETURNING %p!\n", _n); return _n; } },
     { RedisObject::Type::Error, [](Client& c) { return new RedisError(c); } }
 };
 
@@ -192,8 +190,7 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
         } while (typeChar == -1 || typeChar == '\r' || typeChar == '\n');
 
 #if ARDUINO_REDIS_SERIAL_TRACE
-        Serial.printf("Parsed type character '%c' (after %d reads) (0x%x, %dd)\n", 
-            typeChar, readB, typeChar, (int)typeChar);
+        sprint("Parsed type character '%c' (after %d reads) (0x%x, %dd)\n", typeChar, readB, typeChar, (int)typeChar);
 #endif
 
         if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
@@ -204,7 +201,7 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
                 return std::shared_ptr<RedisObject>(new RedisInternalError(err));
             }
 
-            Serial.printf("RedisObject::parseType() has retVal=%p (type='%c'), wrapping and returning\n", retVal, retVal->type());
+            sprint("RedisObject::parseType() has retVal=%p (type='%c'), wrapping and returning\n", retVal, retVal->type());
             return std::shared_ptr<RedisObject>(retVal);
         }
 
