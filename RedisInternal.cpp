@@ -2,7 +2,7 @@
 #include <map>
 #include <limits.h>
 
-#if ARDUINO_REDIS_SERIAL_TRACE
+#if ARDUINO_REDIS_SERIAL_TRACE && 0
 void pbytes(uint8_t* bytes, ssize_t len, const char* header = nullptr)
 {
     Serial.println();
@@ -30,6 +30,7 @@ void pbytes(uint8_t* bytes, ssize_t len, const char* header = nullptr)
 
 void RedisObject::init(Client& client)
 {
+    sprint("RedisObject<%p>::init!\n", this);
     data = client.readStringUntil('\r');
     pbytes((uint8_t*)data.c_str(), data.length(), "RedisObject::init()::readStringUntil");
     client.read(); // discard '\n' 
@@ -48,7 +49,7 @@ String RedisSimpleString::RESP()
 
 void RedisBulkString::init(Client& client)
 {
-    RedisObject::init(client);
+    sprint("RedisBulkString<%p>::init!\n", this);
 
     auto dLen = data.toInt();
 
@@ -85,7 +86,7 @@ String RedisBulkString::RESP()
 
 void RedisArray::init(Client& client)
 {
-    sprint("RedisArray<%p> INIT %d\n", this, ESP.getFreeHeap());
+    sprint("RedisArray<%p>::init! %d\n", this, ESP.getFreeHeap());
     auto _s = ESP.getFreeHeap();
     sprint("RedisArray::init() START %d\n", _s);
     for (int i = 0; i < data.toInt(); i++) {

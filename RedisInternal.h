@@ -8,7 +8,7 @@
 #include <functional>
 
 #define CRLF F("\r\n")
-#define ARDUINO_REDIS_SERIAL_TRACE  0
+#define ARDUINO_REDIS_SERIAL_TRACE  1
 
 #define sprint(fmt, ...) do { if (ARDUINO_REDIS_SERIAL_TRACE) Serial.printf("[TRACE] " fmt, ##__VA_ARGS__); } while (0)
 
@@ -35,11 +35,11 @@ public:
         InternalError = '!'
     } Type;
 
-    RedisObject() {}
-    RedisObject(Type tc) : _type(tc) {}
-    RedisObject(Type tc, Client& c) : _type(tc) { init(c); }
+    RedisObject() {sprint("RedisObject CTOR1 %p\n", this);}
+    RedisObject(Type tc) : _type(tc) {sprint("RedisObject CTOR2 %p\n", this);}
+    RedisObject(Type tc, Client& c) : _type(tc) { sprint("RedisObject !!CTOR3!! %p\n", this);init(c); }
     
-    ~RedisObject() {}
+    virtual ~RedisObject() {sprint("RedisObject DTOR %p\n", this);}
 
     static std::shared_ptr<RedisObject> parseType(Client&);
 
@@ -67,8 +67,8 @@ protected:
 /** A Simple String: https://redis.io/topics/protocol#resp-simple-strings */
 class RedisSimpleString : public RedisObject {
 public:
-    RedisSimpleString(Client& c) : RedisObject(Type::SimpleString, c) {}
-    ~RedisSimpleString() {}
+    RedisSimpleString(Client& c) : RedisObject(Type::SimpleString, c) {sprint("RedisSimpleString CTOR1 %p\n", this);}
+    ~RedisSimpleString() override {sprint("RedisSimpleString DTOR %p\n", this);}
 
     virtual String RESP() override;
 };
@@ -76,9 +76,9 @@ public:
 /** A Bulk String: https://redis.io/topics/protocol#resp-bulk-strings */
 class RedisBulkString : public RedisObject {
 public:
-    RedisBulkString(Client& c) : RedisObject(Type::BulkString) { init(c); }
-    RedisBulkString(String& s) : RedisObject(Type::BulkString) { data = s; }
-    ~RedisBulkString() {}
+    RedisBulkString(Client& c) : RedisObject(Type::BulkString, c) {sprint("RedisBulkString CTOR1 %p\n", this); init(c); }
+    RedisBulkString(String& s) : RedisObject(Type::BulkString) { sprint("RedisBulkString CTOR2 %p\n", this);data = s; }
+    ~RedisBulkString() override {sprint("RedisBulkString DTOR %p\n", this);}
 
     virtual void init(Client& client) override;
    
@@ -88,9 +88,9 @@ public:
 /** An Array: https://redis.io/topics/protocol#resp-arrays */
 class RedisArray : public RedisObject {
 public:
-    RedisArray() : RedisObject(Type::Array) {sprint("RedisArray<%p> bCTOR %d\n", this, ESP.getFreeHeap());}
-    RedisArray(Client& c) : RedisObject(Type::Array, c) { sprint("RedisArray<%p> CTOR %d\n", this, ESP.getFreeHeap()); init(c); }
-    ~RedisArray();
+    RedisArray() : RedisObject(Type::Array) {sprint("RedisArray CTOR1 %p\n", this);}
+    RedisArray(Client& c) : RedisObject(Type::Array, c) {sprint("RedisArray CTOR2 %p\n", this); init(c); }
+    ~RedisArray() override;
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
 
@@ -107,8 +107,8 @@ protected:
 /** An Integer: https://redis.io/topics/protocol#resp-integers */
 class RedisInteger : public RedisSimpleString {
 public:
-    RedisInteger(Client& c) : RedisSimpleString(c) { _type = Type::Integer; }
-    ~RedisInteger() {}
+    RedisInteger(Client& c) : RedisSimpleString(c) { sprint("RedisInteger CTOR1 %p\n", this);_type = Type::Integer; }
+    ~RedisInteger() override {sprint("RedisInteger DTOR %p\n", this);}
 
     operator int() { return data.toInt(); }
     operator bool() { return (bool)operator int(); }
@@ -118,7 +118,7 @@ public:
 class RedisError : public RedisSimpleString {
 public:
     RedisError(Client& c) : RedisSimpleString(c) { _type = Type::Error; }
-    ~RedisError() {}
+    ~RedisError() override {}
 };
 
 /** An internal API error. Call RESP() to get the error string. */
@@ -127,7 +127,7 @@ class RedisInternalError : public RedisObject
 public:
     RedisInternalError(String err) : RedisObject(Type::InternalError) { data = err; }
     RedisInternalError(const char* err) : RedisInternalError(String(err)) {}
-    ~RedisInternalError() {}
+    ~RedisInternalError() override {}
 
     virtual String RESP() override { return "INTERNAL ERROR: " + data; }
 };
@@ -147,7 +147,7 @@ public:
         }
     }
 
-    ~RedisCommand() {sprint("RedisCommand<%p> DTOR %d\n", this, ESP.getFreeHeap());}
+    ~RedisCommand() override {sprint("RedisCommand<%p> DTOR %d\n", this, ESP.getFreeHeap());}
 
     /** Issue the command on the bytestream represented by `cmdClient`.
      *  @param cmdClient The client object representing the bytestream connection to a Redis server.
