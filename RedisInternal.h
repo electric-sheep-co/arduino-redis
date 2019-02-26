@@ -90,7 +90,7 @@ class RedisArray : public RedisObject {
 public:
     RedisArray() : RedisObject(Type::Array) {}
     RedisArray(Client& c) : RedisObject(Type::Array, c) { init(c); }
-    ~RedisArray() override;
+    ~RedisArray() override { vec.empty(); }
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
 

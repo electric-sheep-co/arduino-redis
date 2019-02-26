@@ -220,6 +220,12 @@ public:
      */
     bool hexists(const char* key, const char* field);
 
+    /**
+     * Returns the specified elements of the list stored at `key`.
+     * @param start Zero-based starting index (can be negative to indicate end-of-list offset).
+     * @param end Zero-based ending index.
+     * @return The list of elements, as a vector of Strings; or an empty vector if error/DNE.
+     */
     std::vector<String> lrange(const char* key, int start, int stop);
 
 #if ARDUINO_REDIS_TEST
