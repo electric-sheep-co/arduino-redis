@@ -72,12 +72,12 @@ $(function() {
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A basic object model for the <a class="el" href="classRedis.html">Redis</a> serialization protocol (RESP): <a href="https://redis.io/topics/protocol">https://redis.io/topics/protocol</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00024">24</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00025">25</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a53709bcd6c9b9172f48520323bf8cafe"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> { <br />
-&#160;&#160;<b>NoType</b> = ' ', 
+&#160;&#160;<b>NoType</b> = '\0', 
 <b>SimpleString</b> = '+', 
 <b>Error</b> = '-', 
 <b>Integer</b> = ':', 
@@ -152,7 +152,7 @@ Inheritance diagram for RedisObject:</div>
 </div><div class="memdoc">
 <p>Denote a basic <a class="el" href="classRedis.html">Redis</a> type, with NoType and InternalError defined specifically for this API </p>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00027">27</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00028">28</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 
 </div>
 </div>
@@ -182,9 +182,9 @@ Inheritance diagram for RedisObject:</div>
 </div><div class="memdoc">
 <p>Initialize a <a class="el" href="classRedisObject.html">RedisObject</a> instance from the bytestream represented by 'client'. Only does very basic (e.g. SimpleString-style) parsing of the object from the byte stream. Concrete subclasses are expected to override this to provide class-specific parsing &amp; initialization logic. </p>
 
-<p>Reimplemented in <a class="el" href="classRedisBulkString.html#adb9783a48e1fff7bbf9bc54196e6d468">RedisBulkString</a>.</p>
+<p>Reimplemented in <a class="el" href="classRedisArray.html#adf17f41387a6819fadfb4111e7c23712">RedisArray</a>, and <a class="el" href="classRedisBulkString.html#adb9783a48e1fff7bbf9bc54196e6d468">RedisBulkString</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00004">4</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00031">31</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
 
 </div>
 </div>
@@ -212,7 +212,7 @@ Inheritance diagram for RedisObject:</div>
 </div><div class="memdoc">
 <p>Produce a human-readable String representation. Base implementation only returns the type character, so should be overriden. </p>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00057">57</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00058">58</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 
 </div>
 </div>
@@ -247,7 +247,7 @@ Inheritance diagram for RedisObject:</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 7 2019 21:37:50 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 25 2019 17:16:17 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>

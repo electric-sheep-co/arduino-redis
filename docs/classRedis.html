@@ -70,7 +70,7 @@ $(function() {
 <div class="textblock"><p>Redis-for-Arduino client interface.</p>
 <p>The sole constructor takes a reference to any instance of a Client subclass, allowing it to be used with any library that abstracts the client bytestream in this way (such as the built-in Ethernet class or the WiFiClient for devices such as the ESP8266). </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00040">40</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00042">42</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -124,6 +124,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a10e6b67224a140d6ff2aca5eaedfaaa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a715bd10eff2b0a578553257c0e441e98"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a715bd10eff2b0a578553257c0e441e98">hexists</a> (const char *key, const char *field)</td></tr>
 <tr class="separator:a715bd10eff2b0a578553257c0e441e98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d6bf9e348fc7318e93bd0e76fc22917"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a4d6bf9e348fc7318e93bd0e76fc22917">lrange</a> (const char *key, int start, int stop)</td></tr>
+<tr class="separator:a4d6bf9e348fc7318e93bd0e76fc22917"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 
 <p><code>#include &lt;<a class="el" href="Redis_8h_source.html">Redis.h</a>&gt;</code></p>
@@ -159,7 +161,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An initialized <a class="el" href="classRedis.html">Redis</a> client using <code>client</code> to communicate with the server. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00047">47</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00049">49</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -325,7 +327,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00114">114</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00116">116</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -372,7 +374,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00123">123</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00125">125</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -397,7 +399,7 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The key`s value as a string, empty if the key does not exist. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The key`s value as a string, null if the key does not exist. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00031">31</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
@@ -593,7 +595,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if set, <code>false</code> if was updated </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00172">172</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00174">174</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -646,7 +648,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if set, <code>false</code> if <code>field</code> already existed </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00181">181</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00183">183</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -685,6 +687,50 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The field's string length value. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00091">91</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a4d6bf9e348fc7318e93bd0e76fc22917"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d6bf9e348fc7318e93bd0e76fc22917">&#9670;&nbsp;</a></span>lrange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::lrange </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>stop</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the specified elements of the list stored at <code>key</code>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">start</td><td>Zero-based starting index (can be negative to indicate end-of-list offset). </td></tr>
+    <tr><td class="paramname">end</td><td>Zero-based ending index. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The list of elements, as a vector of Strings; or an empty vector if error/DNE. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00101">101</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -757,7 +803,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00131">131</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00133">133</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -804,7 +850,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00140">140</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00142">142</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -839,7 +885,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The key`s TTL in milliseconds, or a negative value signaling error: -1 if the key exists but has no associated expire, -2 if the key DNE. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00163">163</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00165">165</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -951,14 +997,14 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The key's TTL in seconds, or a negative value signaling error: -1 if the key exists but has no associated expire, -2 if the key DNE. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00155">155</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00157">157</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 7 2019 21:37:50 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Feb 25 2019 17:16:17 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.13
 </small></address>
