@@ -87,7 +87,7 @@ void RedisArray::init(Client& client)
         add(RedisObject::parseType(client));
 }
 
-std::vector<String> RedisArray::strings() const
+RedisArray::operator std::vector<String>() const
 {
     std::vector<String> rv;
     for (auto ro : vec)

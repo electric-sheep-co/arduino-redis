@@ -94,7 +94,7 @@ public:
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
 
-    std::vector<String> strings() const;
+    operator std::vector<String>() const;
 
     virtual void init(Client& client) override;
 

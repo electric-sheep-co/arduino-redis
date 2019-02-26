@@ -101,5 +101,7 @@ bool Redis::hexists(const char* key, const char* field)
 std::vector<String> Redis::lrange(const char* key, int start, int stop)
 {
     auto rv = RedisCommand("LRANGE", ArgList{key, String(start), String(stop)}).issue(conn);
-    return rv->type() == RedisObject::Type::Array ? ((RedisArray*)rv.get())->strings() : std::vector<String>();
+    return rv->type() == RedisObject::Type::Array 
+        ? (std::vector<String>)*((RedisArray*)rv.get()) 
+        : std::vector<String>();
 }
