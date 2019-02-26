@@ -23,6 +23,8 @@
 #include "Arduino.h"
 #include "Client.h"
 
+#include <vector>
+
 typedef enum {
   RedisSuccess = 0,
   RedisNotConnectedFailure = 1,
@@ -71,7 +73,7 @@ public:
     /**
      * Get `key`.
      * @param key The key name to retrieve.
-     * @return The key`s value as a string, empty if the key does not exist.
+     * @return The key`s value as a string, null if the key does not exist.
      */
     String get(const char* key);
 
@@ -217,6 +219,14 @@ public:
      * @return `true` if `key` exists.
      */
     bool hexists(const char* key, const char* field);
+
+    /**
+     * Returns the specified elements of the list stored at `key`.
+     * @param start Zero-based starting index (can be negative to indicate end-of-list offset).
+     * @param end Zero-based ending index.
+     * @return The list of elements, as a vector of Strings; or an empty vector if error/DNE.
+     */
+    std::vector<String> lrange(const char* key, int start, int stop);
 
 #if ARDUINO_REDIS_TEST
     typedef struct {

@@ -3,13 +3,14 @@
 
 #include "Arduino.h"
 #include "Client.h"
-#include <map>
 #include <vector>
 #include <memory>
 #include <functional>
 
 #define CRLF F("\r\n")
-#define ARDUINO_REDIS_SERIAL_TRACE 0
+#define ARDUINO_REDIS_SERIAL_TRACE  0
+
+#define sprint(fmt, ...) do { if (ARDUINO_REDIS_SERIAL_TRACE) Serial.printf("[TRACE] " fmt, ##__VA_ARGS__); } while (0)
 
 typedef std::vector<String> ArgList;
 
@@ -25,7 +26,7 @@ class RedisObject {
 public:
     /** Denote a basic Redis type, with NoType and InternalError defined specifically for this API */
     typedef enum {
-        NoType = ' ',
+        NoType = '\0',
         SimpleString = '+',
         Error = '-',
         Integer = ':',
@@ -38,7 +39,7 @@ public:
     RedisObject(Type tc) : _type(tc) {}
     RedisObject(Type tc, Client& c) : _type(tc) { init(c); }
     
-    ~RedisObject() {}
+    virtual ~RedisObject() {}
 
     static std::shared_ptr<RedisObject> parseType(Client&);
 
@@ -67,6 +68,7 @@ protected:
 class RedisSimpleString : public RedisObject {
 public:
     RedisSimpleString(Client& c) : RedisObject(Type::SimpleString, c) {}
+    ~RedisSimpleString() override {}
 
     virtual String RESP() override;
 };
@@ -74,8 +76,9 @@ public:
 /** A Bulk String: https://redis.io/topics/protocol#resp-bulk-strings */
 class RedisBulkString : public RedisObject {
 public:
-    RedisBulkString(Client& c) : RedisObject(Type::BulkString) { init(c); }
+    RedisBulkString(Client& c) : RedisObject(Type::BulkString, c) { init(c); }
     RedisBulkString(String& s) : RedisObject(Type::BulkString) { data = s; }
+    ~RedisBulkString() override {}
 
     virtual void init(Client& client) override;
    
@@ -86,9 +89,14 @@ public:
 class RedisArray : public RedisObject {
 public:
     RedisArray() : RedisObject(Type::Array) {}
-    RedisArray(Client& c) : RedisObject(Type::Array, c) {}
+    RedisArray(Client& c) : RedisObject(Type::Array, c) { init(c); }
+    ~RedisArray() override { vec.empty(); }
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
+
+    operator std::vector<String>() const;
+
+    virtual void init(Client& client) override;
 
     virtual String RESP() override;
 
@@ -100,6 +108,8 @@ protected:
 class RedisInteger : public RedisSimpleString {
 public:
     RedisInteger(Client& c) : RedisSimpleString(c) { _type = Type::Integer; }
+    ~RedisInteger() override {}
+
     operator int() { return data.toInt(); }
     operator bool() { return (bool)operator int(); }
 };
@@ -108,6 +118,7 @@ public:
 class RedisError : public RedisSimpleString {
 public:
     RedisError(Client& c) : RedisSimpleString(c) { _type = Type::Error; }
+    ~RedisError() override {}
 };
 
 /** An internal API error. Call RESP() to get the error string. */
@@ -116,6 +127,7 @@ class RedisInternalError : public RedisObject
 public:
     RedisInternalError(String err) : RedisObject(Type::InternalError) { data = err; }
     RedisInternalError(const char* err) : RedisInternalError(String(err)) {}
+    ~RedisInternalError() override {}
 
     virtual String RESP() override { return "INTERNAL ERROR: " + data; }
 };
@@ -134,6 +146,8 @@ public:
             add(std::shared_ptr<RedisObject>(new RedisBulkString(arg)));
         }
     }
+
+    ~RedisCommand() override {}
 
     /** Issue the command on the bytestream represented by `cmdClient`.
      *  @param cmdClient The client object representing the bytestream connection to a Redis server.

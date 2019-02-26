@@ -3,7 +3,7 @@
 [![Arduino](https://www.vectorlogo.zone/logos/arduino/arduino-ar21.svg)](https://www.arduino.cc)
 [![Redis](https://www.vectorlogo.zone/logos/redis/redis-ar21.svg)](https://redis.io/)
 
-A [Redis](https://redis.io/) client library for [Arduino](https://www.arduino.cc).
+A [Redis](https://redis.io/) client library for [Arduino](https://www.arduino.cc). Verified support of the ESP8266 & ESP32 platforms; may support others without modification (see documentation).
 
 Available via the [Arduino Library Manager](https://www.arduino.cc/en/guide/libraries): simply search for "redis".
 
