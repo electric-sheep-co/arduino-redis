@@ -1,17 +1,13 @@
-// A simple example demonstrating periodic JSON publications (with a non-blocking loop())
 #include <Redis.h>
 #include <ArduinoJson.h>
 
-// set to your WiFi information
 #define WIFI_SSID       ""
 #define WIFI_PASSWORD   ""
 
-// set to your Redis server information
 #define REDIS_ADDR      "0.0.0.0"
 #define REDIS_PORT      6379
-#define REDIS_PASSWORD  ""
+#define REDIS_PASSWORD  "password"
 
-// how often to post our data, in seconds
 #define POST_FREQUENCY  60
 
 // which analog input we read & include in our post
@@ -66,26 +62,26 @@ void setup()
     }
 }
 
-StaticJsonBuffer<2048> gJsonBuf;
+StaticJsonDocument<2048> doc;
 unsigned long lastPost = 0;
 
 void loop() {
     auto startTime = millis();
     if (!lastPost || startTime - lastPost > POST_FREQUENCY * 1000) 
     {
-        JsonObject& jRoot = gJsonBuf.createObject();
-        jRoot["analog"] = analogRead(ANALOG_INPUT);
-        jRoot["wifi-rssi"] = WiFi.RSSI();
-        jRoot["uptime-ms"] = startTime;
+        
+        doc["analog"] = analogRead(ANALOG_INPUT);
+        doc["wifi-rssi"] = WiFi.RSSI();
+        doc["uptime-ms"] = startTime;
 
         String jsonStr;
-        jRoot.printTo(jsonStr);
+        serializeJson(doc, Serial);
         Serial.printf("Sending JSON payload:\n\t'%s'\n", jsonStr.c_str());
 
         auto listeners = gRedis->publish("arduino-redis:jsonpub", jsonStr.c_str());
         Serial.printf("Published to %d listeners\n", listeners);
 
-        gJsonBuf.clear();
+        doc.clear();
         lastPost = millis();
     }
 }
