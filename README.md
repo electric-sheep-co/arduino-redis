@@ -23,3 +23,4 @@ If you have any questions please [open an issue here](https://github.com/electri
 * Ryan Joseph (Electric Sheep) <ryan@electricsheep.co>
 * Remi Caumette
 * Robert Oostenveld
+* Mark Lynch <mark.christinat@gmail.com>
