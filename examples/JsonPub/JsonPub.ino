@@ -1,12 +1,12 @@
 #include <Redis.h>
 #include <ArduinoJson.h>
 
-#define WIFI_SSID       "Safado2GH"
-#define WIFI_PASSWORD   "Summer2017"
+#define WIFI_SSID       ""
+#define WIFI_PASSWORD   ""
 
-#define REDIS_ADDR      "redis-17772.c60.us-west-1-2.ec2.cloud.redislabs.com"
-#define REDIS_PORT      17772
-#define REDIS_PASSWORD  "qsBmsA51hnjNkfpQBIDE8gq6dJeTBqFc"
+#define REDIS_ADDR      "0.0.0.0"
+#define REDIS_PORT      6379
+#define REDIS_PASSWORD  "password"
 
 #define POST_FREQUENCY  60
 
