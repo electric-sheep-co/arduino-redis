@@ -1,5 +1,14 @@
 #include <Redis.h>
+
+// this sketch will build for the ESP8266 or ESP32 platform
+#ifdef HAL_ESP32_HAL_H_ // ESP32
+#include <WiFiClient.h>
+#include <WiFi.h>
+#else
+#ifdef CORE_ESP8266_FEATURES_H // ESP8266
 #include <ESP8266WiFi.h>
+#endif
+#endif
 
 #define WIFI_SSID       "SSID"
 #define WIFI_PASSWORD   "PASSWORD"
@@ -57,7 +66,7 @@ void setup()
     Serial.print("GET foo: ");
     Serial.println(redis.get("foo"));
 
-    redis.close();
+    redisConn.stop();
     Serial.print("Connection closed!");
 }
 
