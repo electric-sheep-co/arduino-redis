@@ -3,7 +3,7 @@
 #include <limits.h>
 
 #if ARDUINO_REDIS_SERIAL_TRACE && 0
-void pbytes(uint8_t* bytes, ssize_t len, const char* header = nullptr)
+void pbytes(uint8_t* bytes, ssize_t len, const char* header)
 {
     Serial.println();
     const uint _break = 0x20;
@@ -25,7 +25,7 @@ void pbytes(uint8_t* bytes, ssize_t len, const char* header = nullptr)
     Serial.println();
 }
 #else
-#define pbytes
+#define pbytes(x,y,z)
 #endif
 
 void RedisObject::init(Client& client)
@@ -59,11 +59,10 @@ void RedisBulkString::init(Client& client)
     auto charBuf = new char[dLen + 1];
     bzero(charBuf, dLen + 1);
 
-    auto crlfCstr = String(CRLF).c_str();
     auto readB = client.readBytes(charBuf, dLen);
     pbytes((uint8_t*)charBuf, readB, "RedisBulkString::init()::readBytes");
     if (readB != dLen) {
-        Serial.printf("ERROR! Bad read (%d ?= %d)\n", readB, dLen);
+        Serial.printf("ERROR! Bad read (%ld ?= %ld)\n", (long)readB, (long)dLen);
         exit(-1);
     }
 

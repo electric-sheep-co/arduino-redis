@@ -1,8 +1,6 @@
 #include "Redis.h"
 #include "RedisInternal.h"
 
-#pragma mark Redis class implemenation
-
 RedisReturnValue Redis::authenticate(const char* password)
 {
     if(conn.connected())
