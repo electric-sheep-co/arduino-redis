@@ -54,8 +54,9 @@ typedef enum {
  */
 class Redis {
 public:
-    typedef void (*RedisMsgCallback)(Redis*, String, String);
-
+    /** Called upon successful receipt of a pub/sub `message` on subscribed `channel` */
+    typedef void (*RedisMsgCallback)(Redis*, String channel, String message);
+    /** Called upon an error in the receipt of a pub/sub message */
     typedef void (*RedisMsgErrorCallback)(Redis*, RedisMessageError);
 
     /**

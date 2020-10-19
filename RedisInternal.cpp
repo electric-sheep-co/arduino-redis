@@ -83,7 +83,6 @@ std::shared_ptr<RedisObject> RedisCommand::issue(Client& cmdClient)
         return std::shared_ptr<RedisObject>(new RedisInternalError("Client is not connected"));
 
     auto cmdRespStr = RESP();
-    sprint("----- CMD ----\n%s---- /CMD ----\n", cmdRespStr.c_str());
     cmdClient.print(cmdRespStr);
     auto ret = RedisObject::parseType(cmdClient);
     if (ret && ret->type() == RedisObject::Type::InternalError)
@@ -132,20 +131,10 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
     if (client.connected()) {
         while (!client.available());
 
-#if ARDUINO_REDIS_SERIAL_TRACE
-        int readB = 0;
-#endif
         RedisObject::Type typeChar = RedisObject::Type::NoType;
         do {
             typeChar = (RedisObject::Type)client.read();
-#if ARDUINO_REDIS_SERIAL_TRACE
-            ++readB;
-#endif
         } while (typeChar == -1 || typeChar == '\r' || typeChar == '\n');
-
-#if ARDUINO_REDIS_SERIAL_TRACE
-        sprint("Parsed type character '%c' (after %d reads) (0x%x, %dd)\n", typeChar, readB, typeChar, (int)typeChar);
-#endif
 
         if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
             auto retVal = g_TypeParseMap[typeChar](client);

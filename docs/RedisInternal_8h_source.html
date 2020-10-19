@@ -76,158 +76,155 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;functional&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#define CRLF F(&quot;\r\n&quot;)</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define ARDUINO_REDIS_SERIAL_TRACE  0</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#define sprint(fmt, ...) do { if (ARDUINO_REDIS_SERIAL_TRACE) Serial.printf(&quot;[TRACE] &quot; fmt, ##__VA_ARGS__); } while (0)</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">typedef</span> std::vector&lt;String&gt; ArgList;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">/* The lack of RTTI on Ardunio is unfortunate but completely understandable. </span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"> * However, we&#39;re not going to let that stop us, so RedisObject implements a basic </span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment"> * but functional type system for Redis objects. </span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classRedisObject.html">   25</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisObject.html">RedisObject</a> {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">   28</a></span>&#160;    <span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        NoType = <span class="charliteral">&#39;\0&#39;</span>,</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        SimpleString = <span class="charliteral">&#39;+&#39;</span>,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        Error = <span class="charliteral">&#39;-&#39;</span>,</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        Integer = <span class="charliteral">&#39;:&#39;</span>,</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        BulkString = <span class="charliteral">&#39;$&#39;</span>,</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        Array = <span class="charliteral">&#39;*&#39;</span>,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        InternalError = <span class="charliteral">&#39;!&#39;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    } <a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classRedisObject.html">RedisObject</a>() {}</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="classRedisObject.html">RedisObject</a>(<a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> tc) : _type(tc) {}</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classRedisObject.html">RedisObject</a>(<a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> tc, Client&amp; c) : _type(tc) { <a class="code" href="classRedisObject.html#a9e9206db2a6305f9515ecde938211b0b">init</a>(c); }</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classRedisObject.html">RedisObject</a>() {}</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">static</span> std::shared_ptr&lt;RedisObject&gt; parseType(Client&amp;);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classRedisObject.html#a9e9206db2a6305f9515ecde938211b0b">init</a>(Client&amp; client);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">typedef</span> std::vector&lt;String&gt; ArgList;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/* The lack of RTTI on Ardunio is unfortunate but completely understandable. </span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * However, we&#39;re not going to let that stop us, so RedisObject implements a basic </span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> * but functional type system for Redis objects. </span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classRedisObject.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisObject.html">RedisObject</a> {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">   25</a></span>&#160;    <span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        NoType = <span class="charliteral">&#39;\0&#39;</span>,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        SimpleString = <span class="charliteral">&#39;+&#39;</span>,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        Error = <span class="charliteral">&#39;-&#39;</span>,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        Integer = <span class="charliteral">&#39;:&#39;</span>,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        BulkString = <span class="charliteral">&#39;$&#39;</span>,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        Array = <span class="charliteral">&#39;*&#39;</span>,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        InternalError = <span class="charliteral">&#39;!&#39;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    } <a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classRedisObject.html">RedisObject</a>() {}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classRedisObject.html">RedisObject</a>(<a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> tc) : _type(tc) {}</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="classRedisObject.html">RedisObject</a>(<a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> tc, Client&amp; c) : _type(tc) { <a class="code" href="classRedisObject.html#a9e9206db2a6305f9515ecde938211b0b">init</a>(c); }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classRedisObject.html">RedisObject</a>() {}</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">static</span> std::shared_ptr&lt;RedisObject&gt; parseType(Client&amp;);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classRedisObject.html#a9e9206db2a6305f9515ecde938211b0b">init</a>(Client&amp; client);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classRedisObject.html#ab34fd619c08d43eff0941b008e2b0fca">   51</a></span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisObject.html#ab34fd619c08d43eff0941b008e2b0fca">RESP</a>() = 0;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classRedisObject.html#ab34fd619c08d43eff0941b008e2b0fca">   54</a></span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisObject.html#ab34fd619c08d43eff0941b008e2b0fca">RESP</a>() = 0;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classRedisObject.html#ae78351c3a7534104868495077cb96fd7">   58</a></span>&#160;    <span class="keyword">virtual</span> <span class="keyword">operator</span> String() { <span class="keywordflow">return</span> data; }</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> type()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _type; } </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    String data;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> _type = Type::NoType;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classRedisSimpleString.html">   68</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisSimpleString.html">RedisSimpleString</a> : <span class="keyword">public</span> <a class="code" href="classRedisObject.html">RedisObject</a> {</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a>(Client&amp; c) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::SimpleString, c) {}</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    ~<a class="code" href="classRedisSimpleString.html">RedisSimpleString</a>()<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classRedisObject.html#ae78351c3a7534104868495077cb96fd7">   55</a></span>&#160;    <span class="keyword">virtual</span> <span class="keyword">operator</span> String() { <span class="keywordflow">return</span> data; }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> type()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _type; } </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    String data;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <a class="code" href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">Type</a> _type = Type::NoType;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classRedisSimpleString.html">   65</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisSimpleString.html">RedisSimpleString</a> : <span class="keyword">public</span> <a class="code" href="classRedisObject.html">RedisObject</a> {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a>(Client&amp; c) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::SimpleString, c) {}</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    ~<a class="code" href="classRedisSimpleString.html">RedisSimpleString</a>()<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisSimpleString.html#a02397b350af1137a12eb8e2fdda0c6e6">RESP</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;};</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisSimpleString.html#a02397b350af1137a12eb8e2fdda0c6e6">RESP</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;};</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classRedisBulkString.html">   77</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisBulkString.html">RedisBulkString</a> : <span class="keyword">public</span> <a class="code" href="classRedisObject.html">RedisObject</a> {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="classRedisBulkString.html">RedisBulkString</a>(Client&amp; c) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::BulkString, c) { <a class="code" href="classRedisBulkString.html#adb9783a48e1fff7bbf9bc54196e6d468">init</a>(c); }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="classRedisBulkString.html">RedisBulkString</a>(String&amp; s) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::BulkString) { data = s; }</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    ~<a class="code" href="classRedisBulkString.html">RedisBulkString</a>()<span class="keyword"> override </span>{}</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classRedisBulkString.html#adb9783a48e1fff7bbf9bc54196e6d468">init</a>(Client&amp; client) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;   </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisBulkString.html#a1ac9abf4cdddb62d668f9840b4ab8557">RESP</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;};</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classRedisArray.html">   89</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisArray.html">RedisArray</a> : <span class="keyword">public</span> <a class="code" href="classRedisObject.html">RedisObject</a> {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <a class="code" href="classRedisArray.html">RedisArray</a>() : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::Array) {}</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <a class="code" href="classRedisArray.html">RedisArray</a>(Client&amp; c) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::Array, c) { <a class="code" href="classRedisArray.html#adf17f41387a6819fadfb4111e7c23712">init</a>(c); }</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    ~<a class="code" href="classRedisArray.html">RedisArray</a>()<span class="keyword"> override </span>{ vec.empty(); }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> add(std::shared_ptr&lt;RedisObject&gt; param) { vec.push_back(param); }</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keyword">operator</span> std::vector&lt;String&gt;() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classRedisArray.html#adf17f41387a6819fadfb4111e7c23712">init</a>(Client&amp; client) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisArray.html#a68b029635c24b38c8b7261503f051a2c">RESP</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    std::vector&lt;std::shared_ptr&lt;RedisObject&gt;&gt; vec;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;};</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="classRedisInteger.html">  108</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisInteger.html">RedisInteger</a> : <span class="keyword">public</span> <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a> {</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <a class="code" href="classRedisInteger.html">RedisInteger</a>(Client&amp; c) : <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a>(c) { _type = Type::Integer; }</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    ~<a class="code" href="classRedisInteger.html">RedisInteger</a>()<span class="keyword"> override </span>{}</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">operator</span> int() { <span class="keywordflow">return</span> data.toInt(); }</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keyword">operator</span> bool() { <span class="keywordflow">return</span> (<span class="keywordtype">bool</span>)<span class="keyword">operator</span> int(); }</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;};</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="classRedisError.html">  118</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisError.html">RedisError</a> : <span class="keyword">public</span> <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a> {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <a class="code" href="classRedisError.html">RedisError</a>(Client&amp; c) : <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a>(c) { _type = Type::Error; }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    ~<a class="code" href="classRedisError.html">RedisError</a>()<span class="keyword"> override </span>{}</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;};</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="classRedisInternalError.html">  125</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisInternalError.html">RedisInternalError</a> : <span class="keyword">public</span> <a class="code" href="classRedisObject.html">RedisObject</a></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;{</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <a class="code" href="classRedisInternalError.html">RedisInternalError</a>(String err) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::InternalError) { data = err; }</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <a class="code" href="classRedisInternalError.html">RedisInternalError</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* err) : <a class="code" href="classRedisInternalError.html">RedisInternalError</a>(String(err)) {}</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    ~<a class="code" href="classRedisInternalError.html">RedisInternalError</a>()<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classRedisBulkString.html">   74</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisBulkString.html">RedisBulkString</a> : <span class="keyword">public</span> <a class="code" href="classRedisObject.html">RedisObject</a> {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <a class="code" href="classRedisBulkString.html">RedisBulkString</a>(Client&amp; c) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::BulkString, c) { <a class="code" href="classRedisBulkString.html#adb9783a48e1fff7bbf9bc54196e6d468">init</a>(c); }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classRedisBulkString.html">RedisBulkString</a>(String&amp; s) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::BulkString) { data = s; }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    ~<a class="code" href="classRedisBulkString.html">RedisBulkString</a>()<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classRedisBulkString.html#adb9783a48e1fff7bbf9bc54196e6d468">init</a>(Client&amp; client) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;   </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisBulkString.html#a1ac9abf4cdddb62d668f9840b4ab8557">RESP</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;};</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="classRedisArray.html">   86</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisArray.html">RedisArray</a> : <span class="keyword">public</span> <a class="code" href="classRedisObject.html">RedisObject</a> {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <a class="code" href="classRedisArray.html">RedisArray</a>() : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::Array) {}</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <a class="code" href="classRedisArray.html">RedisArray</a>(Client&amp; c) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::Array, c) { <a class="code" href="classRedisArray.html#adf17f41387a6819fadfb4111e7c23712">init</a>(c); }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    ~<a class="code" href="classRedisArray.html">RedisArray</a>()<span class="keyword"> override </span>{ vec.empty(); }</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> add(std::shared_ptr&lt;RedisObject&gt; param) { vec.push_back(param); }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keyword">operator</span> std::vector&lt;String&gt;() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classRedisArray.html#adf17f41387a6819fadfb4111e7c23712">init</a>(Client&amp; client) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisArray.html#a68b029635c24b38c8b7261503f051a2c">RESP</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    std::vector&lt;std::shared_ptr&lt;RedisObject&gt;&gt; vec;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;};</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="classRedisInteger.html">  105</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisInteger.html">RedisInteger</a> : <span class="keyword">public</span> <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a> {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="classRedisInteger.html">RedisInteger</a>(Client&amp; c) : <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a>(c) { _type = Type::Integer; }</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    ~<a class="code" href="classRedisInteger.html">RedisInteger</a>()<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keyword">operator</span> int() { <span class="keywordflow">return</span> data.toInt(); }</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">operator</span> bool() { <span class="keywordflow">return</span> (<span class="keywordtype">bool</span>)<span class="keyword">operator</span> int(); }</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;};</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="classRedisError.html">  115</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisError.html">RedisError</a> : <span class="keyword">public</span> <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a> {</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <a class="code" href="classRedisError.html">RedisError</a>(Client&amp; c) : <a class="code" href="classRedisSimpleString.html">RedisSimpleString</a>(c) { _type = Type::Error; }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    ~<a class="code" href="classRedisError.html">RedisError</a>()<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;};</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="classRedisInternalError.html">  122</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisInternalError.html">RedisInternalError</a> : <span class="keyword">public</span> <a class="code" href="classRedisObject.html">RedisObject</a></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;{</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <a class="code" href="classRedisInternalError.html">RedisInternalError</a>(String err) : <a class="code" href="classRedisObject.html">RedisObject</a>(Type::InternalError) { data = err; }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <a class="code" href="classRedisInternalError.html">RedisInternalError</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* err) : <a class="code" href="classRedisInternalError.html">RedisInternalError</a>(String(err)) {}</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    ~<a class="code" href="classRedisInternalError.html">RedisInternalError</a>()<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="classRedisInternalError.html#ad1fcc44debb300148bf0a76e05a7dea9">  129</a></span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisInternalError.html#ad1fcc44debb300148bf0a76e05a7dea9">RESP</a>()<span class="keyword"> override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;INTERNAL ERROR: &quot;</span> + data; }</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;};</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
-<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="classRedisInternalError.html#ad1fcc44debb300148bf0a76e05a7dea9">  132</a></span>&#160;    <span class="keyword">virtual</span> String <a class="code" href="classRedisInternalError.html#ad1fcc44debb300148bf0a76e05a7dea9">RESP</a>()<span class="keyword"> override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;INTERNAL ERROR: &quot;</span> + data; }</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;};</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno"><a class="line" href="classRedisCommand.html">  136</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisCommand.html">RedisCommand</a> : <span class="keyword">public</span> <a class="code" href="classRedisArray.html">RedisArray</a> {</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <a class="code" href="classRedisCommand.html">RedisCommand</a>(String command) : <a class="code" href="classRedisArray.html">RedisArray</a>() {</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        add(std::shared_ptr&lt;RedisObject&gt;(<span class="keyword">new</span> <a class="code" href="classRedisBulkString.html">RedisBulkString</a>(command)));</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    }</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <a class="code" href="classRedisCommand.html">RedisCommand</a>(String command, ArgList args)</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;        : <a class="code" href="classRedisCommand.html">RedisCommand</a>(command)</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    {</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> arg : args) {</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            add(std::shared_ptr&lt;RedisObject&gt;(<span class="keyword">new</span> <a class="code" href="classRedisBulkString.html">RedisBulkString</a>(arg)));</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        }</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    }</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    ~<a class="code" href="classRedisCommand.html">RedisCommand</a>()<span class="keyword"> override </span>{}</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    std::shared_ptr&lt;RedisObject&gt; <a class="code" href="classRedisCommand.html#aca229979f7552d4facbd3ca1529563df">issue</a>(Client&amp; cmdClient);</div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="classRedisCommand.html">  133</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisCommand.html">RedisCommand</a> : <span class="keyword">public</span> <a class="code" href="classRedisArray.html">RedisArray</a> {</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <a class="code" href="classRedisCommand.html">RedisCommand</a>(String command) : <a class="code" href="classRedisArray.html">RedisArray</a>() {</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        add(std::shared_ptr&lt;RedisObject&gt;(<span class="keyword">new</span> <a class="code" href="classRedisBulkString.html">RedisBulkString</a>(command)));</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    }</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <a class="code" href="classRedisCommand.html">RedisCommand</a>(String command, ArgList args)</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        : <a class="code" href="classRedisCommand.html">RedisCommand</a>(command)</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    {</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> arg : args) {</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;            add(std::shared_ptr&lt;RedisObject&gt;(<span class="keyword">new</span> <a class="code" href="classRedisBulkString.html">RedisBulkString</a>(arg)));</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        }</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    }</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    ~<a class="code" href="classRedisCommand.html">RedisCommand</a>()<span class="keyword"> override </span>{}</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    std::shared_ptr&lt;RedisObject&gt; <a class="code" href="classRedisCommand.html#aca229979f7552d4facbd3ca1529563df">issue</a>(Client&amp; cmdClient);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    T issue_typed(Client&amp; cmdClient);</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    T issue_typed(Client&amp; cmdClient);</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    String _err;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;};</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="preprocessor">#endif // REDIS_INTERNAL_H</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    String _err;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;};</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="preprocessor">#endif // REDIS_INTERNAL_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassRedisObject_html_a9e9206db2a6305f9515ecde938211b0b"><div class="ttname"><a href="classRedisObject.html#a9e9206db2a6305f9515ecde938211b0b">RedisObject::init</a></div><div class="ttdeci">virtual void init(Client &amp;client)</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00005">RedisInternal.cpp:5</a></div></div>
 <div class="ttc" id="aclassRedisCommand_html_aca229979f7552d4facbd3ca1529563df"><div class="ttname"><a href="classRedisCommand.html#aca229979f7552d4facbd3ca1529563df">RedisCommand::issue</a></div><div class="ttdeci">std::shared_ptr&lt; RedisObject &gt; issue(Client &amp;cmdClient)</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00080">RedisInternal.cpp:80</a></div></div>
 <div class="ttc" id="aclassRedisBulkString_html_adb9783a48e1fff7bbf9bc54196e6d468"><div class="ttname"><a href="classRedisBulkString.html#adb9783a48e1fff7bbf9bc54196e6d468">RedisBulkString::init</a></div><div class="ttdeci">virtual void init(Client &amp;client) override</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00022">RedisInternal.cpp:22</a></div></div>
-<div class="ttc" id="aclassRedisError_html"><div class="ttname"><a href="classRedisError.html">RedisError</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00118">RedisInternal.h:118</a></div></div>
+<div class="ttc" id="aclassRedisError_html"><div class="ttname"><a href="classRedisError.html">RedisError</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00115">RedisInternal.h:115</a></div></div>
 <div class="ttc" id="aclassRedisSimpleString_html_a02397b350af1137a12eb8e2fdda0c6e6"><div class="ttname"><a href="classRedisSimpleString.html#a02397b350af1137a12eb8e2fdda0c6e6">RedisSimpleString::RESP</a></div><div class="ttdeci">virtual String RESP() override</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00011">RedisInternal.cpp:11</a></div></div>
 <div class="ttc" id="aclassRedisArray_html_a68b029635c24b38c8b7261503f051a2c"><div class="ttname"><a href="classRedisArray.html#a68b029635c24b38c8b7261503f051a2c">RedisArray::RESP</a></div><div class="ttdeci">virtual String RESP() override</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00069">RedisInternal.cpp:69</a></div></div>
-<div class="ttc" id="aclassRedisCommand_html"><div class="ttname"><a href="classRedisCommand.html">RedisCommand</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00136">RedisInternal.h:136</a></div></div>
-<div class="ttc" id="aclassRedisSimpleString_html"><div class="ttname"><a href="classRedisSimpleString.html">RedisSimpleString</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00068">RedisInternal.h:68</a></div></div>
-<div class="ttc" id="aclassRedisObject_html"><div class="ttname"><a href="classRedisObject.html">RedisObject</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00025">RedisInternal.h:25</a></div></div>
-<div class="ttc" id="aclassRedisObject_html_a53709bcd6c9b9172f48520323bf8cafe"><div class="ttname"><a href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">RedisObject::Type</a></div><div class="ttdeci">Type</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00028">RedisInternal.h:28</a></div></div>
-<div class="ttc" id="aclassRedisInteger_html"><div class="ttname"><a href="classRedisInteger.html">RedisInteger</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00108">RedisInternal.h:108</a></div></div>
+<div class="ttc" id="aclassRedisCommand_html"><div class="ttname"><a href="classRedisCommand.html">RedisCommand</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00133">RedisInternal.h:133</a></div></div>
+<div class="ttc" id="aclassRedisSimpleString_html"><div class="ttname"><a href="classRedisSimpleString.html">RedisSimpleString</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00065">RedisInternal.h:65</a></div></div>
+<div class="ttc" id="aclassRedisObject_html"><div class="ttname"><a href="classRedisObject.html">RedisObject</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00022">RedisInternal.h:22</a></div></div>
+<div class="ttc" id="aclassRedisObject_html_a53709bcd6c9b9172f48520323bf8cafe"><div class="ttname"><a href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe">RedisObject::Type</a></div><div class="ttdeci">Type</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00025">RedisInternal.h:25</a></div></div>
+<div class="ttc" id="aclassRedisInteger_html"><div class="ttname"><a href="classRedisInteger.html">RedisInteger</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00105">RedisInternal.h:105</a></div></div>
 <div class="ttc" id="aclassRedisArray_html_adf17f41387a6819fadfb4111e7c23712"><div class="ttname"><a href="classRedisArray.html#adf17f41387a6819fadfb4111e7c23712">RedisArray::init</a></div><div class="ttdeci">virtual void init(Client &amp;client) override</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00055">RedisInternal.cpp:55</a></div></div>
-<div class="ttc" id="aclassRedisBulkString_html"><div class="ttname"><a href="classRedisBulkString.html">RedisBulkString</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00077">RedisInternal.h:77</a></div></div>
-<div class="ttc" id="aclassRedisArray_html"><div class="ttname"><a href="classRedisArray.html">RedisArray</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00089">RedisInternal.h:89</a></div></div>
-<div class="ttc" id="aclassRedisInternalError_html"><div class="ttname"><a href="classRedisInternalError.html">RedisInternalError</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00125">RedisInternal.h:126</a></div></div>
+<div class="ttc" id="aclassRedisBulkString_html"><div class="ttname"><a href="classRedisBulkString.html">RedisBulkString</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00074">RedisInternal.h:74</a></div></div>
+<div class="ttc" id="aclassRedisArray_html"><div class="ttname"><a href="classRedisArray.html">RedisArray</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00086">RedisInternal.h:86</a></div></div>
+<div class="ttc" id="aclassRedisInternalError_html"><div class="ttname"><a href="classRedisInternalError.html">RedisInternalError</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00122">RedisInternal.h:123</a></div></div>
 <div class="ttc" id="aclassRedisBulkString_html_a1ac9abf4cdddb62d668f9840b4ab8557"><div class="ttname"><a href="classRedisBulkString.html#a1ac9abf4cdddb62d668f9840b4ab8557">RedisBulkString::RESP</a></div><div class="ttdeci">virtual String RESP() override</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00045">RedisInternal.cpp:45</a></div></div>
 <div class="ttc" id="aclassRedisObject_html_ab34fd619c08d43eff0941b008e2b0fca"><div class="ttname"><a href="classRedisObject.html#ab34fd619c08d43eff0941b008e2b0fca">RedisObject::RESP</a></div><div class="ttdeci">virtual String RESP()=0</div></div>
-<div class="ttc" id="aclassRedisInternalError_html_ad1fcc44debb300148bf0a76e05a7dea9"><div class="ttname"><a href="classRedisInternalError.html#ad1fcc44debb300148bf0a76e05a7dea9">RedisInternalError::RESP</a></div><div class="ttdeci">virtual String RESP() override</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00132">RedisInternal.h:132</a></div></div>
+<div class="ttc" id="aclassRedisInternalError_html_ad1fcc44debb300148bf0a76e05a7dea9"><div class="ttname"><a href="classRedisInternalError.html#ad1fcc44debb300148bf0a76e05a7dea9">RedisInternalError::RESP</a></div><div class="ttdeci">virtual String RESP() override</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00129">RedisInternal.h:129</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Oct 18 2020 21:45:49 for Arduino-Redis by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
+Generated on Sun Oct 18 2020 23:47:08 for Arduino-Redis by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
 </small></address>
 </body>
 </html>

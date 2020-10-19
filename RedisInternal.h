@@ -8,9 +8,6 @@
 #include <functional>
 
 #define CRLF F("\r\n")
-#define ARDUINO_REDIS_SERIAL_TRACE  0
-
-#define sprint(fmt, ...) do { if (ARDUINO_REDIS_SERIAL_TRACE) Serial.printf("[TRACE] " fmt, ##__VA_ARGS__); } while (0)
 
 typedef std::vector<String> ArgList;
 
