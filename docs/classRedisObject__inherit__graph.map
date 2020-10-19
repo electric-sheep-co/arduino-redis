@@ -1,9 +1,10 @@
 <map id="RedisObject" name="RedisObject">
-<area shape="rect" id="node2" href="$classRedisArray.html" title="RedisArray" alt="" coords="20,80,107,107"/>
-<area shape="rect" id="node4" href="$classRedisBulkString.html" title="RedisBulkString" alt="" coords="131,80,247,107"/>
-<area shape="rect" id="node5" href="$classRedisInternalError.html" title="RedisInternalError" alt="" coords="271,80,397,107"/>
-<area shape="rect" id="node6" href="$classRedisSimpleString.html" title="RedisSimpleString" alt="" coords="422,80,553,107"/>
-<area shape="rect" id="node3" href="$classRedisCommand.html" title="RedisCommand" alt="" coords="5,155,121,181"/>
-<area shape="rect" id="node7" href="$classRedisError.html" title="RedisError" alt="" coords="388,155,472,181"/>
-<area shape="rect" id="node8" href="$classRedisInteger.html" title="RedisInteger" alt="" coords="497,155,593,181"/>
+<area shape="rect" id="node1" title=" " alt="" coords="213,5,308,32"/>
+<area shape="rect" id="node2" href="$classRedisArray.html" title=" " alt="" coords="20,80,107,107"/>
+<area shape="rect" id="node4" href="$classRedisBulkString.html" title=" " alt="" coords="131,80,247,107"/>
+<area shape="rect" id="node5" href="$classRedisInternalError.html" title=" " alt="" coords="271,80,397,107"/>
+<area shape="rect" id="node6" href="$classRedisSimpleString.html" title=" " alt="" coords="422,80,553,107"/>
+<area shape="rect" id="node3" href="$classRedisCommand.html" title=" " alt="" coords="5,155,121,181"/>
+<area shape="rect" id="node7" href="$classRedisError.html" title=" " alt="" coords="388,155,472,181"/>
+<area shape="rect" id="node8" href="$classRedisInteger.html" title=" " alt="" coords="497,155,593,181"/>
 </map>
