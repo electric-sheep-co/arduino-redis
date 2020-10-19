@@ -2,36 +2,9 @@
 #include <map>
 #include <limits.h>
 
-#if ARDUINO_REDIS_SERIAL_TRACE && 0
-void pbytes(uint8_t* bytes, ssize_t len, const char* header)
-{
-    Serial.println();
-    const uint _break = 0x20;
-    Serial.printf("[%d bytes] %s\n", len, header ? header : "");
-    for (int i = 0; i < len; i++)
-    {
-        if (!(i%_break)) Serial.printf("[H] %08x> ", i);
-        Serial.printf("%02x ", *(bytes + i));
-        if (!((i+1)%_break)) Serial.printf("\n");
-    }
-    Serial.println();
-    for (int i = 0; i < len; i++)
-    {
-        if (!(i%_break)) Serial.printf("[C] %08x> ", i);
-        Serial.printf("% 2c ", *(bytes + i));
-        if (!((i+1)%_break)) Serial.printf("\n");
-    }
-    Serial.println();
-    Serial.println();
-}
-#else
-#define pbytes(x,y,z)
-#endif
-
 void RedisObject::init(Client& client)
 {
     data = client.readStringUntil('\r');
-    pbytes((uint8_t*)data.c_str(), data.length(), "RedisObject::init()::readStringUntil");
     client.read(); // discard '\n' 
 }
 
@@ -60,7 +33,6 @@ void RedisBulkString::init(Client& client)
     bzero(charBuf, dLen + 1);
 
     auto readB = client.readBytes(charBuf, dLen);
-    pbytes((uint8_t*)charBuf, readB, "RedisBulkString::init()::readBytes");
     if (readB != dLen) {
         Serial.printf("ERROR! Bad read (%ld ?= %ld)\n", (long)readB, (long)dLen);
         exit(-1);

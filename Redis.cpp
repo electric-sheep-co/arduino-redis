@@ -103,3 +103,80 @@ std::vector<String> Redis::lrange(const char* key, int start, int stop)
         ? (std::vector<String>)*((RedisArray*)rv.get()) 
         : std::vector<String>();
 }
+
+bool Redis::_subscribe(SubscribeSpec spec)
+{
+    if (!subscriberMode) {
+        subSpec.push_back(spec);
+        return true;
+    }
+
+    const char* cmdName = spec.pattern ? "PSUBSCRIBE" : "SUBSCRIBE";
+    auto rv = RedisCommand(cmdName, ArgList{spec.spec}).issue(conn);
+    return rv->type() == RedisObject::Type::Array;
+}
+
+bool Redis::unsubscribe(const char* channelOrPattern)
+{
+    auto rv = RedisCommand("UNSUBSCRIBE", ArgList{channelOrPattern}).issue(conn);
+
+    if (rv->type() == RedisObject::Type::Array) {
+        auto vec = (std::vector<String>)*((RedisArray*)rv.get());
+        return vec.size() == 3 && vec[1] == String(channelOrPattern);
+    }
+
+    return false;
+}
+
+RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, RedisMsgErrorCallback errCallback)
+{
+    if (!messageCallback) {
+        return RedisSubscribeBadCallback;
+    }
+
+    bool success = true;
+    subscriberMode = true;
+    if (subSpec.size()) {
+        for (auto spec : subSpec) {
+            success = _subscribe(spec) && success;
+        }
+    }
+
+    if (!success) {
+        return RedisSubscribeSetupFailure;
+    }
+
+    auto emitErr = [=](RedisMessageError errCode) -> bool {
+      if (errCallback) {
+        errCallback(this, errCode);
+      }
+    };
+
+    subLoopRun = true;
+    while (subLoopRun) {
+        auto msg = RedisObject::parseType(conn);
+
+        if (msg->type() != RedisObject::Type::Array) {
+            emitErr(RedisMessageBadResponseType);
+            continue;
+        }
+
+        auto msgVec = (std::vector<String>)*((RedisArray*)msg.get());
+
+        if (msgVec.size() < 3) {
+            emitErr(RedisMessageTruncatedResponse);
+            continue;
+        }
+
+        if (msgVec[0] != "message" && msgVec[0] != "pmessage") {
+            emitErr(RedisMessageUnknownType);
+            continue;
+        }
+
+        // pmessage payloads have an extra paramter at index 1 that specifies the matched pattern; we ignore it here
+        auto pMsgAdd = msgVec[0] == "pmessage" ? 1 : 0;
+        messageCallback(this, msgVec[1 + pMsgAdd], msgVec[2 + pMsgAdd]);
+    }
+
+    return RedisSubscribeSuccess;
+}

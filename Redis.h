@@ -32,6 +32,18 @@ typedef enum {
   RedisAuthFailure = 2,
 } RedisReturnValue;
 
+typedef enum {
+  RedisSubscribeBadCallback = -255,
+  RedisSubscribeSetupFailure,
+  RedisSubscribeSuccess = 0
+} RedisSubscribeResult;
+
+typedef enum {
+  RedisMessageBadResponseType = -255,
+  RedisMessageTruncatedResponse,
+  RedisMessageUnknownType,
+} RedisMessageError;
+
 /** Redis-for-Arduino client interface.
  *
  *  The sole constructor takes a reference to any instance
@@ -42,6 +54,10 @@ typedef enum {
  */
 class Redis {
 public:
+    typedef void (*RedisMsgCallback)(Redis*, String, String);
+
+    typedef void (*RedisMsgErrorCallback)(Redis*, RedisMessageError);
+
     /**
      * Create a Redis connection using Client reference `client`.
      * @param client A Client instance representing the connection to a Redis server.
@@ -52,6 +68,8 @@ public:
     ~Redis() {}
     Redis(const Redis&) = delete;
     Redis& operator=(const Redis&) = delete;
+    Redis(const Redis&&) = delete;
+    Redis& operator=(const Redis&&) = delete;
 
     /**
      * Authenticate with the given password.
@@ -229,6 +247,37 @@ public:
      */
     std::vector<String> lrange(const char* key, int start, int stop);
 
+    /**
+     * Sets up a subscription for messages published to `channel`. May be called in any mode & from message handlers.
+     */
+    bool subscribe(const char* channel) { return _subscribe(SubscribeSpec{false, String(channel)}); }
+
+    /**
+     * Sets up a subscription for messages published to any channels matching `pattern`. May be called in any mode & from message handlers.
+     */
+    bool psubscribe(const char* pattern) { return _subscribe(SubscribeSpec{true, String(pattern)}); }
+
+    /**
+     * Removes a subscription for `channelOrPattern`. May be called from message handlers.
+     */
+    bool unsubscribe(const char* channelOrPattern);
+
+    /**
+     * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.
+     * On success, this call will *block* until stopSubscribing() is called (meaning `loop()` will never be called!), and only *then* will return `RedisSubscribeSuccess`.
+     * On failure, this call will return immediately with a return value indicated the failure mode.
+     * Calling `stopSubscribing()` will force this method to exit on the *next* recieved message.
+     * @param messageCallback The function to be called on each successful message receipt.
+     * @param errorCallback The function to be called if message receipt processing produces an error. Call `stopSubscribing()` on
+     * the passed-in instance to end all further message processing.
+     */
+    RedisSubscribeResult startSubscribing(RedisMsgCallback messageCallback, RedisMsgErrorCallback errorCallback = nullptr);
+
+    /**
+     * Stops message processing on receipt of next message. Can be called from message handlers.
+     */
+    void stopSubscribing() { subLoopRun = false; }
+
 #if ARDUINO_REDIS_TEST
     typedef struct {
         int total;
@@ -241,7 +290,17 @@ public:
 #endif // ARDUINO_REDIS_TEST
 
 private:
+    typedef struct {
+        bool pattern;
+        String spec;
+    } SubscribeSpec;
+
+    bool _subscribe(SubscribeSpec spec);
+
     Client& conn;
+    std::vector<SubscribeSpec> subSpec;
+    bool subscriberMode = false;
+    bool subLoopRun = false;
 
     bool _expire_(const char*, int, const char*);
     int _ttl_(const char*, const char*);
