@@ -61,19 +61,19 @@ void setup()
     Serial.println("Listening...");
 
     auto subRv = redis.startSubscribing(
-      [=](Redis* redis, String channel, String msg) 
+      [=](Redis* redisInst, String channel, String msg) 
       {
         Serial.printf("Message on channel '%s': \"%s\"\n", channel.c_str(), msg.c_str());
       
         if (channel == "ctrl-close")
         {
           Serial.println("Got message on ctrl-close: ending!");
-          redis->stopSubscribing();
+          redisInst->stopSubscribing();
         } else if (channel == "ctrl-add")
         {
           Serial.printf("Adding subscription to channel '%s'\n", msg.c_str());
 
-          if (!redis->subscribe(msg.c_str()))
+          if (!redisInst->subscribe(msg.c_str()))
           {
             Serial.println("Failed to add subscription!");
           }
@@ -81,20 +81,20 @@ void setup()
         {
           Serial.printf("Removing subscription to channel '%s'\n", msg.c_str());
 
-          if (!redis->unsubscribe(msg.c_str()))
+          if (!redisInst->unsubscribe(msg.c_str()))
           {
             Serial.println("Failed to remove subscription!");
           }
         }
       },
-      [=](Redis* redis, RedisMessageError err) 
+      [=](Redis* redisInst, RedisMessageError err) 
       {
         Serial.printf("Subscription error! '%d'\n", err);
-        redis->stopSubscribing();
       }
     );
 
-    if (subRv) {
+    if (subRv) 
+    {
       Serial.printf("Subscription setup failure: %d\n", subRv);
     }
 
