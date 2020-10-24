@@ -172,4 +172,5 @@ public:
 private:
     String _err;
 };
+
 #endif // REDIS_INTERNAL_H

@@ -152,4 +152,3 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
 
     return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::UnknownType, String(typeChar)));
 }
-

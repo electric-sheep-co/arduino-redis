@@ -19,12 +19,14 @@ RedisReturnValue Redis::authenticate(const char* password)
     return RedisNotConnectedFailure;
 }
 
+#define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed<t>(conn)
+
+#define TRCMD_EXPECTOK(c, ...) (bool)(((String)*RedisCommand(c, ArgList{__VA_ARGS__}).issue(conn)).indexOf("OK") != -1)
+
 bool Redis::set(const char* key, const char* value)
 {
-    return ((String)*RedisCommand("SET", ArgList{key, value}).issue(conn)).indexOf("OK") != -1;
+    return TRCMD_EXPECTOK("SET", key, value);
 }
-
-#define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed<t>(conn)
 
 String Redis::get(const char* key) 
 {
@@ -102,6 +104,61 @@ std::vector<String> Redis::lrange(const char* key, int start, int stop)
     return rv->type() == RedisObject::Type::Array 
         ? (std::vector<String>)*((RedisArray*)rv.get()) 
         : std::vector<String>();
+}
+
+String Redis::lindex(const char* key, int index)
+{
+    TRCMD(String, "LINDEX", key, String(index));
+}
+
+int Redis::llen(const char* key)
+{
+    TRCMD(int, "LLEN", key);
+}
+
+String Redis::lpop(const char* key)
+{
+    TRCMD(String, "LPOP", key);
+}
+
+int Redis::lpos(const char* key, const char* element)
+{
+    TRCMD(int, "LPOS", key, element);
+}
+
+int Redis::lpush(const char* key, const char* value, bool exclusive)
+{
+    TRCMD(int, (exclusive ? "LPUSHX" : "LPUSH"), key, value);
+}
+
+int Redis::lrem(const char* key, int count, const char* element)
+{
+    TRCMD(int, "LREM", key, String(count), element);
+}
+
+bool Redis::lset(const char* key, int index, const char* element)
+{
+    TRCMD_EXPECTOK("LSET", key, String(index), element);
+}
+
+bool Redis::ltrim(const char* key, int start, int stop)
+{
+    TRCMD_EXPECTOK("LTRIM", key, String(start), String(stop));
+}
+
+String Redis::info(const char* section)
+{
+    TRCMD(String, "INFO", (section ? section : ""));
+}
+
+String Redis::rpop(const char* key)
+{
+    TRCMD(String, "RPOP", key);
+}
+
+int Redis::rpush(const char* key, const char* value, bool exclusive)
+{
+    TRCMD(int, (exclusive ? "RPUSHX" : "RPUSH"), key, value);
 }
 
 bool Redis::_subscribe(SubscribeSpec spec)

@@ -57,7 +57,6 @@ typedef enum {
   /// An unknown error occurred.
   RedisMessageUnknownType,
 } RedisMessageError;
-
 /** Redis-for-Arduino client interface.
  *
  *  The sole constructor takes a reference to any instance
@@ -185,18 +184,18 @@ public:
     /**
      * Query remaining time-to-live (time-until-expiry) for `key`.
      * @param key The query whose TTL to query.
-     * @return The key's TTL in seconds, or a negative value signaling error:
-     *   -1 if the key exists but has no associated expire, -2 if the key DNE.
-     */
-    int ttl(const char* key) { return _ttl_(key, "TTL"); }
-
-    /**
-     * Query remaining time-to-live (time-until-expiry) for `key`.
-     * @param key The query whose TTL to query.
      * @return The key`s TTL in milliseconds, or a negative value signaling error:
      *   -1 if the key exists but has no associated expire, -2 if the key DNE.
      */
     int pttl(const char* key) { return _ttl_(key, "PTTL"); }
+
+    /**
+     * Query remaining time-to-live (time-until-expiry) for `key`.
+     * @param key The query whose TTL to query.
+     * @return The key's TTL in seconds, or a negative value signaling error:
+     *   -1 if the key exists but has no associated expire, -2 if the key DNE.
+     */
+    int ttl(const char* key) { return _ttl_(key, "TTL"); }
 
     /**
      * Set `field` in hash at `key` to `value`.
@@ -256,12 +255,90 @@ public:
     bool hexists(const char* key, const char* field);
 
     /**
+     * Returns the element of the list stored at `index`.
+     * @param key
+     * @param end Zero-based element index.
+     * @return The element's contents as a String.
+     */
+    String lindex(const char* key, int index);
+
+    /** Returns the length of the list stored at `key`. 
+     *  If `key` does not exist, it is interpreted as an empty list and 0 is returned.
+     *  An error is returned when the value stored at `key` is not a list.
+     *  @param key
+     *  @return The length of the list at `key`.
+     */
+    int llen(const char* key);
+
+    /** Removes and returns the first element of the list stored at `key`.
+     *  @param key
+     *  @return The value of the first element, or nil when key does not exist.
+     */
+    String lpop(const char* key);
+
+    /** Returns the index of the first matched `element` when scanning from head to tail
+     *  @param key
+     *  @param element
+     *  @return The index of the first element, or nil when key does not exist.
+     */
+    int lpos(const char* key, const char* element);
+    
+    /** Insert the specified `value` at the head of the list stored at `key` (or 'LPUSHX' semantics if `exclusive` is true)
+     *  @param key
+     *  @param value
+     *  @param exclusive If set, issues 'LPUSHX' instead of 'LPUSH' which pushes `value` only if `key` already exists and holds a list. In contrary to LPUSH, no operation will be performed when key does not yet exist.
+     *  @return The length of the list after the push operations.
+     */
+    int lpush(const char* key, const char* value, bool exclusive = false);
+
+    /**
      * Returns the specified elements of the list stored at `key`.
+     * @param key
      * @param start Zero-based starting index (can be negative to indicate end-of-list offset).
      * @param end Zero-based ending index.
      * @return The list of elements, as a vector of Strings; or an empty vector if error/DNE.
      */
     std::vector<String> lrange(const char* key, int start, int stop);
+    
+    /** Removes the first `count` occurrences of elements equal to `element` from the list stored at `key`.
+     *  @param key
+     *  @param count if less than zero: removes elements moving from head to tail; if greater than zero, removes from tail to head. if zero, removes all.
+     *  @param element
+     *  @return The value of the first element, or nil when key does not exist.
+     */
+    int lrem(const char* key, int count, const char* element);
+    
+    /** Sets the list element at `index` to `element`. 
+     *  @param key
+     *  @param index
+     *  @param element
+     *  @return success or failure
+     */
+    bool lset(const char* key, int index, const char* element);
+
+    /** Trim an existing list so that it will contain only the specified range of elements specified. Both `start` and `stop` are zero-based indexes.
+     *  @param key
+     *  @param start
+     *  @param stop
+     *  @return success or failure
+     */
+    bool ltrim(const char* key, int start, int stop);
+
+    String info(const char* section);
+    
+    /** Removes and returns the last element of the list stored at `key`.
+     *  @param key
+     *  @return The value of the last element, or nil when key does not exist.
+     */
+    String rpop(const char* key);
+    
+    /** Insert the specified `value` at the tail of the list stored at `key` (or 'RPUSHX' semantics if `exclusive` is true)
+     *  @param key
+     *  @param value
+     *  @param exclusive If set, issues 'RPUSHX' instead of 'RPUSH' which pushes `value` only if `key` already exists and holds a list. In contrary to RPUSH, no operation will be performed when key does not yet exist.
+     *  @return The length of the list after the push operations.
+     */
+    int rpush(const char* key, const char* value, bool exclusive = false);
 
     /**
      * Sets up a subscription for messages published to `channel`. May be called in any mode & from message handlers.
