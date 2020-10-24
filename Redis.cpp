@@ -104,6 +104,11 @@ std::vector<String> Redis::lrange(const char* key, int start, int stop)
         : std::vector<String>();
 }
 
+String Redis::lindex(const char* key, int index)
+{
+  TRCMD(String, "LINDEX", key, String(index));
+}
+
 bool Redis::_subscribe(SubscribeSpec spec)
 {
     if (!subscriberMode) {

@@ -44,6 +44,16 @@ typedef enum {
   RedisMessageUnknownType,
 } RedisMessageError;
 
+typedef enum {
+  RedisLInsertPivot_BEFORE,
+  RedisLInsertPivot_AFTER
+} RedisLInsertPivot;
+
+typedef enum {
+  RedisLMoveDirection_RIGHT,
+  RedisLMoveDirection_LEFT
+} RedisLMoveDirection;
+
 /** Redis-for-Arduino client interface.
  *
  *  The sole constructor takes a reference to any instance
@@ -242,11 +252,54 @@ public:
 
     /**
      * Returns the specified elements of the list stored at `key`.
+     * @param key
      * @param start Zero-based starting index (can be negative to indicate end-of-list offset).
      * @param end Zero-based ending index.
      * @return The list of elements, as a vector of Strings; or an empty vector if error/DNE.
      */
     std::vector<String> lrange(const char* key, int start, int stop);
+
+    /**
+     * Returns the element of the list stored at `index`.
+     * @param key
+     * @param end Zero-based element index.
+     * @return The element's contents as a String.
+     */
+    String lindex(const char* key, int index);
+
+    /**
+     * Inserts the provided `value` of the list stored at `index`.
+     * @param key
+     * @param pivot The pivot point.
+     * @param referenceValue The pivot reference value.
+     * @param value The value to be inserted.
+     * @return The length of the list after the insert operation, or -1 if `referenceValue` was not found.
+     */
+    int linsert(const char* key, RedisLInsertPivot pivot, const char* referenceValue, const char* value);
+
+    /** Returns the length of the list stored at `key`. 
+     *  If `key` does not exist, it is interpreted as an empty list and 0 is returned.
+     *  An error is returned when the value stored at `key` is not a list.
+     *  @param key
+     *  @return The length of the list at `key`.
+     */
+    int llen(const char* key);
+
+    /** Atomically returns and removes the first/last element (head/tail depending on the `wherefrom` argument) of the list stored at `source`,
+     *  and pushes the element at the first/last element (head/tail depending on the `whereto` argument) of the list stored at `destination`.
+     *  @param source
+     *  @param destination
+     *  @param wherefrom
+     *  @param whereto
+     *  @return The element being popped and pushed.
+     */
+    String lmove(const char* source, const char* destination, RedisLMoveDirection wherefrom, RedisLMoveDirection whereto);
+
+    /** Removes and returns the first element of the list stored at `key`.
+     *  @param key
+     *  @return The value of the first element, or nil when key does not exist.
+     */
+    String lpop(const char* key);
 
     /**
      * Sets up a subscription for messages published to `channel`. May be called in any mode & from message handlers.
@@ -308,6 +361,7 @@ private:
     bool _hset_(const char*, const char*, const char*, const char*);
 };
 
+#define ARDUINO_REDIS_TEST 1
 #if ARDUINO_REDIS_TEST
 #include <map>
 
