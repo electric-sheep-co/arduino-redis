@@ -279,17 +279,6 @@ public:
      */
     void stopSubscribing() { subLoopRun = false; }
 
-#if ARDUINO_REDIS_TEST
-    typedef struct {
-        int total;
-        int passed;
-    } TestResults;
-
-    TestResults runTests(bool logToSerial = false, 
-        String prefix = "__com.arduino-redis.test", 
-        bool retainData = false);
-#endif // ARDUINO_REDIS_TEST
-
 private:
     typedef struct {
         bool pattern;
@@ -307,78 +296,5 @@ private:
     int _ttl_(const char*, const char*);
     bool _hset_(const char*, const char*, const char*, const char*);
 };
-
-#if ARDUINO_REDIS_TEST
-#include <map>
-
-/* tests are not expected to pass if retainData = true */
-Redis::TestResults Redis::runTests(bool logToSerial, String prefix, bool retainData) 
-{
-    /* These are NOT executed in definition order! */
-    std::map<String, std::function<bool(const char*)>> g_Tests 
-    {
-        { "set", [this](const char* k) { return set(k, "!"); } },
-        { "setget", [this](const char* k) { return set(k, "!") == 1 && get(k) == "!"; } },
-        { "expire", [this](const char* k) { 
-            return set(k, "E") && expire(k, 5) && ttl(k) > 4;
-        } },
-        { "pexpire", [this](const char* k) {
-            return set(k, "PE") && pexpire(k, 5000) && pttl(k) > 4500;
-        } },
-        { "dlyexp", [this](const char* k) {
-            auto sr = set(k, "DE");
-            expire(k, 10); 
-            delay(4000);
-            auto t = ttl(k);
-            return sr && t > 5 && t < 7;
-        } },
-        { "hset", [this](const char* k) { return hset(k, "TF", "H!") && hexists(k, "TF"); } },
-        { "hsetget", [this](const char* k) { 
-            return hset(k, "TF", "HH") && hget(k, "TF") == "HH"; 
-        } },
-        { "hlen", [this](const char* k) {
-            for (int i = 0; i < 10; i++) {
-                auto fv = String(i);
-                hset(k, String("field-" + fv).c_str(), fv.c_str());
-            }
-            return hlen(k) == 10;
-        } },
-        { "hstrlen", [this](const char* k) { 
-            return hset(k, "hsr", k) && hstrlen(k, "hsr") == strlen(k); 
-        } },
-        { "append", [this](const char* k) { return append(k, "foo") == 3; } },
-        { "exists", [this](const char* k) { return set(k, k) && exists(k); } }
-    };
-
-    if (logToSerial) {
-        Serial.begin(115200);
-        Serial.printf("Redis::run_tests(\"%s\") starting...\n", prefix.c_str());
-    }
-
-    auto pFunc = [&prefix](const String& n) { return String(prefix + "." + n); };
-
-    int total = 0, pass = 0;
-    for (auto& kv : g_Tests)
-    {
-        auto tName = kv.first;
-        auto tFunc = kv.second;
-        auto pName = pFunc(tName);
-        auto tRes = tFunc(pName.c_str());
-        if (logToSerial)
-            Serial.printf("\tTest \"%s\":\t%s\n", tName.c_str(), tRes ? "pass" : "FAIL");
-        total++;
-        pass += tRes ? 1 : 0;
-    }
-
-    if (logToSerial)
-        Serial.printf("Result: %d passed / %d total\n", pass, total);
-
-    if (!retainData)
-        for (auto& kv : g_Tests)
-            (void)del(pFunc(kv.first).c_str());
-
-    return { .total = total, .passed = pass };
-}
-#endif
 
 #endif
