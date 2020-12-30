@@ -39,9 +39,15 @@ void setup()
     auto backoffCounter = -1;
     auto resetBackoffCounter = [&]() { backoffCounter = 0; };
 
-    for (resetBackoffCounter(); subscriberLoop(resetBackoffCounter); backoffCounter++)
+    resetBackoffCounter();
+    while (subscriberLoop(resetBackoffCounter))
     {
         auto curDelay = min((1000 * (int)pow(2, backoffCounter)), MAX_BACKOFF);
+
+        if (curDelay != MAX_BACKOFF) {
+            ++backoffCounter;
+        }
+
         Serial.printf("retry #%d, waiting %ld ms...\n", backoffCounter + 1, curDelay);
         delay(curDelay);
     }
