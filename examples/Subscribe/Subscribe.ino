@@ -48,7 +48,7 @@ void setup()
             ++backoffCounter;
         }
 
-        Serial.printf("retry #%d, waiting %ld ms...\n", backoffCounter + 1, curDelay);
+        Serial.printf("Waiting %ld s to reconnect...\n", (backoffCounter + 1) / 1000, curDelay);
         delay(curDelay);
     }
 
