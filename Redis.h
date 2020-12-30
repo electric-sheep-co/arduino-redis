@@ -35,6 +35,8 @@ typedef enum {
 typedef enum {
   RedisSubscribeBadCallback = -255,
   RedisSubscribeSetupFailure,
+  RedisSubscribeServerDisconnected,
+  RedisSubscribeOtherError,
   RedisSubscribeSuccess = 0
 } RedisSubscribeResult;
 

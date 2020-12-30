@@ -80,7 +80,7 @@ String RedisArray::RESP()
 std::shared_ptr<RedisObject> RedisCommand::issue(Client& cmdClient) 
 {
     if (!cmdClient.connected())
-        return std::shared_ptr<RedisObject>(new RedisInternalError("Client is not connected"));
+        return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::Disconnected));
 
     auto cmdRespStr = RESP();
     cmdClient.print(cmdRespStr);
@@ -128,28 +128,28 @@ static TypeParseMap g_TypeParseMap {
 
 std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
 {
-    if (client.connected()) {
-        while (!client.available());
+    while (client.connected() && !client.available());
 
-        RedisObject::Type typeChar = RedisObject::Type::NoType;
-        do {
-            typeChar = (RedisObject::Type)client.read();
-        } while (typeChar == -1 || typeChar == '\r' || typeChar == '\n');
-
-        if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
-            auto retVal = g_TypeParseMap[typeChar](client);
-
-            if (!retVal || retVal->type() == RedisObject::Type::Error) {
-                String err = retVal ? (String)*retVal : "(nil)";
-                return std::shared_ptr<RedisObject>(new RedisInternalError(err));
-            }
-
-            return std::shared_ptr<RedisObject>(retVal);
+    RedisObject::Type typeChar = RedisObject::Type::NoType;
+    do {
+        if (!client.connected()) {
+            return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::Disconnected));
         }
 
-        return std::shared_ptr<RedisObject>(new RedisInternalError("Unable to find type: " + typeChar));
+        typeChar = (RedisObject::Type)client.read();
+    } while (typeChar == -1 || typeChar == '\r' || typeChar == '\n');
+
+    if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
+        auto retVal = g_TypeParseMap[typeChar](client);
+
+        if (!retVal || retVal->type() == RedisObject::Type::Error) {
+            String err = retVal ? (String)*retVal : "(nil)";
+            return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::UnknownError, err));
+        }
+
+        return std::shared_ptr<RedisObject>(retVal);
     }
 
-    return std::shared_ptr<RedisObject>(new RedisInternalError("Not connected"));
+    return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::UnknownType, String(typeChar)));
 }
 
