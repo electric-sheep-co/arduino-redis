@@ -122,11 +122,24 @@ public:
 class RedisInternalError : public RedisObject
 {
 public:
-    RedisInternalError(String err) : RedisObject(Type::InternalError) { data = err; }
-    RedisInternalError(const char* err) : RedisInternalError(String(err)) {}
+    typedef enum {
+      UnknownError = -254,
+      UnknownType,
+      Disconnected,
+      NoError = 0
+    } RedisInternalErrorCode;
+
+    RedisInternalError(RedisInternalErrorCode c) : RedisObject(Type::InternalError), _code(c) {}
+    RedisInternalError(RedisInternalErrorCode c, String es) : RedisInternalError(c) { data = es; }
     ~RedisInternalError() override {}
 
-    virtual String RESP() override { return "INTERNAL ERROR: " + data; }
+    RedisInternalErrorCode code() { return _code; }
+    void setErrorString(String es) { data = es; }
+
+    virtual String RESP() override { return "INTERNAL ERROR " + String(_code) + (data ? ": " + data : ""); }
+
+protected:
+  RedisInternalErrorCode _code;
 };
 
 /** A Command (a specialized Array subclass): https://redis.io/topics/protocol#sending-commands-to-a-redis-server */

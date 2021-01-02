@@ -156,6 +156,16 @@ RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, R
     while (subLoopRun) {
         auto msg = RedisObject::parseType(conn);
 
+        if (msg->type() == RedisObject::Type::InternalError) {
+          auto errPtr = (RedisInternalError*)msg.get();
+
+          if (errPtr->code() == RedisInternalError::Disconnected) {
+            return RedisSubscribeServerDisconnected;
+          }
+
+          return RedisSubscribeOtherError;
+        }
+
         if (msg->type() != RedisObject::Type::Array) {
             emitErr(RedisMessageBadResponseType);
             continue;
