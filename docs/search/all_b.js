@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['ttl_43',['ttl',['../classRedis.html#a9ff7a6dceacb137d2f9ea0f012085b69',1,'Redis']]],
-  ['type_44',['Type',['../classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafe',1,'RedisObject']]]
+  ['operator_20bool_36',['operator bool',['../classRedisInteger.html#a9c637c963bf08a027629cf82f74fb9db',1,'RedisInteger']]],
+  ['operator_20int_37',['operator int',['../classRedisInteger.html#ab904fe43b3dcaff7eb5c86190a18bd3b',1,'RedisInteger']]],
+  ['operator_20string_38',['operator String',['../classRedisObject.html#ae78351c3a7534104868495077cb96fd7',1,'RedisObject']]],
+  ['operator_3d_39',['operator=',['../classRedis.html#a5490477cfa61b2d43fc9f393dcaebbc1',1,'Redis::operator=(const Redis &amp;)=delete'],['../classRedis.html#ace7ff645b6b00c2cd81ea0bf937636b4',1,'Redis::operator=(const Redis &amp;&amp;)=delete']]],
+  ['vector_3c_20string_20_3e_40',['vector&lt; String &gt;',['../classRedisArray.html#a07aae078c2867d7a6ee6dce51b928f7f',1,'RedisArray']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['operator_20string_72',['operator String',['../classRedisObject.html#ae78351c3a7534104868495077cb96fd7',1,'RedisObject']]]
+  ['lrange_136',['lrange',['../classRedis.html#a4d6bf9e348fc7318e93bd0e76fc22917',1,'Redis']]]
 ];

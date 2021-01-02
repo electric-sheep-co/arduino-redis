@@ -1,5 +1,10 @@
 var searchData=
 [
-  ['redis_79',['Redis',['../classRedis.html#a1b5c1cc8b21c8b5ca48e70c017479df4',1,'Redis']]],
-  ['resp_80',['RESP',['../classRedisObject.html#ab34fd619c08d43eff0941b008e2b0fca',1,'RedisObject::RESP()'],['../classRedisSimpleString.html#a02397b350af1137a12eb8e2fdda0c6e6',1,'RedisSimpleString::RESP()'],['../classRedisBulkString.html#a1ac9abf4cdddb62d668f9840b4ab8557',1,'RedisBulkString::RESP()'],['../classRedisArray.html#a68b029635c24b38c8b7261503f051a2c',1,'RedisArray::RESP()'],['../classRedisInternalError.html#ad1fcc44debb300148bf0a76e05a7dea9',1,'RedisInternalError::RESP()']]]
+  ['parsetype_142',['parseType',['../classRedisObject.html#ae89b47800fd03403dc0d8311b720521d',1,'RedisObject']]],
+  ['persist_143',['persist',['../classRedis.html#a112e63707370d24f99019ca7a5fad2d7',1,'Redis']]],
+  ['pexpire_144',['pexpire',['../classRedis.html#ac4027bcc3e390bcacf15828e9bca6505',1,'Redis']]],
+  ['pexpire_5fat_145',['pexpire_at',['../classRedis.html#a4f72fd54b9beb2c3c3cc8e6f01f0034e',1,'Redis']]],
+  ['psubscribe_146',['psubscribe',['../classRedis.html#a6c78431aa7909b83da074881d865dc44',1,'Redis']]],
+  ['pttl_147',['pttl',['../classRedis.html#acc26bdb9549055680cb18b155c2df4b4',1,'Redis']]],
+  ['publish_148',['publish',['../classRedis.html#a98ab34012325d66612d44a0187486e22',1,'Redis']]]
 ];

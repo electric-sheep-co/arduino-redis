@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['get_9',['get',['../classRedis.html#ad8930ca58b3575824116e53fcff809e8',1,'Redis']]]
+  ['code_10',['code',['../classRedisInternalError.html#adc09898e0a0bcde96c3f09e5f474b4ad',1,'RedisInternalError']]],
+  ['crlf_11',['CRLF',['../RedisInternal_8h.html#a6cb23a858b0a21bdaa644b9181dc415f',1,'RedisInternal.h']]]
 ];

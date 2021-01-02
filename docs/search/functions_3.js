@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['get_61',['get',['../classRedis.html#ad8930ca58b3575824116e53fcff809e8',1,'Redis']]]
+  ['exists_122',['exists',['../classRedis.html#a5acf5d9debf30048fcca5f4ad19e74f5',1,'Redis']]],
+  ['expire_123',['expire',['../classRedis.html#a821419ef0401582307d7c26a4764cdf8',1,'Redis']]],
+  ['expire_5fat_124',['expire_at',['../classRedis.html#a3caae04f0c00c019ddd4cba6be6355d2',1,'Redis']]]
 ];

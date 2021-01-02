@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['unsubscribe_86',['unsubscribe',['../classRedis.html#a582bb46062563ad919ddab14a6520cf7',1,'Redis']]]
+  ['ttl_164',['ttl',['../classRedis.html#a9ff7a6dceacb137d2f9ea0f012085b69',1,'Redis']]],
+  ['type_165',['type',['../classRedisObject.html#a4eca1de9ded26e6259b2cb0309e5abb8',1,'RedisObject']]]
 ];

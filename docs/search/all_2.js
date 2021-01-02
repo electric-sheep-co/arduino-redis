@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['exists_5',['exists',['../classRedis.html#a5acf5d9debf30048fcca5f4ad19e74f5',1,'Redis']]],
-  ['expire_6',['expire',['../classRedis.html#a821419ef0401582307d7c26a4764cdf8',1,'Redis']]],
-  ['expire_5fat_7',['expire_at',['../classRedis.html#a3caae04f0c00c019ddd4cba6be6355d2',1,'Redis']]],
-  ['examples_8',['Examples',['../md_examples_README.html',1,'']]]
+  ['bulkstring_9',['BulkString',['../classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafea96d8c718e286ddb6d1ac70023c06b8d0',1,'RedisObject']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['del_57',['del',['../classRedis.html#ad3048eb52ab9d95237226959e6be34da',1,'Redis']]]
+  ['code_120',['code',['../classRedisInternalError.html#adc09898e0a0bcde96c3f09e5f474b4ad',1,'RedisInternalError']]]
 ];

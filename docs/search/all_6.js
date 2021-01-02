@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lrange_19',['lrange',['../classRedis.html#a4d6bf9e348fc7318e93bd0e76fc22917',1,'Redis']]]
+  ['get_20',['get',['../classRedis.html#ad8930ca58b3575824116e53fcff809e8',1,'Redis']]]
 ];

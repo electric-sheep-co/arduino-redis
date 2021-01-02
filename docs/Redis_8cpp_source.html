@@ -66,107 +66,107 @@ $(function() {
 <div class="title">Redis.cpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;Redis.h&quot;</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;RedisInternal.h&quot;</span></div>
+<a href="Redis_8cpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Redis_8h.html">Redis.h</a>&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="RedisInternal_8h.html">RedisInternal.h</a>&quot;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno"><a class="line" href="classRedis.html#a8f9a19a438e2f005852dcc7cd46816e5">    4</a></span>&#160;RedisReturnValue <a class="code" href="classRedis.html#a8f9a19a438e2f005852dcc7cd46816e5">Redis::authenticate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
+<div class="line"><a name="l00004"></a><span class="lineno"><a class="line" href="classRedis.html#a8f9a19a438e2f005852dcc7cd46816e5">    4</a></span>&#160;<a class="code" href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6">RedisReturnValue</a> <a class="code" href="classRedis.html#a8f9a19a438e2f005852dcc7cd46816e5">Redis::authenticate</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* password)</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;{</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="keywordflow">if</span>(conn.connected())</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keywordtype">int</span> passwordLength = strlen(password);</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keywordflow">if</span> (passwordLength &gt; 0)</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            <span class="keyword">auto</span> cmdRet = <a class="code" href="classRedisCommand.html">RedisCommand</a>(<span class="stringliteral">&quot;AUTH&quot;</span>, ArgList{password}).issue(conn);</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            <span class="keyword">auto</span> cmdRet = <a class="code" href="classRedisCommand.html">RedisCommand</a>(<span class="stringliteral">&quot;AUTH&quot;</span>, <a class="code" href="RedisInternal_8h.html#afab34353187c19143fc502be144c9b52">ArgList</a>{password}).issue(conn);</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            <span class="keywordflow">return</span> cmdRet-&gt;type() == RedisObject::Type::SimpleString &amp;&amp; (String)*cmdRet == <span class="stringliteral">&quot;OK&quot;</span> </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                ? RedisSuccess : RedisAuthFailure;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                ? <a class="code" href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6a039ea0e0c8b3ac7b52bafc6e841b90e3">RedisSuccess</a> : <a class="code" href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6a1163ba2e5288946732df93d29df72b69">RedisAuthFailure</a>;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        }</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">return</span> RedisSuccess;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6a039ea0e0c8b3ac7b52bafc6e841b90e3">RedisSuccess</a>;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordflow">return</span> RedisNotConnectedFailure;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6ab359043cdfebe9c22f9df77e2fd61329">RedisNotConnectedFailure</a>;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;}</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classRedis.html#ad9e9c063e541c430e44861787d036118">   22</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classRedis.html#ad9e9c063e541c430e44861787d036118">Redis::set</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keyword">const</span> <span class="keywordtype">char</span>* value)</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">return</span> ((String)*<a class="code" href="classRedisCommand.html">RedisCommand</a>(<span class="stringliteral">&quot;SET&quot;</span>, ArgList{key, value}).issue(conn)).indexOf(<span class="stringliteral">&quot;OK&quot;</span>) != -1;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keywordflow">return</span> ((String)*<a class="code" href="classRedisCommand.html">RedisCommand</a>(<span class="stringliteral">&quot;SET&quot;</span>, <a class="code" href="RedisInternal_8h.html#afab34353187c19143fc502be144c9b52">ArgList</a>{key, value}).issue(conn)).indexOf(<span class="stringliteral">&quot;OK&quot;</span>) != -1;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed&lt;t&gt;(conn)</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">   27</a></span>&#160;<span class="preprocessor">#define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed&lt;t&gt;(conn)</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classRedis.html#ad8930ca58b3575824116e53fcff809e8">   29</a></span>&#160;String <a class="code" href="classRedis.html#ad8930ca58b3575824116e53fcff809e8">Redis::get</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key) </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;{</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    TRCMD(String, <span class="stringliteral">&quot;GET&quot;</span>, key);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(String, <span class="stringliteral">&quot;GET&quot;</span>, key);</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classRedis.html#ad3048eb52ab9d95237226959e6be34da">   34</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classRedis.html#ad3048eb52ab9d95237226959e6be34da">Redis::del</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key)</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    TRCMD(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;DEL&quot;</span>, key);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;DEL&quot;</span>, key);</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
 <div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classRedis.html#aff7468b0f29b883576227a60b86a2a2d">   39</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="classRedis.html#aff7468b0f29b883576227a60b86a2a2d">Redis::append</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keyword">const</span> <span class="keywordtype">char</span>* value)</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;{</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    TRCMD(<span class="keywordtype">int</span>, <span class="stringliteral">&quot;APPEND&quot;</span>, key, value);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">int</span>, <span class="stringliteral">&quot;APPEND&quot;</span>, key, value);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;}</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
 <div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classRedis.html#a98ab34012325d66612d44a0187486e22">   44</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="classRedis.html#a98ab34012325d66612d44a0187486e22">Redis::publish</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* channel, <span class="keyword">const</span> <span class="keywordtype">char</span>* message)</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;{</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    TRCMD(<span class="keywordtype">int</span>, <span class="stringliteral">&quot;PUBLISH&quot;</span>, channel, message);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">int</span>, <span class="stringliteral">&quot;PUBLISH&quot;</span>, channel, message);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classRedis.html#a5acf5d9debf30048fcca5f4ad19e74f5">   49</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classRedis.html#a5acf5d9debf30048fcca5f4ad19e74f5">Redis::exists</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key)</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;{</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    TRCMD(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;EXISTS&quot;</span>, key);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;EXISTS&quot;</span>, key);</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keywordtype">bool</span> Redis::_expire_(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keywordtype">int</span> arg, <span class="keyword">const</span> <span class="keywordtype">char</span>* cmd_var)</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    TRCMD(<span class="keywordtype">bool</span>, cmd_var, key, String(arg));</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">bool</span>, cmd_var, key, String(arg));</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classRedis.html#a112e63707370d24f99019ca7a5fad2d7">   59</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classRedis.html#a112e63707370d24f99019ca7a5fad2d7">Redis::persist</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key)</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;{</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    TRCMD(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;PERSIST&quot;</span>, key);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;PERSIST&quot;</span>, key);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keywordtype">int</span> Redis::_ttl_(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keyword">const</span> <span class="keywordtype">char</span>* cmd_var)</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;{</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    TRCMD(<span class="keywordtype">int</span>, cmd_var, key);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">int</span>, cmd_var, key);</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keywordtype">bool</span> Redis::_hset_(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keyword">const</span> <span class="keywordtype">char</span>* field, <span class="keyword">const</span> <span class="keywordtype">char</span>* value, <span class="keyword">const</span> <span class="keywordtype">char</span>* cmd_var)</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;{</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    TRCMD(<span class="keywordtype">int</span>, cmd_var, key, field, value);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">int</span>, cmd_var, key, field, value);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
 <div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classRedis.html#a8b4815c244144e6df785930b74ca2bc5">   74</a></span>&#160;String <a class="code" href="classRedis.html#a8b4815c244144e6df785930b74ca2bc5">Redis::hget</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keyword">const</span> <span class="keywordtype">char</span>* field) </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;{ </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    TRCMD(String, <span class="stringliteral">&quot;HGET&quot;</span>, key, field); </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(String, <span class="stringliteral">&quot;HGET&quot;</span>, key, field); </div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="classRedis.html#a56cc4e4346fe931f530307aa38c6f6aa">   79</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classRedis.html#a56cc4e4346fe931f530307aa38c6f6aa">Redis::hdel</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keyword">const</span> <span class="keywordtype">char</span>* field) </div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;{ </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    TRCMD(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;HDEL&quot;</span>, key, field); </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;HDEL&quot;</span>, key, field); </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
 <div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classRedis.html#a515e8fa538e89d22597417007dda4d08">   84</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="classRedis.html#a515e8fa538e89d22597417007dda4d08">Redis::hlen</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key) </div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;{ </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    TRCMD(<span class="keywordtype">int</span>, <span class="stringliteral">&quot;HLEN&quot;</span>, key); </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">int</span>, <span class="stringliteral">&quot;HLEN&quot;</span>, key); </div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;}</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
 <div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classRedis.html#a10e6b67224a140d6ff2aca5eaedfaaa2">   89</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="classRedis.html#a10e6b67224a140d6ff2aca5eaedfaaa2">Redis::hstrlen</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keyword">const</span> <span class="keywordtype">char</span>* field)</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;{</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    TRCMD(<span class="keywordtype">int</span>, <span class="stringliteral">&quot;HSTRLEN&quot;</span>, key, field);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">int</span>, <span class="stringliteral">&quot;HSTRLEN&quot;</span>, key, field);</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
 <div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classRedis.html#a715bd10eff2b0a578553257c0e441e98">   94</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classRedis.html#a715bd10eff2b0a578553257c0e441e98">Redis::hexists</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keyword">const</span> <span class="keywordtype">char</span>* field)</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;{</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    TRCMD(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;HEXISTS&quot;</span>, key, field);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <a class="code" href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a>(<span class="keywordtype">bool</span>, <span class="stringliteral">&quot;HEXISTS&quot;</span>, key, field);</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
 <div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="classRedis.html#a4d6bf9e348fc7318e93bd0e76fc22917">   99</a></span>&#160;std::vector&lt;String&gt; <a class="code" href="classRedis.html#a4d6bf9e348fc7318e93bd0e76fc22917">Redis::lrange</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* key, <span class="keywordtype">int</span> start, <span class="keywordtype">int</span> stop)</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;{</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">auto</span> rv = <a class="code" href="classRedisCommand.html">RedisCommand</a>(<span class="stringliteral">&quot;LRANGE&quot;</span>, ArgList{key, String(start), String(stop)}).issue(conn);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">auto</span> rv = <a class="code" href="classRedisCommand.html">RedisCommand</a>(<span class="stringliteral">&quot;LRANGE&quot;</span>, <a class="code" href="RedisInternal_8h.html#afab34353187c19143fc502be144c9b52">ArgList</a>{key, String(start), String(stop)}).issue(conn);</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordflow">return</span> rv-&gt;type() == RedisObject::Type::Array </div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        ? (std::vector&lt;String&gt;)*((<a class="code" href="classRedisArray.html">RedisArray</a>*)rv.get()) </div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        : std::vector&lt;String&gt;();</div>
@@ -180,13 +180,13 @@ $(function() {
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    }</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* cmdName = spec.pattern ? <span class="stringliteral">&quot;PSUBSCRIBE&quot;</span> : <span class="stringliteral">&quot;SUBSCRIBE&quot;</span>;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keyword">auto</span> rv = <a class="code" href="classRedisCommand.html">RedisCommand</a>(cmdName, ArgList{spec.spec}).issue(conn);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keyword">auto</span> rv = <a class="code" href="classRedisCommand.html">RedisCommand</a>(cmdName, <a class="code" href="RedisInternal_8h.html#afab34353187c19143fc502be144c9b52">ArgList</a>{spec.spec}).issue(conn);</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">return</span> rv-&gt;type() == RedisObject::Type::Array;</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;}</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
 <div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="classRedis.html#a582bb46062563ad919ddab14a6520cf7">  119</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classRedis.html#a582bb46062563ad919ddab14a6520cf7">Redis::unsubscribe</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* channelOrPattern)</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;{</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">auto</span> rv = <a class="code" href="classRedisCommand.html">RedisCommand</a>(<span class="stringliteral">&quot;UNSUBSCRIBE&quot;</span>, ArgList{channelOrPattern}).issue(conn);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">auto</span> rv = <a class="code" href="classRedisCommand.html">RedisCommand</a>(<span class="stringliteral">&quot;UNSUBSCRIBE&quot;</span>, <a class="code" href="RedisInternal_8h.html#afab34353187c19143fc502be144c9b52">ArgList</a>{channelOrPattern}).issue(conn);</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordflow">if</span> (rv-&gt;type() == RedisObject::Type::Array) {</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keyword">auto</span> vec = (std::vector&lt;String&gt;)*((<a class="code" href="classRedisArray.html">RedisArray</a>*)rv.get());</div>
@@ -196,10 +196,10 @@ $(function() {
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="classRedis.html#a8d192249d02ef9f493c2a0c52c515e7e">  131</a></span>&#160;RedisSubscribeResult <a class="code" href="classRedis.html#a8d192249d02ef9f493c2a0c52c515e7e">Redis::startSubscribing</a>(RedisMsgCallback messageCallback, RedisMsgErrorCallback errCallback)</div>
+<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="classRedis.html#a8d192249d02ef9f493c2a0c52c515e7e">  131</a></span>&#160;<a class="code" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49a">RedisSubscribeResult</a> <a class="code" href="classRedis.html#a8d192249d02ef9f493c2a0c52c515e7e">Redis::startSubscribing</a>(RedisMsgCallback messageCallback, RedisMsgErrorCallback errCallback)</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;{</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordflow">if</span> (!messageCallback) {</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">return</span> RedisSubscribeBadCallback;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aae83a024d2f0a1e9fa5186b147fc0fe7a">RedisSubscribeBadCallback</a>;</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    }</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordtype">bool</span> success = <span class="keyword">true</span>;</div>
@@ -211,10 +211,10 @@ $(function() {
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    }</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keywordflow">if</span> (!success) {</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keywordflow">return</span> RedisSubscribeSetupFailure;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aae037aad01c67d816e5ed717aa67a91a0">RedisSubscribeSetupFailure</a>;</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    }</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keyword">auto</span> emitErr = [=](RedisMessageError errCode) -&gt; <span class="keywordtype">bool</span> {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keyword">auto</span> emitErr = [=](<a class="code" href="Redis_8h.html#aff9058039284bdffae306ea62b43cba0">RedisMessageError</a> errCode) -&gt; <span class="keywordtype">bool</span> {</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;      <span class="keywordflow">if</span> (errCallback) {</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        errCallback(<span class="keyword">this</span>, errCode);</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      }</div>
@@ -222,32 +222,32 @@ $(function() {
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    subLoopRun = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordflow">while</span> (subLoopRun) {</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keyword">auto</span> msg = RedisObject::parseType(conn);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keyword">auto</span> msg = <a class="code" href="classRedisObject.html#ae89b47800fd03403dc0d8311b720521d">RedisObject::parseType</a>(conn);</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keywordflow">if</span> (msg-&gt;type() == RedisObject::Type::InternalError) {</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;          <span class="keyword">auto</span> errPtr = (<a class="code" href="classRedisInternalError.html">RedisInternalError</a>*)msg.get();</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;          <span class="keywordflow">if</span> (errPtr-&gt;code() == RedisInternalError::Disconnected) {</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            <span class="keywordflow">return</span> RedisSubscribeServerDisconnected;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;          <span class="keywordflow">if</span> (errPtr-&gt;code() == <a class="code" href="classRedisInternalError.html#a311f06de99adac8d8acb8cadb0e50fb0add40a4d119c2a5d6ca8781b29182eabc">RedisInternalError::Disconnected</a>) {</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aa9fcd3a1a6ec5d08d50342038e674a52d">RedisSubscribeServerDisconnected</a>;</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;          }</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;          <span class="keywordflow">return</span> RedisSubscribeOtherError;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;          <span class="keywordflow">return</span> <a class="code" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aa59b1355032a387764fd9bc6c86b46ec1">RedisSubscribeOtherError</a>;</div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        }</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        <span class="keywordflow">if</span> (msg-&gt;type() != RedisObject::Type::Array) {</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            emitErr(RedisMessageBadResponseType);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            emitErr(<a class="code" href="Redis_8h.html#aff9058039284bdffae306ea62b43cba0a8a957a1379dc58c3c8ffd4c8a175e367">RedisMessageBadResponseType</a>);</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        }</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keyword">auto</span> msgVec = (std::vector&lt;String&gt;)*((<a class="code" href="classRedisArray.html">RedisArray</a>*)msg.get());</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="keywordflow">if</span> (msgVec.size() &lt; 3) {</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            emitErr(RedisMessageTruncatedResponse);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            emitErr(<a class="code" href="Redis_8h.html#aff9058039284bdffae306ea62b43cba0a7245972a493c496cad74ea42b43076d6">RedisMessageTruncatedResponse</a>);</div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        }</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keywordflow">if</span> (msgVec[0] != <span class="stringliteral">&quot;message&quot;</span> &amp;&amp; msgVec[0] != <span class="stringliteral">&quot;pmessage&quot;</span>) {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            emitErr(RedisMessageUnknownType);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            emitErr(<a class="code" href="Redis_8h.html#aff9058039284bdffae306ea62b43cba0abf128d9ace97a605d4bb2462bc137566">RedisMessageUnknownType</a>);</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            <span class="keywordflow">continue</span>;</div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        }</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
@@ -256,31 +256,51 @@ $(function() {
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        messageCallback(<span class="keyword">this</span>, msgVec[1 + pMsgAdd], msgVec[2 + pMsgAdd]);</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    }</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keywordflow">return</span> RedisSubscribeSuccess;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aada590415292da9aa570a08f1265ce320">RedisSubscribeSuccess</a>;</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aRedis_8h_html_aff9058039284bdffae306ea62b43cba0"><div class="ttname"><a href="Redis_8h.html#aff9058039284bdffae306ea62b43cba0">RedisMessageError</a></div><div class="ttdeci">RedisMessageError</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00046">Redis.h:46</a></div></div>
 <div class="ttc" id="aclassRedis_html_a8b4815c244144e6df785930b74ca2bc5"><div class="ttname"><a href="classRedis.html#a8b4815c244144e6df785930b74ca2bc5">Redis::hget</a></div><div class="ttdeci">String hget(const char *key, const char *field)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00074">Redis.cpp:74</a></div></div>
+<div class="ttc" id="aRedis_8h_html_aff9058039284bdffae306ea62b43cba0a8a957a1379dc58c3c8ffd4c8a175e367"><div class="ttname"><a href="Redis_8h.html#aff9058039284bdffae306ea62b43cba0a8a957a1379dc58c3c8ffd4c8a175e367">RedisMessageBadResponseType</a></div><div class="ttdeci">@ RedisMessageBadResponseType</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00047">Redis.h:47</a></div></div>
 <div class="ttc" id="aclassRedisCommand_html"><div class="ttname"><a href="classRedisCommand.html">RedisCommand</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00146">RedisInternal.h:146</a></div></div>
 <div class="ttc" id="aclassRedis_html_ad3048eb52ab9d95237226959e6be34da"><div class="ttname"><a href="classRedis.html#ad3048eb52ab9d95237226959e6be34da">Redis::del</a></div><div class="ttdeci">bool del(const char *key)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00034">Redis.cpp:34</a></div></div>
+<div class="ttc" id="aRedis_8h_html_af33628205ee4280b749e4f21203f3ff6a1163ba2e5288946732df93d29df72b69"><div class="ttname"><a href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6a1163ba2e5288946732df93d29df72b69">RedisAuthFailure</a></div><div class="ttdeci">@ RedisAuthFailure</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00033">Redis.h:33</a></div></div>
 <div class="ttc" id="aclassRedis_html_ad8930ca58b3575824116e53fcff809e8"><div class="ttname"><a href="classRedis.html#ad8930ca58b3575824116e53fcff809e8">Redis::get</a></div><div class="ttdeci">String get(const char *key)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00029">Redis.cpp:29</a></div></div>
+<div class="ttc" id="aRedis_8h_html_aff9058039284bdffae306ea62b43cba0abf128d9ace97a605d4bb2462bc137566"><div class="ttname"><a href="Redis_8h.html#aff9058039284bdffae306ea62b43cba0abf128d9ace97a605d4bb2462bc137566">RedisMessageUnknownType</a></div><div class="ttdeci">@ RedisMessageUnknownType</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00049">Redis.h:49</a></div></div>
+<div class="ttc" id="aRedis_8h_html_af33628205ee4280b749e4f21203f3ff6a039ea0e0c8b3ac7b52bafc6e841b90e3"><div class="ttname"><a href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6a039ea0e0c8b3ac7b52bafc6e841b90e3">RedisSuccess</a></div><div class="ttdeci">@ RedisSuccess</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00031">Redis.h:31</a></div></div>
 <div class="ttc" id="aclassRedis_html_a8d192249d02ef9f493c2a0c52c515e7e"><div class="ttname"><a href="classRedis.html#a8d192249d02ef9f493c2a0c52c515e7e">Redis::startSubscribing</a></div><div class="ttdeci">RedisSubscribeResult startSubscribing(RedisMsgCallback messageCallback, RedisMsgErrorCallback errorCallback=nullptr)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00131">Redis.cpp:131</a></div></div>
 <div class="ttc" id="aclassRedis_html_a582bb46062563ad919ddab14a6520cf7"><div class="ttname"><a href="classRedis.html#a582bb46062563ad919ddab14a6520cf7">Redis::unsubscribe</a></div><div class="ttdeci">bool unsubscribe(const char *channelOrPattern)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00119">Redis.cpp:119</a></div></div>
+<div class="ttc" id="aRedis_8h_html_a7462db80a2c61bfcaa245b740fb9d49aae037aad01c67d816e5ed717aa67a91a0"><div class="ttname"><a href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aae037aad01c67d816e5ed717aa67a91a0">RedisSubscribeSetupFailure</a></div><div class="ttdeci">@ RedisSubscribeSetupFailure</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00039">Redis.h:39</a></div></div>
+<div class="ttc" id="aRedis_8h_html_a7462db80a2c61bfcaa245b740fb9d49aada590415292da9aa570a08f1265ce320"><div class="ttname"><a href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aada590415292da9aa570a08f1265ce320">RedisSubscribeSuccess</a></div><div class="ttdeci">@ RedisSubscribeSuccess</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00043">Redis.h:42</a></div></div>
+<div class="ttc" id="aclassRedisInternalError_html_a311f06de99adac8d8acb8cadb0e50fb0add40a4d119c2a5d6ca8781b29182eabc"><div class="ttname"><a href="classRedisInternalError.html#a311f06de99adac8d8acb8cadb0e50fb0add40a4d119c2a5d6ca8781b29182eabc">RedisInternalError::Disconnected</a></div><div class="ttdeci">@ Disconnected</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00128">RedisInternal.h:128</a></div></div>
+<div class="ttc" id="aRedis_8h_html_a7462db80a2c61bfcaa245b740fb9d49a"><div class="ttname"><a href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49a">RedisSubscribeResult</a></div><div class="ttdeci">RedisSubscribeResult</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00037">Redis.h:37</a></div></div>
 <div class="ttc" id="aclassRedis_html_a98ab34012325d66612d44a0187486e22"><div class="ttname"><a href="classRedis.html#a98ab34012325d66612d44a0187486e22">Redis::publish</a></div><div class="ttdeci">int publish(const char *channel, const char *message)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00044">Redis.cpp:44</a></div></div>
+<div class="ttc" id="aRedis_8h_html_aff9058039284bdffae306ea62b43cba0a7245972a493c496cad74ea42b43076d6"><div class="ttname"><a href="Redis_8h.html#aff9058039284bdffae306ea62b43cba0a7245972a493c496cad74ea42b43076d6">RedisMessageTruncatedResponse</a></div><div class="ttdeci">@ RedisMessageTruncatedResponse</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00048">Redis.h:48</a></div></div>
 <div class="ttc" id="aclassRedis_html_a112e63707370d24f99019ca7a5fad2d7"><div class="ttname"><a href="classRedis.html#a112e63707370d24f99019ca7a5fad2d7">Redis::persist</a></div><div class="ttdeci">bool persist(const char *key)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00059">Redis.cpp:59</a></div></div>
 <div class="ttc" id="aclassRedisArray_html"><div class="ttname"><a href="classRedisArray.html">RedisArray</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00086">RedisInternal.h:86</a></div></div>
 <div class="ttc" id="aclassRedis_html_a4d6bf9e348fc7318e93bd0e76fc22917"><div class="ttname"><a href="classRedis.html#a4d6bf9e348fc7318e93bd0e76fc22917">Redis::lrange</a></div><div class="ttdeci">std::vector&lt; String &gt; lrange(const char *key, int start, int stop)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00099">Redis.cpp:99</a></div></div>
+<div class="ttc" id="aRedisInternal_8h_html"><div class="ttname"><a href="RedisInternal_8h.html">RedisInternal.h</a></div></div>
 <div class="ttc" id="aclassRedisInternalError_html"><div class="ttname"><a href="classRedisInternalError.html">RedisInternalError</a></div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00122">RedisInternal.h:123</a></div></div>
 <div class="ttc" id="aclassRedis_html_a8f9a19a438e2f005852dcc7cd46816e5"><div class="ttname"><a href="classRedis.html#a8f9a19a438e2f005852dcc7cd46816e5">Redis::authenticate</a></div><div class="ttdeci">RedisReturnValue authenticate(const char *password)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00004">Redis.cpp:4</a></div></div>
+<div class="ttc" id="aclassRedisObject_html_ae89b47800fd03403dc0d8311b720521d"><div class="ttname"><a href="classRedisObject.html#ae89b47800fd03403dc0d8311b720521d">RedisObject::parseType</a></div><div class="ttdeci">static std::shared_ptr&lt; RedisObject &gt; parseType(Client &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00129">RedisInternal.cpp:129</a></div></div>
+<div class="ttc" id="aRedis_8cpp_html_a6f08500c83742e3fe2fa98b9dabd4b0d"><div class="ttname"><a href="Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d">TRCMD</a></div><div class="ttdeci">#define TRCMD(t, c,...)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00027">Redis.cpp:27</a></div></div>
+<div class="ttc" id="aRedisInternal_8h_html_afab34353187c19143fc502be144c9b52"><div class="ttname"><a href="RedisInternal_8h.html#afab34353187c19143fc502be144c9b52">ArgList</a></div><div class="ttdeci">std::vector&lt; String &gt; ArgList</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00012">RedisInternal.h:12</a></div></div>
+<div class="ttc" id="aRedis_8h_html_a7462db80a2c61bfcaa245b740fb9d49aa59b1355032a387764fd9bc6c86b46ec1"><div class="ttname"><a href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aa59b1355032a387764fd9bc6c86b46ec1">RedisSubscribeOtherError</a></div><div class="ttdeci">@ RedisSubscribeOtherError</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00041">Redis.h:41</a></div></div>
+<div class="ttc" id="aRedis_8h_html_a7462db80a2c61bfcaa245b740fb9d49aae83a024d2f0a1e9fa5186b147fc0fe7a"><div class="ttname"><a href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aae83a024d2f0a1e9fa5186b147fc0fe7a">RedisSubscribeBadCallback</a></div><div class="ttdeci">@ RedisSubscribeBadCallback</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00038">Redis.h:38</a></div></div>
 <div class="ttc" id="aclassRedis_html_a5acf5d9debf30048fcca5f4ad19e74f5"><div class="ttname"><a href="classRedis.html#a5acf5d9debf30048fcca5f4ad19e74f5">Redis::exists</a></div><div class="ttdeci">bool exists(const char *key)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00049">Redis.cpp:49</a></div></div>
+<div class="ttc" id="aRedis_8h_html_af33628205ee4280b749e4f21203f3ff6ab359043cdfebe9c22f9df77e2fd61329"><div class="ttname"><a href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6ab359043cdfebe9c22f9df77e2fd61329">RedisNotConnectedFailure</a></div><div class="ttdeci">@ RedisNotConnectedFailure</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00032">Redis.h:32</a></div></div>
 <div class="ttc" id="aclassRedis_html_a10e6b67224a140d6ff2aca5eaedfaaa2"><div class="ttname"><a href="classRedis.html#a10e6b67224a140d6ff2aca5eaedfaaa2">Redis::hstrlen</a></div><div class="ttdeci">int hstrlen(const char *key, const char *field)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00089">Redis.cpp:89</a></div></div>
 <div class="ttc" id="aclassRedis_html_a56cc4e4346fe931f530307aa38c6f6aa"><div class="ttname"><a href="classRedis.html#a56cc4e4346fe931f530307aa38c6f6aa">Redis::hdel</a></div><div class="ttdeci">bool hdel(const char *key, const char *field)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00079">Redis.cpp:79</a></div></div>
+<div class="ttc" id="aRedis_8h_html"><div class="ttname"><a href="Redis_8h.html">Redis.h</a></div></div>
+<div class="ttc" id="aRedis_8h_html_a7462db80a2c61bfcaa245b740fb9d49aa9fcd3a1a6ec5d08d50342038e674a52d"><div class="ttname"><a href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49aa9fcd3a1a6ec5d08d50342038e674a52d">RedisSubscribeServerDisconnected</a></div><div class="ttdeci">@ RedisSubscribeServerDisconnected</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00040">Redis.h:40</a></div></div>
 <div class="ttc" id="aclassRedis_html_a715bd10eff2b0a578553257c0e441e98"><div class="ttname"><a href="classRedis.html#a715bd10eff2b0a578553257c0e441e98">Redis::hexists</a></div><div class="ttdeci">bool hexists(const char *key, const char *field)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00094">Redis.cpp:94</a></div></div>
+<div class="ttc" id="aRedis_8h_html_af33628205ee4280b749e4f21203f3ff6"><div class="ttname"><a href="Redis_8h.html#af33628205ee4280b749e4f21203f3ff6">RedisReturnValue</a></div><div class="ttdeci">RedisReturnValue</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8h_source.html#l00030">Redis.h:30</a></div></div>
 <div class="ttc" id="aclassRedis_html_aff7468b0f29b883576227a60b86a2a2d"><div class="ttname"><a href="classRedis.html#aff7468b0f29b883576227a60b86a2a2d">Redis::append</a></div><div class="ttdeci">int append(const char *key, const char *value)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00039">Redis.cpp:39</a></div></div>
 <div class="ttc" id="aclassRedis_html_ad9e9c063e541c430e44861787d036118"><div class="ttname"><a href="classRedis.html#ad9e9c063e541c430e44861787d036118">Redis::set</a></div><div class="ttdeci">bool set(const char *key, const char *value)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00022">Redis.cpp:22</a></div></div>
 <div class="ttc" id="aclassRedis_html_a515e8fa538e89d22597417007dda4d08"><div class="ttname"><a href="classRedis.html#a515e8fa538e89d22597417007dda4d08">Redis::hlen</a></div><div class="ttdeci">int hlen(const char *key)</div><div class="ttdef"><b>Definition:</b> <a href="Redis_8cpp_source.html#l00084">Redis.cpp:84</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jan 2 2021 15:13:04 for Arduino-Redis by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
+Generated on Sat Jan 2 2021 15:19:11 for Arduino-Redis by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
 </small></address>
 </body>
 </html>
