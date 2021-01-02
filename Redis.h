@@ -26,12 +26,14 @@
 
 #include <vector>
 
+/** The return value from from `Redis::authenticate()` */
 typedef enum {
   RedisSuccess = 0,
   RedisNotConnectedFailure = 1,
   RedisAuthFailure = 2,
 } RedisReturnValue;
 
+/** The return value from `Redis::startSubscribing()`. See `examples/Subscribe.ino` for usage demo. */
 typedef enum {
   RedisSubscribeBadCallback = -255,
   RedisSubscribeSetupFailure,
@@ -40,6 +42,7 @@ typedef enum {
   RedisSubscribeSuccess = 0
 } RedisSubscribeResult;
 
+/** A value of this type will be passed as the second argument ot `Redis::RedisMsgErrorCallback`, if called */
 typedef enum {
   RedisMessageBadResponseType = -255,
   RedisMessageTruncatedResponse,
@@ -268,6 +271,7 @@ public:
     /**
      * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.
      * On success, this call will *block* until stopSubscribing() is called (meaning `loop()` will never be called!), and only *then* will return `RedisSubscribeSuccess`.
+     * On remote disconnect, this call will end with the return value `RedisSubscribeServerDisconnected`, which is generally non-fatal.
      * On failure, this call will return immediately with a return value indicated the failure mode.
      * Calling `stopSubscribing()` will force this method to exit on the *next* recieved message.
      * @param messageCallback The function to be called on each successful message receipt.
