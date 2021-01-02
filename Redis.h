@@ -29,23 +29,32 @@
 /** The return value from from `Redis::authenticate()` */
 typedef enum {
   RedisSuccess = 0,
+  /// Authenticate attempted before the connection has been established.
   RedisNotConnectedFailure = 1,
+  /// The authentication credentials used are not valid.
   RedisAuthFailure = 2,
 } RedisReturnValue;
 
 /** The return value from `Redis::startSubscribing()`. See `examples/Subscribe.ino` for usage demo. */
 typedef enum {
+  /// One of the callback parameters given is invalid.
   RedisSubscribeBadCallback = -255,
+  /// Setting up for subscription mode failed.
   RedisSubscribeSetupFailure,
+  /// The remote end disconnected, retry may be available.
   RedisSubscribeServerDisconnected,
-  RedisSubscribeOtherError,
+  /// An unknown error occurred.
+  RedisSubscribeOtherError,      
   RedisSubscribeSuccess = 0
 } RedisSubscribeResult;
 
 /** A value of this type will be passed as the second argument ot `Redis::RedisMsgErrorCallback`, if called */
 typedef enum {
+  /// The underlying Redis type detected in the message is not of the type expected.
   RedisMessageBadResponseType = -255,
+  /// The message response was truncated early.
   RedisMessageTruncatedResponse,
+  /// An unknown error occurred.
   RedisMessageUnknownType,
 } RedisMessageError;
 

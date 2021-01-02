@@ -76,7 +76,7 @@ $(function() {
 Include dependency graph for Redis.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="Redis_8h__incl.png" border="0" usemap="#aRedis_8h" alt=""/></div>
-<map name="Redis_8h" id="aRedis_8h">
+<map name="Redis_8h" id="Redis_8h">
 <area shape="rect" title=" " alt="" coords="107,5,173,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,83,107"/>
 <area shape="rect" title=" " alt="" coords="107,80,173,107"/>
@@ -87,7 +87,7 @@ Include dependency graph for Redis.h:</div>
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="Redis_8h__dep__incl.png" border="0" usemap="#aRedis_8hdep" alt=""/></div>
-<map name="Redis_8hdep" id="aRedis_8hdep">
+<map name="Redis_8hdep" id="Redis_8hdep">
 <area shape="rect" title=" " alt="" coords="13,5,79,32"/>
 <area shape="rect" href="Redis_8cpp.html" title=" " alt="" coords="5,80,87,107"/>
 </map>
@@ -137,12 +137,15 @@ Enumerations</h2></td></tr>
 </div><div class="memdoc">
 <p>A value of this type will be passed as the second argument ot <code><a class="el" href="classRedis.html#ac7f9ff1f839e4d9dfa95469ab4822032">Redis::RedisMsgErrorCallback</a></code>, if called </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aff9058039284bdffae306ea62b43cba0a8a957a1379dc58c3c8ffd4c8a175e367"></a>RedisMessageBadResponseType&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aff9058039284bdffae306ea62b43cba0a7245972a493c496cad74ea42b43076d6"></a>RedisMessageTruncatedResponse&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aff9058039284bdffae306ea62b43cba0abf128d9ace97a605d4bb2462bc137566"></a>RedisMessageUnknownType&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aff9058039284bdffae306ea62b43cba0a8a957a1379dc58c3c8ffd4c8a175e367"></a>RedisMessageBadResponseType&#160;</td><td class="fielddoc"><p>The underlying <a class="el" href="classRedis.html">Redis</a> type detected in the message is not of the type expected. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aff9058039284bdffae306ea62b43cba0a7245972a493c496cad74ea42b43076d6"></a>RedisMessageTruncatedResponse&#160;</td><td class="fielddoc"><p>The message response was truncated early. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aff9058039284bdffae306ea62b43cba0abf128d9ace97a605d4bb2462bc137566"></a>RedisMessageUnknownType&#160;</td><td class="fielddoc"><p>An unknown error occurred. </p>
+</td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00046">46</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00052">52</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -160,8 +163,10 @@ Enumerations</h2></td></tr>
 <p>The return value from from <code><a class="el" href="classRedis.html#a8f9a19a438e2f005852dcc7cd46816e5">Redis::authenticate()</a></code> </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af33628205ee4280b749e4f21203f3ff6a039ea0e0c8b3ac7b52bafc6e841b90e3"></a>RedisSuccess&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af33628205ee4280b749e4f21203f3ff6ab359043cdfebe9c22f9df77e2fd61329"></a>RedisNotConnectedFailure&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="af33628205ee4280b749e4f21203f3ff6a1163ba2e5288946732df93d29df72b69"></a>RedisAuthFailure&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="af33628205ee4280b749e4f21203f3ff6ab359043cdfebe9c22f9df77e2fd61329"></a>RedisNotConnectedFailure&#160;</td><td class="fielddoc"><p>Authenticate attempted before the connection has been established. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="af33628205ee4280b749e4f21203f3ff6a1163ba2e5288946732df93d29df72b69"></a>RedisAuthFailure&#160;</td><td class="fielddoc"><p>The authentication credentials used are not valid. </p>
+</td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00030">30</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
@@ -181,21 +186,25 @@ Enumerations</h2></td></tr>
 </div><div class="memdoc">
 <p>The return value from <code><a class="el" href="classRedis.html#a8d192249d02ef9f493c2a0c52c515e7e">Redis::startSubscribing()</a></code>. See <code>examples/Subscribe.ino</code> for usage demo. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aae83a024d2f0a1e9fa5186b147fc0fe7a"></a>RedisSubscribeBadCallback&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aae037aad01c67d816e5ed717aa67a91a0"></a>RedisSubscribeSetupFailure&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aa9fcd3a1a6ec5d08d50342038e674a52d"></a>RedisSubscribeServerDisconnected&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aa59b1355032a387764fd9bc6c86b46ec1"></a>RedisSubscribeOtherError&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aae83a024d2f0a1e9fa5186b147fc0fe7a"></a>RedisSubscribeBadCallback&#160;</td><td class="fielddoc"><p>One of the callback parameters given is invalid. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aae037aad01c67d816e5ed717aa67a91a0"></a>RedisSubscribeSetupFailure&#160;</td><td class="fielddoc"><p>Setting up for subscription mode failed. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aa9fcd3a1a6ec5d08d50342038e674a52d"></a>RedisSubscribeServerDisconnected&#160;</td><td class="fielddoc"><p>The remote end disconnected, retry may be available. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aa59b1355032a387764fd9bc6c86b46ec1"></a>RedisSubscribeOtherError&#160;</td><td class="fielddoc"><p>An unknown error occurred. </p>
+</td></tr>
 <tr><td class="fieldname"><a id="a7462db80a2c61bfcaa245b740fb9d49aada590415292da9aa570a08f1265ce320"></a>RedisSubscribeSuccess&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00037">37</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00039">39</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jan 2 2021 15:19:11 for Arduino-Redis by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
+Generated on Sat Jan 2 2021 15:25:21 for Arduino-Redis by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
 </small></address>
 </body>
 </html>
