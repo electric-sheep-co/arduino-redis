@@ -34,7 +34,10 @@ void setup() {
   
   auto r = new Redis(rc);
   if (!strlen(REDIS_AUTH) || r->authenticate(REDIS_AUTH) == RedisSuccess) {
-    auto res = runTests(r, "__arduino_redis__test");
+    Serial.printf("Connection is%s authenticated\n", strlen(REDIS_AUTH) ? "" : " NOT");
+    randomSeed(analogRead(0));
+    auto keyPrefix = String("__arduino_redis__test") + ":" + String(random(INT_MAX));
+    auto res = runTests(r, keyPrefix);
     Serial.printf("%d tests passed of %d total run.\n", res.passed, res.total);
   }
 }
@@ -55,10 +58,25 @@ TestResults runTests(Redis *redis, String prefix, bool retainData)
             return r->set(k, "!") == 1 && r->get(k) == "!"; 
         } },
         { "expire", [=](Redis *r, const char* k) { 
-            return r->set(k, "E") && r->expire(k, 5) && r->ttl(k) > 4;
+            return r->set(k, "E") && r->expire(k, 5) && r->ttl(k) > 0;
+        } },
+        { "expire_at", [=](Redis *r, const char* k) { 
+            return r->set(k, "E") && r->expire_at(k, 0) && r->get(k) == NULL;
         } },
         { "pexpire", [=](Redis *r, const char* k) {
-            return r->set(k, "PE") && r->pexpire(k, 5000) && r->pttl(k) > 4500;
+            return r->set(k, "PE") && r->pexpire(k, 5000) && r->pttl(k) > 0;
+        } },
+        { "pexpire_at", [=](Redis *r, const char* k) { 
+            return r->set(k, "E") && r->pexpire_at(k, 0) && r->get(k) == NULL;
+        } },
+        { "persist", [=](Redis *r, const char* k) { 
+            return r->set(k, "E") && r->expire(k, 5) && r->persist(k) && r->ttl(k) == -1;
+        } },
+        { "ttl", [=](Redis *r, const char* k) { 
+            return r->set(k, "E") && r->expire(k, 100) && r->ttl(k) > 99;
+        } },
+        { "pttl", [=](Redis *r, const char* k) { 
+            return r->set(k, "E") && r->pexpire(k, 1000) && r->pttl(k) > 900;
         } },
         { "dlyexp", [=](Redis *r, const char* k) {
             auto sr = r->set(k, "DE");
@@ -84,6 +102,9 @@ TestResults runTests(Redis *redis, String prefix, bool retainData)
         { "hstrlen", [=](Redis *r, const char* k) { 
             return r->hset(k, "hsr", k) && r->hstrlen(k, "hsr") == strlen(k); 
         } },
+        { "hdel", [=](Redis *r, const char* k) { 
+            return r->hset(k, "delete_me", k) && r->hdel(k, "delete_me") && r->hget(k, "delete_me") == NULL; 
+        } },
         { "append", [=](Redis *r, const char* k) { 
             return r->append(k, "foo") == 3; 
         } },
@@ -103,7 +124,7 @@ TestResults runTests(Redis *redis, String prefix, bool retainData)
         auto tRes = kv.second(redis, pFunc(tName).c_str());
         total++;
         pass += tRes ? 1 : 0;
-        Serial.printf("\tTest \"%s\":\t%s\n", tName.c_str(), tRes ? "pass" : "FAIL");
+        Serial.printf("  * \"%s\": %s\n", tName.c_str(), tRes ? "pass" : "FAIL");
     }
 
     Serial.printf("Result: %d passed / %d total\n", pass, total);
