@@ -3,6 +3,17 @@
 
 #include "creds.h"
 
+#define SUBSCRIBE_TESTS 1
+
+// set to 1 to cause the test loop to repeat indefinitely
+// as long as it continues to succeed (failure will still halt it)
+// caveat: this mode is very likely to orphan some keys
+#define NEVER_HALT 0
+
+// tests are not expected to pass if RETAIN_DATA is set;
+// it is useful for debugging the tests only
+#define RETAIN_DATA 0
+
 typedef struct {
     int total;
     int passed;
@@ -10,11 +21,13 @@ typedef struct {
 
 typedef bool (*TestFunc)(Redis*, const char*);
 
-/* tests are not expected to pass if retainData = true */
-TestResults runTests(Redis *redis, String prefix, bool retainData = false);
+TestResults runTests(Redis *redis, String prefix);
+
+const String gKeyPrefix = String("__arduino_redis__test");
 
 void setup() {
   Serial.begin(115200);
+  Serial.flush();
   delay(2000);
   Serial.printf("\n\n\n");
   Serial.println("Arduino-Redis tests starting...");
@@ -37,13 +50,19 @@ void setup() {
   auto r = new Redis(rc);
   if (!strlen(REDIS_AUTH) || r->authenticate(REDIS_AUTH) == RedisSuccess) {
     Serial.printf("Connection is%s authenticated\n", strlen(REDIS_AUTH) ? "" : " NOT");
-    
-    randomSeed(analogRead(0));
-    auto keyPrefix = String("__arduino_redis__test") + ":" + String(random(INT_MAX));
-    auto res = runTests(r, keyPrefix);
 
-    Serial.printf("\n\n%s (%d passed / %d total)\n", 
-      (res.passed == res.total ? "SUCCESS": "FAILURE"), res.passed, res.total);
+    do {
+      randomSeed(analogRead(0));
+      auto keyPrefix = gKeyPrefix + ":" + String(random(INT_MAX));
+      auto res = runTests(r, keyPrefix);
+  
+      Serial.printf("\n\n%s (%d passed / %d total)\n", 
+        (res.passed == res.total ? "SUCCESS": "FAILURE"), res.passed, res.total);
+
+      if (NEVER_HALT && res.passed != res.total) {
+        break;
+      }
+    } while (NEVER_HALT);
   }
 }
 
@@ -51,9 +70,55 @@ void loop() {}
 
 #include <map>
 
-TestResults runTests(Redis *redis, String prefix, bool retainData) 
+#define BOOTSTRAP_PUB_DELAY_SECS  10
+
+bool test_subscribeSimple(Redis *r, const char* k) {
+  if (!SUBSCRIBE_TESTS) {
+    Serial.println("!! Following test is skipped & will report success (set SUBSCRIBE_TESTS=1 to enable):");
+    Serial.flush();
+    return true;
+  }
+
+  auto bsChan = String(gKeyPrefix + ":bootstrap");
+  auto ackStr = String(k) + ":" + String(random(INT_MAX));
+  
+  Serial.printf("!! Publishing test channel name to \"%s\" in %d seconds...\n", bsChan.c_str(), BOOTSTRAP_PUB_DELAY_SECS);
+  delay(BOOTSTRAP_PUB_DELAY_SECS * 1000);
+  r->publish(bsChan.c_str(), k);
+  Serial.printf("!! You must publish \"%s\" back to this channel to complete the test!\n", ackStr.c_str());
+
+  r->setUserContext(ackStr.c_str());
+  r->subscribe(k);
+
+  auto subRet = r->startSubscribing(
+    [](Redis* rconn, String chan, String message) {
+      auto success = message == String((char*)rconn->getUserContext());
+
+      if (!success) {
+        Serial.printf("Message RX'ed but was not properly formed!\n");
+      }
+
+      rconn->setUserContext((const void*)success);
+      rconn->stopSubscribing();
+    },
+    [](Redis* rconn, RedisMessageError err) {
+      Serial.printf("!! subscribe error: %d\n", err);
+    }
+  );
+
+  return subRet == RedisSubscribeSuccess && r->getUserContext() == (const void*)1;
+}
+
+TestResults runTests(Redis *redis, String prefix) 
 {
-    /* These are NOT executed in definition order! */
+    /* Tests are NOT executed in definition order! */
+    
+#if SUBSCRIBE_TESTS
+    std::map<String, TestFunc> g_Tests 
+    {
+        { "subscribe-simple", test_subscribeSimple }
+    };
+#else
     std::map<String, TestFunc> g_Tests 
     {
         { "set", [=](Redis *r, const char* k) { 
@@ -72,23 +137,30 @@ TestResults runTests(Redis *redis, String prefix, bool retainData)
             return r->set(k, "PE") && r->pexpire(k, 5000) && r->pttl(k) > 0;
         } },
         { "pexpire_at", [=](Redis *r, const char* k) { 
-            return r->set(k, "E") && r->pexpire_at(k, 0) && r->get(k) == NULL;
+            return r->set(k, "PEA") && r->pexpire_at(k, 0) && r->get(k) == NULL;
         } },
         { "persist", [=](Redis *r, const char* k) { 
-            return r->set(k, "E") && r->expire(k, 5) && r->persist(k) && r->ttl(k) == -1;
+            return r->set(k, "P") && r->expire(k, 5) && r->persist(k) && r->ttl(k) == -1;
         } },
         { "ttl", [=](Redis *r, const char* k) { 
-            return r->set(k, "E") && r->expire(k, 100) && r->ttl(k) > 99;
+            return r->set(k, "T") && r->expire(k, 100) && r->ttl(k) > 99;
         } },
         { "pttl", [=](Redis *r, const char* k) { 
-            return r->set(k, "E") && r->pexpire(k, 1000) && r->pttl(k) > 750; // allows up to 250ms latency between pexpire & pttl calls
+            return r->set(k, "PT") && r->pexpire(k, 1000) && r->pttl(k) > 750; // allows for <250ms latency between pexpire & pttl calls
         } },
-        { "dlyexp", [=](Redis *r, const char* k) {
-            auto sr = r->set(k, "DE");
-            r->expire(k, 10); 
-            delay(4000);
+        { "wait-for-expiry", [=](Redis *r, const char* k) {
+            auto sr = r->set(k, "WFE");
+            r->expire(k, 1); 
+            delay(1250); // again, allow <250ms
             auto t = r->ttl(k);
-            return sr && t > 5 && t < 7;
+            return sr && t == -2;
+        } },
+        { "wait-for-expiry-ms", [=](Redis *r, const char* k) {
+            auto sr = r->set(k, "PWFE");
+            r->pexpire(k, 1000); 
+            delay(1250); // again, allow <250ms
+            auto t = r->ttl(k);
+            return sr && t == -2;
         } },
         { "hset", [=](Redis *r, const char* k) { 
             return r->hset(k, "TF", "H!") && r->hexists(k, "TF"); 
@@ -127,13 +199,15 @@ TestResults runTests(Redis *redis, String prefix, bool retainData)
           
           return verif == lim;
         } },
-        { "append", [=](Redis *r, const char* k) { 
+        { "append", [=](Redis *r, const char* k) {
             return r->append(k, "foo") == 3; 
         } },
         { "exists", [=](Redis *r, const char* k) { 
             return r->set(k, k) && r->exists(k); 
-        } }
+        } },
+        { "subscribe-simple", test_subscribeSimple }
     };
+#endif // SUBSCRIBE_TESTS
     
     Serial.printf("\nRunning tests (key prefix: \"%s\"):\n", prefix.c_str());
 
@@ -147,14 +221,19 @@ TestResults runTests(Redis *redis, String prefix, bool retainData)
         total++;
         pass += tRes ? 1 : 0;
         Serial.printf("  %s %s\n", tRes ? "✔" : "X", tName.c_str());
+        Serial.flush();
     }
 
-    if (!retainData) {
-      Serial.printf("\nCleaning up (set retainData=true to skip)...\n");
-        for (auto& kv : g_Tests) {
-            auto rmed = redis->del(pFunc(kv.first).c_str());
-            Serial.printf("  %s %s\n", rmed ? "✔" : "X", kv.first.c_str());
-        }
+    if (!RETAIN_DATA) {
+      Serial.printf("\nCleaning up (set RETAIN_DATA=1 to skip)... ");
+      Serial.flush();
+      
+      for (auto& kv : g_Tests) {
+          (void)redis->del(pFunc(kv.first).c_str());
+      }
+      
+      Serial.println("done!");
+      Serial.flush();
     }
 
     return { .total = total, .passed = pass };
