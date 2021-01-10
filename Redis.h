@@ -223,6 +223,7 @@ public:
      * @return The field`s value.
      */
     String hget(const char* key, const char* field);
+
     /**
      * Delete the `field` stored in hash at `key`.
      * @param key
@@ -294,6 +295,11 @@ public:
      */
     void stopSubscribing() { subLoopRun = false; }
 
+
+    // The following are (obstensibly) for library testing purposes only
+    void setTestContext(const void* context) { _test_context = context; }
+    const void* getTestContext() { return _test_context; }
+
 private:
     typedef struct {
         bool pattern;
@@ -310,6 +316,8 @@ private:
     bool _expire_(const char*, int, const char*);
     int _ttl_(const char*, const char*);
     bool _hset_(const char*, const char*, const char*, const char*);
+
+    const void* _test_context;
 };
 
 #endif
