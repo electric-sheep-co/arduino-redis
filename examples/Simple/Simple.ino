@@ -10,14 +10,14 @@
 #endif
 #endif
 
-#define WIFI_SSID       "SSID"
-#define WIFI_PASSWORD   "PASSWORD"
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "PASSWORD"
 
-#define REDIS_ADDR      "127.0.0.1"
-#define REDIS_PORT      6379
-#define REDIS_PASSWORD  ""
+#define REDIS_ADDR "127.0.0.1"
+#define REDIS_PORT 6379
+#define REDIS_PASSWORD ""
 
-void setup() 
+void setup()
 {
     Serial.begin(115200);
     Serial.println();
@@ -25,7 +25,7 @@ void setup()
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     Serial.print("Connecting to the WiFi");
-    while (WiFi.status() != WL_CONNECTED) 
+    while (WiFi.status() != WL_CONNECTED)
     {
         delay(250);
         Serial.print(".");
@@ -46,8 +46,8 @@ void setup()
     if (connRet == RedisSuccess)
     {
         Serial.println("Connected to the Redis server!");
-    } 
-    else 
+    }
+    else
     {
         Serial.printf("Failed to authenticate to the Redis server! Errno: %d\n", (int)connRet);
         return;
@@ -70,6 +70,6 @@ void setup()
     Serial.print("Connection closed!");
 }
 
-void loop() 
+void loop()
 {
 }

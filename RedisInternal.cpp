@@ -2,10 +2,10 @@
 #include <map>
 #include <limits.h>
 
-void RedisObject::init(Client& client)
+void RedisObject::init(Client &client)
 {
     data = client.readStringUntil('\r');
-    client.read(); // discard '\n' 
+    client.read(); // discard '\n'
 }
 
 String RedisSimpleString::RESP()
@@ -19,13 +19,14 @@ String RedisSimpleString::RESP()
     return emitStr;
 }
 
-void RedisBulkString::init(Client& client)
+void RedisBulkString::init(Client &client)
 {
     auto dLen = data.toInt();
 
     // "Null Bulk String" -- https://redis.io/topics/protocol#resp-bulk-strings
-    if (dLen == -1) {
-        data = (const char*)nullptr;
+    if (dLen == -1)
+    {
+        data = (const char *)nullptr;
         return;
     }
 
@@ -33,13 +34,14 @@ void RedisBulkString::init(Client& client)
     bzero(charBuf, dLen + 1);
 
     auto readB = client.readBytes(charBuf, dLen);
-    if (readB != dLen) {
+    if (readB != dLen)
+    {
         Serial.printf("ERROR! Bad read (%ld ?= %ld)\n", (long)readB, (long)dLen);
         exit(-1);
     }
 
     data = String(charBuf);
-    delete [] charBuf;
+    delete[] charBuf;
 }
 
 String RedisBulkString::RESP()
@@ -52,7 +54,7 @@ String RedisBulkString::RESP()
     return emitStr;
 }
 
-void RedisArray::init(Client& client)
+void RedisArray::init(Client &client)
 {
     for (int i = 0; i < data.toInt(); i++)
         add(RedisObject::parseType(client));
@@ -71,13 +73,14 @@ String RedisArray::RESP()
     String emitStr((char)_type);
     emitStr += String(vec.size());
     emitStr += CRLF;
-    for (auto rTypeInst : vec) {
+    for (auto rTypeInst : vec)
+    {
         emitStr += rTypeInst->RESP();
     }
     return emitStr;
 }
 
-std::shared_ptr<RedisObject> RedisCommand::issue(Client& cmdClient) 
+std::shared_ptr<RedisObject> RedisCommand::issue(Client &cmdClient)
 {
     if (!cmdClient.connected())
         return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::Disconnected));
@@ -91,58 +94,62 @@ std::shared_ptr<RedisObject> RedisCommand::issue(Client& cmdClient)
 }
 
 template <>
-int RedisCommand::issue_typed<int>(Client& cmdClient)
+int RedisCommand::issue_typed<int>(Client &cmdClient)
 {
     auto cmdRet = issue(cmdClient);
     if (!cmdRet)
         return INT_MAX - 0x0f;
     if (cmdRet->type() != RedisObject::Type::Integer)
         return INT_MAX - 0xf0;
-    return (int)*((RedisInteger*)cmdRet.get());
+    return (int)*((RedisInteger *)cmdRet.get());
 }
 
 template <>
-bool RedisCommand::issue_typed<bool>(Client& cmdClient)
+bool RedisCommand::issue_typed<bool>(Client &cmdClient)
 {
     auto cmdRet = issue(cmdClient);
     if (cmdRet && cmdRet->type() == RedisObject::Type::Integer)
-        return (bool)*((RedisInteger*)cmdRet.get());
+        return (bool)*((RedisInteger *)cmdRet.get());
     return false;
 }
 
 template <>
-String RedisCommand::issue_typed<String>(Client& cmdClient)
+String RedisCommand::issue_typed<String>(Client &cmdClient)
 {
     return (String)*issue(cmdClient);
 }
 
-typedef std::map<RedisObject::Type, std::function<RedisObject*(Client&)>> TypeParseMap;
+typedef std::map<RedisObject::Type, std::function<RedisObject *(Client &)>> TypeParseMap;
 
-static TypeParseMap g_TypeParseMap {
-    { RedisObject::Type::SimpleString, [](Client& c) { return new RedisSimpleString(c); } },
-    { RedisObject::Type::BulkString, [](Client& c) { return new RedisBulkString(c); } },
-    { RedisObject::Type::Integer, [](Client& c) { return new RedisInteger(c); } },
-    { RedisObject::Type::Array, [](Client& c) { return new RedisArray(c); } },
-    { RedisObject::Type::Error, [](Client& c) { return new RedisError(c); } }
-};
+static TypeParseMap g_TypeParseMap{
+    {RedisObject::Type::SimpleString, [](Client &c) { return new RedisSimpleString(c); }},
+    {RedisObject::Type::BulkString, [](Client &c) { return new RedisBulkString(c); }},
+    {RedisObject::Type::Integer, [](Client &c) { return new RedisInteger(c); }},
+    {RedisObject::Type::Array, [](Client &c) { return new RedisArray(c); }},
+    {RedisObject::Type::Error, [](Client &c) { return new RedisError(c); }}};
 
-std::shared_ptr<RedisObject> RedisObject::parseType(Client& client)
+std::shared_ptr<RedisObject> RedisObject::parseType(Client &client)
 {
-    while (client.connected() && !client.available());
+    while (client.connected() && !client.available())
+        ;
 
     RedisObject::Type typeChar = RedisObject::Type::NoType;
-    do {
-        if (!client.connected()) {
+    do
+    {
+        if (!client.connected())
+        {
             return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::Disconnected));
         }
 
         typeChar = (RedisObject::Type)client.read();
     } while (typeChar == -1 || typeChar == '\r' || typeChar == '\n');
 
-    if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end()) {
+    if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end())
+    {
         auto retVal = g_TypeParseMap[typeChar](client);
 
-        if (!retVal || retVal->type() == RedisObject::Type::Error) {
+        if (!retVal || retVal->type() == RedisObject::Type::Error)
+        {
             String err = retVal ? (String)*retVal : "(nil)";
             return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::UnknownError, err));
         }

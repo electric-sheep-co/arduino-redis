@@ -1,17 +1,17 @@
 #include <Redis.h>
 #include <ArduinoJson.h>
 
-#define WIFI_SSID       ""
-#define WIFI_PASSWORD   ""
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
 
-#define REDIS_ADDR      "0.0.0.0"
-#define REDIS_PORT      6379
-#define REDIS_PASSWORD  "password"
+#define REDIS_ADDR "0.0.0.0"
+#define REDIS_PORT 6379
+#define REDIS_PASSWORD "password"
 
-#define POST_FREQUENCY  60
+#define POST_FREQUENCY 60
 
 // which analog input we read & include in our post
-#define ANALOG_INPUT    A0
+#define ANALOG_INPUT A0
 
 // this sketch will build for the ESP8266 or ESP32 platform
 #ifdef HAL_ESP32_HAL_H_ // ESP32
@@ -24,9 +24,9 @@
 #endif
 
 WiFiClient redisConn;
-Redis* gRedis = nullptr;
+Redis *gRedis = nullptr;
 
-void setup() 
+void setup()
 {
     Serial.begin(115200);
     Serial.println();
@@ -34,7 +34,7 @@ void setup()
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     Serial.print("Connecting to the WiFi");
-    while (WiFi.status() != WL_CONNECTED) 
+    while (WiFi.status() != WL_CONNECTED)
     {
         delay(250);
         Serial.print(".");
@@ -54,8 +54,8 @@ void setup()
     if (connRet == RedisSuccess)
     {
         Serial.printf("Connected to the Redis server at %s!\n", REDIS_ADDR);
-    } 
-    else 
+    }
+    else
     {
         Serial.printf("Failed to authenticate to the Redis server! Errno: %d\n", (int)connRet);
         return;
@@ -65,11 +65,12 @@ void setup()
 StaticJsonDocument<2048> doc;
 unsigned long lastPost = 0;
 
-void loop() {
+void loop()
+{
     auto startTime = millis();
-    if (!lastPost || startTime - lastPost > POST_FREQUENCY * 1000) 
+    if (!lastPost || startTime - lastPost > POST_FREQUENCY * 1000)
     {
-        
+
         doc["analog"] = analogRead(ANALOG_INPUT);
         doc["wifi-rssi"] = WiFi.RSSI();
         doc["uptime-ms"] = startTime;

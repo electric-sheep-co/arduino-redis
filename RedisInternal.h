@@ -19,10 +19,12 @@ typedef std::vector<String> ArgList;
  * However, we're not going to let that stop us, so RedisObject implements a basic 
  * but functional type system for Redis objects. 
  */
-class RedisObject {
+class RedisObject
+{
 public:
     /** Denote a basic Redis type, with NoType and InternalError defined specifically for this API */
-    typedef enum {
+    typedef enum
+    {
         NoType = '\0',
         SimpleString = '+',
         Error = '-',
@@ -34,18 +36,18 @@ public:
 
     RedisObject() {}
     RedisObject(Type tc) : _type(tc) {}
-    RedisObject(Type tc, Client& c) : _type(tc) { init(c); }
-    
+    RedisObject(Type tc, Client &c) : _type(tc) { init(c); }
+
     virtual ~RedisObject() {}
 
-    static std::shared_ptr<RedisObject> parseType(Client&);
+    static std::shared_ptr<RedisObject> parseType(Client &);
 
     /** Initialize a RedisObject instance from the bytestream represented by 'client'.
      *  Only does very basic (e.g. SimpleString-style) parsing of the object from
      *  the byte stream. Concrete subclasses are expected to override this to provide
      *  class-specific parsing & initialization logic.
      */
-    virtual void init(Client& client);
+    virtual void init(Client &client);
 
     /** Produce the Redis serialization protocol (RESP) representation. Must be overridden. */
     virtual String RESP() = 0;
@@ -54,7 +56,7 @@ public:
      *  Base implementation only returns the type character, so should be overriden. */
     virtual operator String() { return data; }
 
-    Type type() const { return _type; } 
+    Type type() const { return _type; }
 
 protected:
     String data;
@@ -62,38 +64,41 @@ protected:
 };
 
 /** A Simple String: https://redis.io/topics/protocol#resp-simple-strings */
-class RedisSimpleString : public RedisObject {
+class RedisSimpleString : public RedisObject
+{
 public:
-    RedisSimpleString(Client& c) : RedisObject(Type::SimpleString, c) {}
+    RedisSimpleString(Client &c) : RedisObject(Type::SimpleString, c) {}
     ~RedisSimpleString() override {}
 
     virtual String RESP() override;
 };
 
 /** A Bulk String: https://redis.io/topics/protocol#resp-bulk-strings */
-class RedisBulkString : public RedisObject {
+class RedisBulkString : public RedisObject
+{
 public:
-    RedisBulkString(Client& c) : RedisObject(Type::BulkString, c) { init(c); }
-    RedisBulkString(String& s) : RedisObject(Type::BulkString) { data = s; }
+    RedisBulkString(Client &c) : RedisObject(Type::BulkString, c) { init(c); }
+    RedisBulkString(String &s) : RedisObject(Type::BulkString) { data = s; }
     ~RedisBulkString() override {}
 
-    virtual void init(Client& client) override;
-   
+    virtual void init(Client &client) override;
+
     virtual String RESP() override;
 };
 
 /** An Array: https://redis.io/topics/protocol#resp-arrays */
-class RedisArray : public RedisObject {
+class RedisArray : public RedisObject
+{
 public:
     RedisArray() : RedisObject(Type::Array) {}
-    RedisArray(Client& c) : RedisObject(Type::Array, c) { init(c); }
+    RedisArray(Client &c) : RedisObject(Type::Array, c) { init(c); }
     ~RedisArray() override { vec.empty(); }
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
 
     operator std::vector<String>() const;
 
-    virtual void init(Client& client) override;
+    virtual void init(Client &client) override;
 
     virtual String RESP() override;
 
@@ -102,9 +107,10 @@ protected:
 };
 
 /** An Integer: https://redis.io/topics/protocol#resp-integers */
-class RedisInteger : public RedisSimpleString {
+class RedisInteger : public RedisSimpleString
+{
 public:
-    RedisInteger(Client& c) : RedisSimpleString(c) { _type = Type::Integer; }
+    RedisInteger(Client &c) : RedisSimpleString(c) { _type = Type::Integer; }
     ~RedisInteger() override {}
 
     operator int() { return data.toInt(); }
@@ -112,9 +118,10 @@ public:
 };
 
 /** An Error: https://redis.io/topics/protocol#resp-errors */
-class RedisError : public RedisSimpleString {
+class RedisError : public RedisSimpleString
+{
 public:
-    RedisError(Client& c) : RedisSimpleString(c) { _type = Type::Error; }
+    RedisError(Client &c) : RedisSimpleString(c) { _type = Type::Error; }
     ~RedisError() override {}
 };
 
@@ -122,11 +129,12 @@ public:
 class RedisInternalError : public RedisObject
 {
 public:
-    typedef enum {
-      UnknownError = -254,
-      UnknownType,
-      Disconnected,
-      NoError = 0
+    typedef enum
+    {
+        UnknownError = -254,
+        UnknownType,
+        Disconnected,
+        NoError = 0
     } RedisInternalErrorCode;
 
     RedisInternalError(RedisInternalErrorCode c) : RedisObject(Type::InternalError), _code(c) {}
@@ -139,20 +147,23 @@ public:
     virtual String RESP() override { return "INTERNAL ERROR " + String(_code) + (data ? ": " + data : ""); }
 
 protected:
-  RedisInternalErrorCode _code;
+    RedisInternalErrorCode _code;
 };
 
 /** A Command (a specialized Array subclass): https://redis.io/topics/protocol#sending-commands-to-a-redis-server */
-class RedisCommand : public RedisArray {
+class RedisCommand : public RedisArray
+{
 public:
-    RedisCommand(String command) : RedisArray() {
+    RedisCommand(String command) : RedisArray()
+    {
         add(std::shared_ptr<RedisObject>(new RedisBulkString(command)));
     }
 
     RedisCommand(String command, ArgList args)
         : RedisCommand(command)
     {
-        for (auto arg : args) {
+        for (auto arg : args)
+        {
             add(std::shared_ptr<RedisObject>(new RedisBulkString(arg)));
         }
     }
@@ -164,10 +175,10 @@ public:
      *  @return A shared pointer of a "RedisObject" representing a concrete subclass instantiated as
      *  a result of parsing the Redis server return value. Check RedisObject::type() to determine concrete type.
      */
-    std::shared_ptr<RedisObject> issue(Client& cmdClient);
+    std::shared_ptr<RedisObject> issue(Client &cmdClient);
 
     template <typename T>
-    T issue_typed(Client& cmdClient);
+    T issue_typed(Client &cmdClient);
 
 private:
     String _err;

@@ -44,7 +44,8 @@ void setup()
     {
         auto curDelay = min((1000 * (int)pow(2, backoffCounter)), MAX_BACKOFF);
 
-        if (curDelay != MAX_BACKOFF) {
+        if (curDelay != MAX_BACKOFF)
+        {
             ++backoffCounter;
         }
 

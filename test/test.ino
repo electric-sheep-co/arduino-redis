@@ -115,24 +115,22 @@ std::map<String, TestFunc> g_Tests{
        return r->set(k, k) && r->exists(k);
      }},
     {"lpush", [=](Redis *r, const char *k) {
-      auto pushRes = r->lpush(k, k);
+       auto pushRes = r->lpush(k, k);
        return pushRes == 1 && r->llen(k) == 1 && String(k) == r->lindex(k, pushRes - 1);
      }},
     {"rpush", [=](Redis *r, const char *k) {
-      auto pushRes = r->rpush(k, k);
+       auto pushRes = r->rpush(k, k);
        return pushRes == 1 && r->llen(k) == 1 && String(k) == r->lindex(k, pushRes - 1);
      }},
     {"lrem", [=](Redis *r, const char *k) {
-      auto pushRes = r->lpush(k, k);
+       auto pushRes = r->lpush(k, k);
        return pushRes == 1 && r->llen(k) == 1 && String(k) == r->lindex(k, pushRes - 1) && r->lrem(k, 1, k) == 1;
      }},
     {"lpop", [=](Redis *r, const char *k) {
-      auto pushRes = r->lpush(k, k);
-       return pushRes == 1 && r->llen(k) == 1 && r->lpop(k) == String(k) && r->llen(k) == 0;
+       return r->lpush(k, k) == 1 && r->llen(k) == 1 && r->lpop(k) == String(k) && r->llen(k) == 0;
      }},
     {"rpop", [=](Redis *r, const char *k) {
-      auto pushRes = r->lpush(k, k);
-       return pushRes == 1 && r->llen(k) == 1 && r->rpop(k) == String(k) && r->llen(k) == 0;
+       return r->lpush(k, k) == 1 && r->llen(k) == 1 && r->rpop(k) == String(k) && r->llen(k) == 0;
      }}};
 
 std::map<String, TestFunc> g_SubscribeTests{
