@@ -210,7 +210,7 @@ RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, R
         return RedisSubscribeSetupFailure;
     }
 
-    auto emitErr = [=](RedisMessageError errCode) -> bool {
+    auto emitErr = [=](RedisMessageError errCode) -> void {
         if (errCallback)
         {
             errCallback(this, errCode);

@@ -34,7 +34,7 @@ void RedisBulkString::init(Client &client)
     bzero(charBuf, dLen + 1);
 
     auto readB = client.readBytes(charBuf, dLen);
-    if (readB != dLen)
+    if ((int)readB != dLen)
     {
         Serial.printf("ERROR! Bad read (%ld ?= %ld)\n", (long)readB, (long)dLen);
         exit(-1);
