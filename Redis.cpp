@@ -22,11 +22,11 @@ RedisReturnValue Redis::authenticate(const char *password)
 
 #define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed<t>(conn)
 
-#define TRCMD_EXPECTOK(c, ...) (bool)(((String)*RedisCommand(c, ArgList{__VA_ARGS__}).issue(conn)).indexOf("OK") != -1)
+#define TRCMD_EXPECTOK(c, ...) return (bool)(((String)*RedisCommand(c, ArgList{__VA_ARGS__}).issue(conn)).indexOf("OK") != -1)
 
 bool Redis::set(const char *key, const char *value)
 {
-    return TRCMD_EXPECTOK("SET", key, value);
+    TRCMD_EXPECTOK("SET", key, value);
 }
 
 String Redis::get(const char *key)
@@ -210,7 +210,7 @@ RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, R
         return RedisSubscribeSetupFailure;
     }
 
-    auto emitErr = [=](RedisMessageError errCode) -> bool {
+    auto emitErr = [=](RedisMessageError errCode) -> void {
         if (errCallback)
         {
             errCallback(this, errCode);
