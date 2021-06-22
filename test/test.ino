@@ -84,7 +84,7 @@ std::map<String, TestFunc> g_Tests{
        return r->hlen(k) == 10;
      }},
     {"hstrlen", [=](Redis *r, const char *k) {
-       return r->hset(k, "hsr", k) && r->hstrlen(k, "hsr") == strlen(k);
+       return r->hset(k, "hsr", k) && r->hstrlen(k, "hsr") == (int)strlen(k);
      }},
     {"hdel", [=](Redis *r, const char *k) {
        return r->hset(k, "delete_me", k) && r->hdel(k, "delete_me") && r->hget(k, "delete_me") == NULL;
@@ -128,6 +128,12 @@ std::map<String, TestFunc> g_Tests{
      }},
     {"lpop", [=](Redis *r, const char *k) {
        return r->lpush(k, k) == 1 && r->llen(k) == 1 && r->lpop(k) == String(k) && r->llen(k) == 0;
+     }},
+    {"lset", [=](Redis *r, const char *k) {
+       return r->lset(k, 0, k) && r->lindex(k, 0) == String(k);
+     }},
+    {"ltrim", [=](Redis *r, const char *k) {
+       return r->lpush(k, "bar") == 1 && r->lpush(k, "bar") && r->ltrim(k, 0, 0) && r->llen(k) == 0;
      }},
     {"rpop", [=](Redis *r, const char *k) {
        return r->lpush(k, k) == 1 && r->llen(k) == 1 && r->rpop(k) == String(k) && r->llen(k) == 0;
