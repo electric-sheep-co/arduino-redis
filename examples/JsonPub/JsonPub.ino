@@ -76,7 +76,7 @@ void loop()
         doc["uptime-ms"] = startTime;
 
         String jsonStr;
-        serializeJson(doc, Serial);
+        serializeJson(doc, jsonStr);
         Serial.printf("Sending JSON payload:\n\t'%s'\n", jsonStr.c_str());
 
         auto listeners = gRedis->publish("arduino-redis:jsonpub", jsonStr.c_str());
