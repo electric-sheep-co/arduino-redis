@@ -24,3 +24,4 @@ If you have any questions please [open an issue here](https://github.com/electri
 * Remi Caumette
 * Robert Oostenveld
 * Mark Lynch <mark.christinat@gmail.com>
+* Daniel (https://github.com/darmiel)
