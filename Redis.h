@@ -358,6 +358,7 @@ public:
      */
   bool unsubscribe(const char *channelOrPattern);
 
+  bool tsadd(const char *key, unsigned long timestamp, const int value);
   /**
      * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.
      * On success, this call will *block* until stopSubscribing() is called (meaning `loop()` will never be called!), and only *then* will return `RedisSubscribeSuccess`.
