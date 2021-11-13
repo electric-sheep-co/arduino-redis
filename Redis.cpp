@@ -146,6 +146,11 @@ bool Redis::ltrim(const char *key, int start, int stop)
 {
     TRCMD_EXPECTOK("LTRIM", key, String(start), String(stop));
 }
+ 
+bool Redis::tsadd(const char *key, unsigned long timestamp, const int value)
+{
+    TRCMD_EXPECTOK("TS.ADD" , key, String(timestamp)+"000", String(value));
+}
 
 String Redis::info(const char *section)
 {
@@ -261,3 +266,4 @@ RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, R
 
     return RedisSubscribeSuccess;
 }
+
