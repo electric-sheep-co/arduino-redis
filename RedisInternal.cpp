@@ -122,11 +122,16 @@ String RedisCommand::issue_typed<String>(Client &cmdClient)
 typedef std::map<RedisObject::Type, std::function<RedisObject *(Client &)>> TypeParseMap;
 
 static TypeParseMap g_TypeParseMap{
-    {RedisObject::Type::SimpleString, [](Client &c) { return new RedisSimpleString(c); }},
-    {RedisObject::Type::BulkString, [](Client &c) { return new RedisBulkString(c); }},
-    {RedisObject::Type::Integer, [](Client &c) { return new RedisInteger(c); }},
-    {RedisObject::Type::Array, [](Client &c) { return new RedisArray(c); }},
-    {RedisObject::Type::Error, [](Client &c) { return new RedisError(c); }}};
+    {RedisObject::Type::SimpleString, [](Client &c)
+     { return new RedisSimpleString(c); }},
+    {RedisObject::Type::BulkString, [](Client &c)
+     { return new RedisBulkString(c); }},
+    {RedisObject::Type::Integer, [](Client &c)
+     { return new RedisInteger(c); }},
+    {RedisObject::Type::Array, [](Client &c)
+     { return new RedisArray(c); }},
+    {RedisObject::Type::Error, [](Client &c)
+     { return new RedisError(c); }}};
 
 std::shared_ptr<RedisObject> RedisObject::parseType(Client &client)
 {

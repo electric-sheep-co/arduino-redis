@@ -15,9 +15,9 @@ typedef std::vector<String> ArgList;
  *      https://redis.io/topics/protocol
  */
 
-/* The lack of RTTI on Ardunio is unfortunate but completely understandable. 
- * However, we're not going to let that stop us, so RedisObject implements a basic 
- * but functional type system for Redis objects. 
+/* The lack of RTTI on Ardunio is unfortunate but completely understandable.
+ * However, we're not going to let that stop us, so RedisObject implements a basic
+ * but functional type system for Redis objects.
  */
 class RedisObject
 {
@@ -52,7 +52,7 @@ public:
     /** Produce the Redis serialization protocol (RESP) representation. Must be overridden. */
     virtual String RESP() = 0;
 
-    /** Produce a human-readable String representation. 
+    /** Produce a human-readable String representation.
      *  Base implementation only returns the type character, so should be overriden. */
     virtual operator String() { return data; }
 
