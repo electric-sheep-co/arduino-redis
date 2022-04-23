@@ -363,7 +363,7 @@ public:
    * If the time series does not exist, it will be automatically created.
    * @param key Key name for time series.
    * @param timestamp UNIX sample timestamp in milliseconds. Any negative
-   * value given for this parameter requesting an automatic timestamp from the system clock.
+   * value given for this parameter will request an automatic timestamp from the system clock.
    * @param value Numeric data value of the sample.
    */
   bool tsadd(const char *key, long timestamp, const int value);
