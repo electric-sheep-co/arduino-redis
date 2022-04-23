@@ -358,7 +358,16 @@ public:
      */
   bool unsubscribe(const char *channelOrPattern);
 
-  bool tsadd(const char *key, unsigned long timestamp, const int value);
+  /**
+   * Append a sample to a time series.
+   * If the time series does not exist, it will be automatically created.
+   * @param key Key name for time series.
+   * @param timestamp UNIX sample timestamp in milliseconds. Any negative
+   * value given for this parameter requesting an automatic timestamp from the system clock.
+   * @param value Numeric data value of the sample.
+   */
+  bool tsadd(const char *key, long timestamp, const int value);
+
   /**
      * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.
      * On success, this call will *block* until stopSubscribing() is called (meaning `loop()` will never be called!), and only *then* will return `RedisSubscribeSuccess`.
