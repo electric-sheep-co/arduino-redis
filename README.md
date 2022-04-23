@@ -25,3 +25,5 @@ If you have any questions please [open an issue here](https://github.com/electri
 * Robert Oostenveld
 * Mark Lynch <mark.christinat@gmail.com>
 * Daniel (https://github.com/darmiel)
+* gde-2 (https://github.com/gde-2)
+* ErMaVi (https://github.com/ErMaVi)
