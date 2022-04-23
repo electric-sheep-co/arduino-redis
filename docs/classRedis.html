@@ -168,8 +168,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6c78431aa7909b83da074881d865dc44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a582bb46062563ad919ddab14a6520cf7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a582bb46062563ad919ddab14a6520cf7">unsubscribe</a> (const char *channelOrPattern)</td></tr>
 <tr class="separator:a582bb46062563ad919ddab14a6520cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7dbaa86d1be214efcfd54269eedf25c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#af7dbaa86d1be214efcfd54269eedf25c">tsadd</a> (const char *key, unsigned long timestamp, const int value)</td></tr>
-<tr class="separator:af7dbaa86d1be214efcfd54269eedf25c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85b02bb3fb4d439be990fbb4054ba58d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a85b02bb3fb4d439be990fbb4054ba58d">tsadd</a> (const char *key, long timestamp, const int value)</td></tr>
+<tr class="separator:a85b02bb3fb4d439be990fbb4054ba58d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d192249d02ef9f493c2a0c52c515e7e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49a">RedisSubscribeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a8d192249d02ef9f493c2a0c52c515e7e">startSubscribing</a> (<a class="el" href="classRedis.html#ad9d632e40ead32fdbc3c1ae7157828f7">RedisMsgCallback</a> messageCallback, <a class="el" href="classRedis.html#ac7f9ff1f839e4d9dfa95469ab4822032">RedisMsgErrorCallback</a> errorCallback=nullptr)</td></tr>
 <tr class="separator:a8d192249d02ef9f493c2a0c52c515e7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a569ac7e3cea732cd3d4fefd53b516795"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a569ac7e3cea732cd3d4fefd53b516795">stopSubscribing</a> ()</td></tr>
@@ -596,7 +596,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00383">383</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00392">392</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -901,7 +901,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00155">155</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00162">162</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1557,7 +1557,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value of the last element, or nil when key does not exist. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00160">160</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00167">167</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1602,7 +1602,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The length of the list after the push operations. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00165">165</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00172">172</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1631,8 +1631,7 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Set <code>key</code> to <code>value</code>. </p><dl class="section note"><dt>Note</dt><dd>Current implementation only supports basic SET without behavioral modification options added in <a class="el" href="classRedis.html">Redis</a> 2.6.12. To expire a set key, use the <a class="el" href="classRedis.html#a821419ef0401582307d7c26a4764cdf8">expire()</a> method below. <br  />
- </dd></dl>
+<p>Set <code>key</code> to <code>value</code>. </p><dl class="section note"><dt>Note</dt><dd>Current implementation only supports basic SET without behavioral modification options added in <a class="el" href="classRedis.html">Redis</a> 2.6.12. To expire a set key, use the <a class="el" href="classRedis.html#a821419ef0401582307d7c26a4764cdf8">expire()</a> method below. </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">key</td><td>The key name to set </td></tr>
@@ -1670,7 +1669,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00382">382</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00391">391</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1707,7 +1706,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00196">196</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00203">203</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1735,7 +1734,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Stops message processing on receipt of next message. Can be called from message handlers. </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00377">377</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00386">386</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1768,8 +1767,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af7dbaa86d1be214efcfd54269eedf25c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7dbaa86d1be214efcfd54269eedf25c">&#9670;&nbsp;</a></span>tsadd()</h2>
+<a id="a85b02bb3fb4d439be990fbb4054ba58d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85b02bb3fb4d439be990fbb4054ba58d">&#9670;&nbsp;</a></span>tsadd()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1783,7 +1782,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramtype">long&#160;</td>
           <td class="paramname"><em>timestamp</em>, </td>
         </tr>
         <tr>
@@ -1799,6 +1798,14 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Append a sample to a time series. If the time series does not exist, it will be automatically created. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td>Key name for time series. </td></tr>
+    <tr><td class="paramname">timestamp</td><td>UNIX sample timestamp in milliseconds. Any negative value given for this parameter requesting an automatic timestamp from the system clock. </td></tr>
+    <tr><td class="paramname">value</td><td>Numeric data value of the sample. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00150">150</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
@@ -1856,14 +1863,14 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Removes a subscription for <code>channelOrPattern</code>. May be called from message handlers. </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00183">183</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00190">190</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Nov 13 2021 14:18:05 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 23 2022 10:54:03 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

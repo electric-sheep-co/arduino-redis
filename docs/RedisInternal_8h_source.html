@@ -79,9 +79,9 @@ $(function() {
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="RedisInternal_8h.html#afab34353187c19143fc502be144c9b52">   12</a></span>&#160;<span class="keyword">typedef</span> std::vector&lt;String&gt; <a class="code" href="RedisInternal_8h.html#afab34353187c19143fc502be144c9b52">ArgList</a>;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/* The lack of RTTI on Ardunio is unfortunate but completely understandable. </span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * However, we&#39;re not going to let that stop us, so RedisObject implements a basic </span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> * but functional type system for Redis objects. </span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/* The lack of RTTI on Ardunio is unfortunate but completely understandable.</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * However, we&#39;re not going to let that stop us, so RedisObject implements a basic</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> * but functional type system for Redis objects.</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classRedisObject.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRedisObject.html">RedisObject</a></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
@@ -272,7 +272,7 @@ $(function() {
 <div class="ttc" id="aclassRedisError_html_a000a14d4ab6464515c8a149e205142d1"><div class="ttname"><a href="classRedisError.html#a000a14d4ab6464515c8a149e205142d1">RedisError::~RedisError</a></div><div class="ttdeci">~RedisError() override</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00125">RedisInternal.h:125</a></div></div>
 <div class="ttc" id="aclassRedisArray_html_a9985c452680440955f96dc06899ab851"><div class="ttname"><a href="classRedisArray.html#a9985c452680440955f96dc06899ab851">RedisArray::RedisArray</a></div><div class="ttdeci">RedisArray()</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00093">RedisInternal.h:93</a></div></div>
 <div class="ttc" id="aclassRedisBulkString_html_ad77d51842a7fc686617199dbc0ae434e"><div class="ttname"><a href="classRedisBulkString.html#ad77d51842a7fc686617199dbc0ae434e">RedisBulkString::RedisBulkString</a></div><div class="ttdeci">RedisBulkString(Client &amp;c)</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00080">RedisInternal.h:80</a></div></div>
-<div class="ttc" id="aclassRedisObject_html_ae89b47800fd03403dc0d8311b720521d"><div class="ttname"><a href="classRedisObject.html#ae89b47800fd03403dc0d8311b720521d">RedisObject::parseType</a></div><div class="ttdeci">static std::shared_ptr&lt; RedisObject &gt; parseType(Client &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00131">RedisInternal.cpp:131</a></div></div>
+<div class="ttc" id="aclassRedisObject_html_ae89b47800fd03403dc0d8311b720521d"><div class="ttname"><a href="classRedisObject.html#ae89b47800fd03403dc0d8311b720521d">RedisObject::parseType</a></div><div class="ttdeci">static std::shared_ptr&lt; RedisObject &gt; parseType(Client &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8cpp_source.html#l00136">RedisInternal.cpp:136</a></div></div>
 <div class="ttc" id="aclassRedisArray_html_a97e5ab558f6dcadf27bfd753ec0a2d1c"><div class="ttname"><a href="classRedisArray.html#a97e5ab558f6dcadf27bfd753ec0a2d1c">RedisArray::RedisArray</a></div><div class="ttdeci">RedisArray(Client &amp;c)</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00094">RedisInternal.h:94</a></div></div>
 <div class="ttc" id="aclassRedisObject_html_a53709bcd6c9b9172f48520323bf8cafea561790b79b38e2e2c4860a41dc525943"><div class="ttname"><a href="classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafea561790b79b38e2e2c4860a41dc525943">RedisObject::InternalError</a></div><div class="ttdeci">@ InternalError</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00034">RedisInternal.h:34</a></div></div>
 <div class="ttc" id="aclassRedisCommand_html_a99a13af66dddb0da5cee1e11c731e057"><div class="ttname"><a href="classRedisCommand.html#a99a13af66dddb0da5cee1e11c731e057">RedisCommand::issue_typed</a></div><div class="ttdeci">T issue_typed(Client &amp;cmdClient)</div></div>
@@ -294,7 +294,7 @@ $(function() {
 <div class="ttc" id="aclassRedisInternalError_html_a311f06de99adac8d8acb8cadb0e50fb0a0922d64c8ce21e8e46b6d1478340184d"><div class="ttname"><a href="classRedisInternalError.html#a311f06de99adac8d8acb8cadb0e50fb0a0922d64c8ce21e8e46b6d1478340184d">RedisInternalError::UnknownType</a></div><div class="ttdeci">@ UnknownType</div><div class="ttdef"><b>Definition:</b> <a href="RedisInternal_8h_source.html#l00135">RedisInternal.h:135</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Nov 13 2021 14:18:05 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 23 2022 10:54:03 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

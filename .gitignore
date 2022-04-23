@@ -1,3 +1,4 @@
 .DS_Store
 .vscode
 creds.h
+docs/creds*

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['trcmd_241',['TRCMD',['../Redis_8cpp.html#a6f08500c83742e3fe2fa98b9dabd4b0d',1,'Redis.cpp']]],
-  ['trcmd_5fexpectok_242',['TRCMD_EXPECTOK',['../Redis_8cpp.html#a6e0ba71cfb7644814a071ce3d089c91d',1,'Redis.cpp']]]
+  ['redis_5fhost_247',['REDIS_HOST',['../creds_8h.html#af05d011e474b30bc47a72840c47d8233',1,'creds.h']]],
+  ['redis_5fport_248',['REDIS_PORT',['../creds_8h.html#a8aae1fedf76d616ce2ca0ce8de2ff175',1,'creds.h']]]
 ];
