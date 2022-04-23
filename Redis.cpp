@@ -1,5 +1,4 @@
 #include "Redis.h"
-#include "RedisInternal.h"
 
 RedisReturnValue Redis::authenticate(const char *password)
 {
