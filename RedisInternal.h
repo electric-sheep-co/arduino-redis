@@ -40,6 +40,7 @@ public:
 
     virtual ~RedisObject() {}
 
+    static std::shared_ptr<RedisObject> parseTypeNonBlocking(Client &);
     static std::shared_ptr<RedisObject> parseType(Client &);
 
     /** Initialize a RedisObject instance from the bytestream represented by 'client'.

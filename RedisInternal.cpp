@@ -133,21 +133,22 @@ static TypeParseMap g_TypeParseMap{
     {RedisObject::Type::Error, [](Client &c)
      { return new RedisError(c); }}};
 
-std::shared_ptr<RedisObject> RedisObject::parseType(Client &client)
+std::shared_ptr<RedisObject> RedisObject::parseTypeNonBlocking(Client &client)
 {
-    while (client.connected() && !client.available())
-        ;
+    if(client.connected() && !client.available()) {
+        return nullptr;
+    }
 
     RedisObject::Type typeChar = RedisObject::Type::NoType;
-    do
+    if (!client.connected())
     {
-        if (!client.connected())
-        {
-            return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::Disconnected));
-        }
+        return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::Disconnected));
+    }
 
-        typeChar = (RedisObject::Type)client.read();
-    } while (typeChar == -1 || typeChar == '\r' || typeChar == '\n');
+    typeChar = (RedisObject::Type)client.read();
+    if(typeChar == -1 || typeChar == '\r' || typeChar == '\n'){
+        return nullptr;
+    };
 
     if (g_TypeParseMap.find(typeChar) != g_TypeParseMap.end())
     {
@@ -163,4 +164,13 @@ std::shared_ptr<RedisObject> RedisObject::parseType(Client &client)
     }
 
     return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::UnknownType, String(typeChar)));
+}
+
+std::shared_ptr<RedisObject> RedisObject::parseType(Client &client)
+{
+    std::shared_ptr<RedisObject> type = nullptr;
+    while(type==nullptr){
+        type = parseTypeNonBlocking(client);
+    }
+    return type;
 }

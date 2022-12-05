@@ -74,6 +74,7 @@ class Redis
 public:
   /** Called upon successful receipt of a pub/sub `message` on subscribed `channel` */
   typedef void (*RedisMsgCallback)(Redis *, String channel, String message);
+  typedef void (*LoopCallback)();
   /** Called upon an error in the receipt of a pub/sub message */
   typedef void (*RedisMsgErrorCallback)(Redis *, RedisMessageError);
 
@@ -379,6 +380,7 @@ public:
    * the passed-in instance to end all further message processing.
    */
   RedisSubscribeResult startSubscribing(RedisMsgCallback messageCallback, RedisMsgErrorCallback errorCallback = nullptr);
+  RedisSubscribeResult startSubscribingNonBlocking(RedisMsgCallback messageCallback, LoopCallback loopCallback, RedisMsgErrorCallback errorCallback = nullptr);
 
   /**
    * Stops message processing on receipt of next message. Can be called from message handlers.
