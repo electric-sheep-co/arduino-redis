@@ -4,7 +4,7 @@ Please review our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community 
 
 ### Submitting a Pull Request
 
-If there isn't already an Issue that your code changes will address / fix, please create one first.
+0. If there isn't already an [Issue](https://github.com/electric-sheep-co/arduino-redis/issues) related to your code changes, please create one.
 
 1. First, fork the repository on GitHub by visiting https://github.com/electric-sheep-co/arduino-redis and clicking the "Fork" button in the top-right corner of the page. This will create a copy of the repository under your own GitHub account.
 
