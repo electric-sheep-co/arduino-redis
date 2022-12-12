@@ -16,6 +16,10 @@
  *  @authors Remi Caumette
  *  @authors Robert Oostenveld
  *  @authors Mark Lynch <mark.christinat@gmail.com>
+ *  @authors Daniel (https://github.com/darmiel)
+ *  @authors gde-2 (https://github.com/gde-2)
+ *  @authors ErMaVi (https://github.com/ErMaVi)
+ *  @authors Craig Hollabaugh (https://github.com/holla2040)
  */
 
 #ifndef REDIS_H
