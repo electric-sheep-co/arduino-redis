@@ -235,7 +235,7 @@ RedisSubscribeResult Redis::startSubscribingNonBlocking(RedisMsgCallback message
   {
     loopCallback();
     auto msg = RedisObject::parseTypeNonBlocking(conn);
-    if(msg == nullptr) {
+    if (msg == nullptr) {
       continue;
     }
 

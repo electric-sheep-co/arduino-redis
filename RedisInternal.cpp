@@ -135,7 +135,7 @@ static TypeParseMap g_TypeParseMap{
 
 std::shared_ptr<RedisObject> RedisObject::parseTypeNonBlocking(Client &client)
 {
-    if(client.connected() && !client.available()) {
+    if (client.connected() && !client.available()) {
         return nullptr;
     }
 
@@ -146,7 +146,7 @@ std::shared_ptr<RedisObject> RedisObject::parseTypeNonBlocking(Client &client)
     }
 
     typeChar = (RedisObject::Type)client.read();
-    if(typeChar == -1 || typeChar == '\r' || typeChar == '\n'){
+    if (typeChar == -1 || typeChar == '\r' || typeChar == '\n') {
         return nullptr;
     };
 
@@ -169,7 +169,7 @@ std::shared_ptr<RedisObject> RedisObject::parseTypeNonBlocking(Client &client)
 std::shared_ptr<RedisObject> RedisObject::parseType(Client &client)
 {
     std::shared_ptr<RedisObject> type = nullptr;
-    while(type==nullptr){
+    while (type==nullptr) {
         type = parseTypeNonBlocking(client);
     }
     return type;
