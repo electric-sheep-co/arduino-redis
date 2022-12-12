@@ -27,3 +27,4 @@ If you have any questions please [open an issue here](https://github.com/electri
 * Daniel (https://github.com/darmiel)
 * gde-2 (https://github.com/gde-2)
 * ErMaVi (https://github.com/ErMaVi)
+* Craig Hollabaugh (https://github.com/holla2040)
