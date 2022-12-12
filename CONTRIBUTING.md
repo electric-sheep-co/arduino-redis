@@ -24,11 +24,9 @@ $ git push origin <branch-name>
 
 6. On the branch page, click the "New Pull Request" button. This will open the pull request form.
 
-7. In the pull request form, provide a descriptive title and a detailed explanation of the changes you made. Be sure to include any relevant issue numbers.
+7. In the pull request form, provide a descriptive title and a detailed explanation of the changes you made. Be sure to reference the Issue associated with your pull request and to include any other relevant issue numbers.
 
 8. When you're ready to submit your pull request, click the "Create Pull Request" button.
-  
-9. Be sure to reference the Issue associated with your pull request in the description.
 
 **Code review is required before we can merge your pull request.** 
   
