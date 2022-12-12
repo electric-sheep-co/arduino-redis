@@ -1,6 +1,6 @@
 Thanks for considering contributing your time to the arduino-redis project!
 
-Please our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
+Please review our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
 
 ### Submitting a Pull Request
 
