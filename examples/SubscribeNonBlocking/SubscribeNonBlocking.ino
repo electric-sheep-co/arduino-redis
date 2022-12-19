@@ -56,77 +56,79 @@ void setup()
     Serial.printf("Done!\n");
 }
 
+void msgCallback(Redis *redisInst, String channel, String msg) {
+  Serial.printf("Message on channel '%s': \"%s\"\n", channel.c_str(), msg.c_str());
+
+  if (channel == "ctrl-close")
+  {
+    Serial.println("Got message on ctrl-close: ending!");
+    redisInst->stopSubscribing();
+  }
+  else if (channel == "ctrl-add")
+  {
+    Serial.printf("Adding subscription to channel '%s'\n", msg.c_str());
+
+    if (!redisInst->subscribe(msg.c_str()))
+    {
+      Serial.println("Failed to add subscription!");
+    }
+  }
+  else if (channel == "ctrl-rm")
+  {
+    Serial.printf("Removing subscription to channel '%s'\n", msg.c_str());
+
+    if (!redisInst->unsubscribe(msg.c_str()))
+    {
+      Serial.println("Failed to remove subscription!");
+    }
+  }
+}
+
+void errorCallback(Redis *redisInst, RedisMessageError err) {
+  Serial.printf("Subscription error! '%d'\n", err);
+}
+
+
+
 // returning 'true' indicates the failure was retryable; false is fatal
 bool subscriberLoop(std::function<void(void)> resetBackoffCounter)
 {
-    WiFiClient redisConn;
-    if (!redisConn.connect(REDIS_ADDR, REDIS_PORT))
-    {
-        Serial.println("Failed to connect to the Redis server!");
-        return true;
-    }
+  WiFiClient redisConn;
+  if (!redisConn.connect(REDIS_ADDR, REDIS_PORT))
+  {
+    Serial.println("Failed to connect to the Redis server!");
+    return true;
+  }
 
-    Redis redis(redisConn);
-    auto connRet = redis.authenticate(REDIS_PASSWORD);
-    if (connRet == RedisSuccess)
-    {
-        Serial.println("Connected to the Redis server!");
-    }
-    else
-    {
-        Serial.printf("Failed to authenticate to the Redis server! Errno: %d\n", (int)connRet);
-        return false;
-    }
+  Redis redis(redisConn);
+  auto connRet = redis.authenticate(REDIS_PASSWORD);
+  if (connRet == RedisSuccess)
+  {
+    Serial.println("Connected to the Redis server!");
+  }
+  else
+  {
+    Serial.printf("Failed to authenticate to the Redis server! Errno: %d\n", (int)connRet);
+    return false;
+  }
 
-    redis.subscribe("foo");
-    redis.subscribe("bar");
+  redis.subscribe("foo");
+  redis.subscribe("bar");
 
-    redis.psubscribe("ctrl-*");
+  redis.psubscribe("ctrl-*");
 
-    Serial.println("Listening...");
-    resetBackoffCounter();
+  Serial.println("Listening...");
+  resetBackoffCounter();
 
-    auto subRv = redis.startSubscribingNonBlocking(
-        [=](Redis *redisInst, String channel, String msg) {
-            Serial.printf("Message on channel '%s': \"%s\"\n", channel.c_str(), msg.c_str());
+  auto subRv = redis.startSubscribingNonBlocking(msgCallback, loop, errorCallback);
 
-            if (channel == "ctrl-close")
-            {
-                Serial.println("Got message on ctrl-close: ending!");
-                redisInst->stopSubscribing();
-            }
-            else if (channel == "ctrl-add")
-            {
-                Serial.printf("Adding subscription to channel '%s'\n", msg.c_str());
+  redisConn.stop();
+  Serial.printf("Connection closed! (%d)\n", subRv);
+  return subRv == RedisSubscribeServerDisconnected; // server disconnect is retryable, everything else is fatal
+};
 
-                if (!redisInst->subscribe(msg.c_str()))
-                {
-                    Serial.println("Failed to add subscription!");
-                }
-            }
-            else if (channel == "ctrl-rm")
-            {
-                Serial.printf("Removing subscription to channel '%s'\n", msg.c_str());
-
-                if (!redisInst->unsubscribe(msg.c_str()))
-                {
-                    Serial.println("Failed to remove subscription!");
-                }
-            }
-        },
-        [=]() {
-            loop();
-        },
-        [=](Redis *redisInst, RedisMessageError err) {
-            Serial.printf("Subscription error! '%d'\n", err);
-        });
-
-    redisConn.stop();
-    Serial.printf("Connection closed! (%d)\n", subRv);
-    return subRv == RedisSubscribeServerDisconnected; // server disconnect is retryable, everything else is fatal
-}
-
-void loop() {
-    delay(1000);
-    Serial.println("loop");
-}
+void loop() 
+{
+  delay(1000);
+  Serial.println("loop");
+};
