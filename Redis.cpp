@@ -200,7 +200,7 @@ bool Redis::unsubscribe(const char *channelOrPattern)
   return false;
 }
 
-RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, RedisMsgErrorCallback errCallback)
+RedisSubscribeResult Redis::startSubscribingNonBlocking(RedisMsgCallback messageCallback, LoopCallback loopCallback, RedisMsgErrorCallback errCallback)
 {
   if (!messageCallback)
   {
@@ -233,7 +233,11 @@ RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, R
   subLoopRun = true;
   while (subLoopRun)
   {
-    auto msg = RedisObject::parseType(conn);
+    loopCallback();
+    auto msg = RedisObject::parseTypeNonBlocking(conn);
+    if (msg == nullptr) {
+      continue;
+    }
 
     if (msg->type() == RedisObject::Type::InternalError)
     {
@@ -273,4 +277,9 @@ RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, R
   }
 
   return RedisSubscribeSuccess;
+}
+
+RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, RedisMsgErrorCallback errCallback)
+{
+  return startSubscribingNonBlocking(messageCallback, []{}, errCallback);
 }
