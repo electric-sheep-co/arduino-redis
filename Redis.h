@@ -20,6 +20,7 @@
  *  @authors gde-2 (https://github.com/gde-2)
  *  @authors ErMaVi (https://github.com/ErMaVi)
  *  @authors Craig Hollabaugh (https://github.com/holla2040)
+ *  @authors Martin (https://github.com/harmrochel)
  */
 
 #ifndef REDIS_H
