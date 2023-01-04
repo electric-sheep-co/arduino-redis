@@ -49,7 +49,7 @@ void setup()
             ++backoffCounter;
         }
 
-        Serial.printf("Waiting %lds to reconnect...\n", curDelay / 1000);
+        Serial.printf("Waiting %ds to reconnect...\n", curDelay / 1000);
         delay(curDelay);
     }
 
@@ -85,10 +85,9 @@ void msgCallback(Redis *redisInst, String channel, String msg) {
 }
 
 void errorCallback(Redis *redisInst, RedisMessageError err) {
+  (void)redisInst; // quiet compiler warning about unused parameter
   Serial.printf("Subscription error! '%d'\n", err);
 }
-
-
 
 // returning 'true' indicates the failure was retryable; false is fatal
 bool subscriberLoop(std::function<void(void)> resetBackoffCounter)
