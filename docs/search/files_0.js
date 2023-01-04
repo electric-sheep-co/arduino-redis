@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['readme_2emd_127',['README.md',['../examples_2README_8md.html',1,'(Global Namespace)'],['../README_8md.html',1,'(Global Namespace)']]],
-  ['redis_2ecpp_128',['Redis.cpp',['../Redis_8cpp.html',1,'']]],
-  ['redis_2eh_129',['Redis.h',['../Redis_8h.html',1,'']]],
-  ['redisinternal_2ecpp_130',['RedisInternal.cpp',['../RedisInternal_8cpp.html',1,'']]],
-  ['redisinternal_2eh_131',['RedisInternal.h',['../RedisInternal_8h.html',1,'']]]
+  ['code_5fof_5fconduct_2emd_134',['CODE_OF_CONDUCT.md',['../CODE__OF__CONDUCT_8md.html',1,'']]],
+  ['contributing_2emd_135',['CONTRIBUTING.md',['../CONTRIBUTING_8md.html',1,'']]]
 ];

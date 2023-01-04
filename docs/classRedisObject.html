@@ -113,6 +113,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ade7ebef45665ebfb3f6b6a58f944dce6"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classRedisObject.html">RedisObject</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedisObject.html#ade7ebef45665ebfb3f6b6a58f944dce6">parseTypeNonBlocking</a> (Client &amp;)</td></tr>
+<tr class="separator:ade7ebef45665ebfb3f6b6a58f944dce6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae89b47800fd03403dc0d8311b720521d"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classRedisObject.html">RedisObject</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedisObject.html#ae89b47800fd03403dc0d8311b720521d">parseType</a> (Client &amp;)</td></tr>
 <tr class="separator:ae89b47800fd03403dc0d8311b720521d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -344,7 +346,7 @@ Inheritance diagram for RedisObject:</div>
 </div><div class="memdoc">
 <p>Produce a human-readable String representation. Base implementation only returns the type character, so should be overriden. </p>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00057">57</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00058">58</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 
 </div>
 </div>
@@ -359,6 +361,34 @@ Inheritance diagram for RedisObject:</div>
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt; <a class="el" href="classRedisObject.html">RedisObject</a> &gt; RedisObject::parseType </td>
+          <td>(</td>
+          <td class="paramtype">Client &amp;&#160;</td>
+          <td class="paramname"><em>client</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00169">169</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ade7ebef45665ebfb3f6b6a58f944dce6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade7ebef45665ebfb3f6b6a58f944dce6">&#9670;&nbsp;</a></span>parseTypeNonBlocking()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="classRedisObject.html">RedisObject</a> &gt; RedisObject::parseTypeNonBlocking </td>
           <td>(</td>
           <td class="paramtype">Client &amp;&#160;</td>
           <td class="paramname"><em>client</em></td><td>)</td>
@@ -427,7 +457,7 @@ Inheritance diagram for RedisObject:</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00059">59</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00060">60</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 
 </div>
 </div>
@@ -452,7 +482,7 @@ Inheritance diagram for RedisObject:</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00063">63</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00064">64</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 
 </div>
 </div>
@@ -476,14 +506,14 @@ Inheritance diagram for RedisObject:</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00062">62</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00063">63</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Dec 12 2022 00:08:23 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Jan 4 2023 02:51:24 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
