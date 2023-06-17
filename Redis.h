@@ -375,6 +375,39 @@ public:
   bool tsadd(const char *key, long timestamp, const int value);
 
   /**
+   * Appends the specified stream entry to the stream at the specified key.
+   * @param key
+   * @param id
+   * @param field
+   * @param value
+   */
+  String xadd(const char *key, const char *id, const char *field, const char *value);
+
+  /**
+   * Removes the specified entries from a stream, and returns the number of
+   * entries deleted.
+   * @param key
+   * @param id
+   * @return Number of entries deleted.
+   */
+  int xdel(const char *key, const char *id);
+
+  /**
+   * Returns the number of entries inside a stream at the specified key.
+   * @param key
+   * @return Number of entries inside the stream
+   */
+  int xlen(const char *key);
+
+  /**
+   * Read data from one stream, only returning entries with an ID greater than
+   * the last received ID reported by the caller
+   * @param key
+   * @param id
+   */
+  String xread(const char *key, const char *id);
+
+  /**
    * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.
    * On success, this call will *block* until stopSubscribing() is called (meaning `loop()` will never be called!), and only *then* will return `RedisSubscribeSuccess`.
    * On remote disconnect, this call will end with the return value `RedisSubscribeServerDisconnected`, which is generally non-fatal.

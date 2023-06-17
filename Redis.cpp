@@ -159,6 +159,27 @@ bool Redis::tsadd(const char *key, long timestamp, const int value)
   }
 }
 
+String Redis::xadd(const char *key, const char *id, const char *field, const char *value)
+{
+  TRCMD(String, "XADD", key, id, field, value);
+}
+
+int Redis::xdel(const char *key, const char *id)
+{
+  TRCMD(int, "XDEL", key, id);
+}
+
+int Redis::xlen(const char *key)
+{
+  TRCMD(int, "XLEN", key);
+}
+
+//TODO:
+String Redis::xread(const char *key, const char *id)
+{
+  TRCMD(String, "XREAD", "STREAMS", key, id);
+}
+
 String Redis::info(const char *section)
 {
   TRCMD(String, "INFO", (section ? section : ""));
