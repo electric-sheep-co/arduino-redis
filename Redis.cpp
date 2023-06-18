@@ -159,7 +159,13 @@ bool Redis::tsadd(const char *key, long timestamp, const int value)
   }
 }
 
-String Redis::xadd(const char *key, const char *id, const char *field, const char *value)
+int Redis::xack(const char *key, const char *group, const char *id)
+{
+  TRCMD(int, "XACK", key, group, id);
+}
+
+String Redis::xadd(const char *key, const char *id, const char *field,
+                   const char *value)
 {
   TRCMD(String, "XADD", key, id, field, value);
 }
@@ -169,15 +175,83 @@ int Redis::xdel(const char *key, const char *id)
   TRCMD(int, "XDEL", key, id);
 }
 
+bool Redis::xgroup_create(const char *key, const char *group, const char *id,
+                          bool mkstream)
+{
+  if(mkstream)
+  {
+    TRCMD_EXPECTOK("XGROUP", "CREATE", key, group, id, "MKSTREAM");
+  }
+  else
+  {
+    TRCMD_EXPECTOK("XGROUP", "CREATE", key, group, id);
+  }
+}
+
+int Redis::xgroup_createconsumer(const char *key, const char *group,
+                                 const char *consumer)
+{
+  TRCMD(int, "XGROUP", "CREATECONSUMER", key, group, consumer);
+}
+
+int Redis::xgroup_delconsumer(const char *key, const char *group,
+                              const char *consumer)
+{
+  TRCMD(int, "XGROUP", "DELCONSUMER", key, group, consumer);
+}
+
+int Redis::xgroup_destroy(const char *key, const char *group)
+{
+  TRCMD(int, "XGROUP DESTROY", key, group);
+}
+
+bool Redis::xgroup_setid(const char* key, const char *group, const char *id)
+{
+  TRCMD_EXPECTOK("XGROUP", "SETID", key, group, id);
+}
+
 int Redis::xlen(const char *key)
 {
   TRCMD(int, "XLEN", key);
 }
 
-//TODO:
-String Redis::xread(const char *key, const char *id)
+// TODO: Fix return values
+std::vector<String> Redis::xread(const char *key, const char *id)
 {
-  TRCMD(String, "XREAD", "STREAMS", key, id);
+  auto rv = RedisCommand("XREAD", ArgList{"STREAMS", key, id}).issue(conn);
+
+  return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+}
+
+int Redis::xtrim(const char *key, const char *strategy, const char *exact,
+                 const int threshold, const int count)
+{
+  if(exact == "=" || exact == "~")
+  {
+    if(count > 0)
+    {
+      TRCMD(int, "XTRIM", key, strategy, exact, String(threshold), "LIMIT",
+            String(count));
+    }
+    else
+    {
+      TRCMD(int, "XTRIM", key, strategy, exact, String(threshold));
+    }
+  }
+  else
+  {
+    if(count > 0)
+    {
+      TRCMD(int, "XTRIM", key, strategy, String(threshold), "LIMIT",
+          String(count));
+    }
+    else
+    {
+      TRCMD(int, "XTRIM", key, strategy, String(threshold));
+    }
+  }
 }
 
 String Redis::info(const char *section)

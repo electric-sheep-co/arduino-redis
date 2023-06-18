@@ -375,27 +375,89 @@ public:
   bool tsadd(const char *key, long timestamp, const int value);
 
   /**
-   * Appends the specified stream entry to the stream at the specified key.
+   * Removes one message from the Pending Entries List
+   * @param key
+   * @param group
+   * @param id
+   * @returns The number of the messages successfully acknowledged.
+   */
+  int xack(const char *key, const char *group, const char *id);
+
+  /**
+   * Appends the specified stream entry to the stream stored at `key`.
    * @param key
    * @param id
    * @param field
    * @param value
    */
-  String xadd(const char *key, const char *id, const char *field, const char *value);
+  String xadd(const char *key, const char *id, const char *field,
+              const char *value);
 
   /**
    * Removes the specified entries from a stream, and returns the number of
    * entries deleted.
    * @param key
    * @param id
-   * @return Number of entries deleted.
+   * @returns Number of entries deleted.
    */
   int xdel(const char *key, const char *id);
 
   /**
+   * Create a new consumer group uniquely identified by `groupname` for the
+   * stream stored at `key`
+   * @param key
+   * @param group
+   * @param id
+   * @param mkstream
+   * @returns The number of the messages successfully acknowledged.
+   */
+  bool xgroup_create(const char *key, const char *group, const char *id,
+                     bool mkstream);
+
+
+  /**
+   * Create a consumer named `consumername` in the consumer group `groupname`
+   * of the stream that's stored at `key`
+   * @param key
+   * @param id
+   * @param field
+   * @param value
+   */
+  int xgroup_createconsumer(const char *key, const char *group,
+                            const char *consumer);
+
+  /**
+   * Deletes `consumer` from the consumer group.
+   * @param key
+   * @param group
+   * @param consumer
+   * @returns The number of pending messages that consumer had before deletion
+   */
+  int xgroup_delconsumer(const char *key, const char *group,
+                          const char *consumer);
+
+  /**
+   * Completely destroys a consumer group
+   * @param key
+   * @param group
+   * @returns The number of destroyed consumer groups (0 or 1)
+   */
+  int xgroup_destroy(const char *key, const char *group);
+
+
+  /**
+   * Set the last delivered ID for a consumer group
+   * @param key
+   * @param group
+   * @param id
+   * @returns OK on success
+   */
+  bool xgroup_setid(const char* key, const char *group, const char *id);
+
+  /**
    * Returns the number of entries inside a stream at the specified key.
    * @param key
-   * @return Number of entries inside the stream
+   * @returns Number of entries inside the stream
    */
   int xlen(const char *key);
 
@@ -405,7 +467,19 @@ public:
    * @param key
    * @param id
    */
-  String xread(const char *key, const char *id);
+std::vector<String> xread(const char *key, const char *id);
+
+
+  /**
+   * Trims the stream by evicting older entries if needed
+   * @param key
+   * @param strategy
+   * @param exact
+   * @param threshold
+   * @param count
+   */
+  int xtrim(const char *key, const char *strategy, const char *exact,
+                 int threshold, int count);
 
   /**
    * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.
