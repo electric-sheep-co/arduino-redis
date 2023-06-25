@@ -66,6 +66,15 @@ typedef enum
   RedisMessageUnknownType,
 } RedisMessageError;
 
+/** A value of this type will be passed as argument of xtrim to specify if it
+ * will be an exact trimming or nearly exact trimming
+ */
+typedef enum
+{
+  XtrimCompareExact = '=',
+  XtrimCompareAtLeast = '~'
+} XtrimCompareType;
+
 /** Redis-for-Arduino client interface.
  *
  *  The sole constructor takes a reference to any instance
@@ -467,7 +476,7 @@ public:
    * @param threshold
    * @param count
    */
-  int xtrim(const char *key, const char *strategy, const char *exact,
+  int xtrim(const char *key, const char *strategy, XtrimCompareType compare,
                  int threshold, int count);
 
   /**

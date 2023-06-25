@@ -215,32 +215,25 @@ int Redis::xlen(const char *key)
   TRCMD(int, "XLEN", key);
 }
 
-int Redis::xtrim(const char *key, const char *strategy, const char *exact,
+int Redis::xtrim(const char *key, const char *strategy, XtrimCompareType compare,
                  const int threshold, const int count)
 {
-  if(exact == "=" || exact == "~")
+  if(compare == XtrimCompareAtLeast)
   {
     if(count > 0)
     {
-      TRCMD(int, "XTRIM", key, strategy, exact, String(threshold), "LIMIT",
-            String(count));
-    }
-    else
-    {
-      TRCMD(int, "XTRIM", key, strategy, exact, String(threshold));
-    }
-  }
-  else
-  {
-    if(count > 0)
-    {
-      TRCMD(int, "XTRIM", key, strategy, String(threshold), "LIMIT",
-          String(count));
+      TRCMD(int, "XTRIM", key, strategy, String(char(compare)),
+            String(threshold), "LIMIT", String(count));
     }
     else
     {
       TRCMD(int, "XTRIM", key, strategy, String(threshold));
     }
+  }
+  else
+  {
+      TRCMD(int, "XTRIM", key, strategy, String(char(compare)),
+          String(threshold));
   }
 }
 

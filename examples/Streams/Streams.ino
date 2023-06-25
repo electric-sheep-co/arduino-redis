@@ -25,23 +25,25 @@ void test_write(Redis *redis)
 {
   char charBuf[60];
   char charField[5] = "name";
-  char charValue0[6] = "Sarah";
-  char charValue1[5] = "John";
+  char charValues[4][7] = {"Sarah", "John", "Ginger", "Kyle"};
   char charId[20] = "";
 
   // XADD
-  sprintf(charBuf, "XADD %s %s %s %s", STREAMS_KEY, "*", charField, charValue0);
+  sprintf(charBuf, "XADD %s %s %s %s", STREAMS_KEY, "*", charField, charValues[0]);
   Serial.println(charBuf);
-  String strId = redis->xadd(STREAMS_KEY, "*", charField, charValue0);
+  String strId = redis->xadd(STREAMS_KEY, "*", charField, charValues[0]);
   Serial.println(strId);
 
   int len = strId.length() + 1;
   char bufferId[len];
   strId.toCharArray(charId, len);
 
-  sprintf(charBuf, "XADD %s %s %s %s", STREAMS_KEY, "*", charField, charValue1);
-  Serial.println(charBuf);
-  Serial.println(redis->xadd(STREAMS_KEY, "*", charField, charValue1));
+  for(uint i = 1; i < 4; i++)
+  {
+    sprintf(charBuf, "XADD %s %s %s %s", STREAMS_KEY, "*", charField, charValues[i]);
+    Serial.println(charBuf);
+    Serial.println(redis->xadd(STREAMS_KEY, "*", charField, charValues[i]));
+  }
 
   // XLEN
   Serial.print("XLEN ");
@@ -52,6 +54,11 @@ void test_write(Redis *redis)
   sprintf(charBuf, "XDEL %s %s", STREAMS_KEY, charId);
   Serial.println(charBuf);
   Serial.println(redis->xdel(STREAMS_KEY, charId));
+
+  // XTRIM
+  sprintf(charBuf, "XTRIM %s %s %c %d", STREAMS_KEY, "MAXLEN", char(XtrimCompareExact), 2);
+  Serial.println(charBuf);
+  Serial.println(redis->xtrim(STREAMS_KEY, "MAXLEN", XtrimCompareExact, 2, 0));
 
   // XLEN
   Serial.print("XLEN ");
