@@ -414,7 +414,6 @@ public:
   bool xgroup_create(const char *key, const char *group, const char *id,
                      bool mkstream);
 
-
   /**
    * Create a consumer named `consumername` in the consumer group `groupname`
    * of the stream that's stored at `key`
@@ -444,7 +443,6 @@ public:
    */
   int xgroup_destroy(const char *key, const char *group);
 
-
   /**
    * Set the last delivered ID for a consumer group
    * @param key
@@ -460,15 +458,6 @@ public:
    * @returns Number of entries inside the stream
    */
   int xlen(const char *key);
-
-  /**
-   * Read data from one stream, only returning entries with an ID greater than
-   * the last received ID reported by the caller
-   * @param key
-   * @param id
-   */
-std::vector<String> xread(const char *key, const char *id);
-
 
   /**
    * Trims the stream by evicting older entries if needed

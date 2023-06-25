@@ -202,7 +202,7 @@ int Redis::xgroup_delconsumer(const char *key, const char *group,
 
 int Redis::xgroup_destroy(const char *key, const char *group)
 {
-  TRCMD(int, "XGROUP DESTROY", key, group);
+  TRCMD(int, "XGROUP", "DESTROY", key, group);
 }
 
 bool Redis::xgroup_setid(const char* key, const char *group, const char *id)
@@ -213,16 +213,6 @@ bool Redis::xgroup_setid(const char* key, const char *group, const char *id)
 int Redis::xlen(const char *key)
 {
   TRCMD(int, "XLEN", key);
-}
-
-// TODO: Fix return values
-std::vector<String> Redis::xread(const char *key, const char *id)
-{
-  auto rv = RedisCommand("XREAD", ArgList{"STREAMS", key, id}).issue(conn);
-
-  return rv->type() == RedisObject::Type::Array
-             ? (std::vector<String>)*((RedisArray *)rv.get())
-             : std::vector<String>();
 }
 
 int Redis::xtrim(const char *key, const char *strategy, const char *exact,
