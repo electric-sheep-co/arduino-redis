@@ -21,6 +21,17 @@
 #define STREAMS_GROUP "mygroup"
 #define STREAMS_CONSUMER "myconsumer"
 
+void print_vector(std::vector<String> output)
+{
+  if(output.size() > 0) {
+    for(uint i = 0; i < output.size(); i++) {
+      Serial.println(output.at(i));
+    }
+  } else {
+    Serial.println("Error: No info!");
+  }
+}
+
 void test_write(Redis *redis)
 {
   char charBuf[60];
@@ -64,6 +75,19 @@ void test_write(Redis *redis)
   Serial.print("XLEN ");
   Serial.println(STREAMS_KEY);
   Serial.println(redis->xlen(STREAMS_KEY));
+
+  // XRANGE
+  sprintf(charBuf, "XRANGE %s - +", STREAMS_KEY);
+  Serial.println(charBuf);
+  std::vector<String> xrange = redis->xrange(STREAMS_KEY, "-", "+", 0);
+  print_vector(xrange);
+
+  // XREVRANGE
+  sprintf(charBuf, "XREVRANGE %s + -", STREAMS_KEY);
+  Serial.println(charBuf);
+  std::vector<String> xrevrange = redis->xrevrange(STREAMS_KEY, "+", "-", 0);
+  print_vector(xrevrange);
+
 }
 
 void test_xgroup(Redis *redis)
@@ -79,6 +103,18 @@ void test_xgroup(Redis *redis)
   sprintf(charBuf, "XGROUP CREATECONSUMER %s %s %s", STREAMS_KEY, STREAMS_GROUP, STREAMS_CONSUMER);
   Serial.println(charBuf);
   Serial.println(redis->xgroup_createconsumer(STREAMS_KEY, STREAMS_GROUP, STREAMS_CONSUMER));
+
+  // XINFO CONSUMERS
+  sprintf(charBuf, "XINFO CONSUMERS %s %s", STREAMS_KEY, STREAMS_GROUP);
+  Serial.println(charBuf);
+  std::vector<String> consumers = redis->xinfo_consumers(STREAMS_KEY, STREAMS_GROUP);
+  if(consumers.size() > 0) {
+    for(uint i = 0; i < consumers.size(); i++) {
+      Serial.println(consumers.at(i));
+    }
+  } else {
+    Serial.println("Error: No info!");
+  }
 
   // XGROUP DESTROY
   sprintf(charBuf, "XGROUP DESTROY %s %s ", STREAMS_KEY, STREAMS_GROUP);

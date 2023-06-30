@@ -403,6 +403,34 @@ public:
               const char *value);
 
   /**
+   * Transfers ownership of pending stream entries that match the criteria.
+   * It is equivalent to calling XPENDING and then XCLAIM
+   * @param key
+   * @param group
+   * @param min_idle_time
+   * @param start
+   * @param count
+   * @param justid
+   */
+  std::vector<String> xautoclaim(const char *key, const char* group,
+    unsigned int min_idle_time, const char *start, unsigned int count,
+    bool justid);
+
+  /**
+   * Change the ownership of a pending message
+   * @param key
+   * @param group
+   * @param min_idle_time
+   * @param start
+   * @param count
+   * @param justid
+   */
+  std::vector<String> xclaim(const char *key, const char* group,
+    unsigned int min_idle_time, const char *id, unsigned int idle_ms,
+    unsigned int time_ms, unsigned int retrycount, bool force, bool justid,
+    const char* lastid);
+
+  /**
    * Removes the specified entries from a stream, and returns the number of
    * entries deleted.
    * @param key
@@ -444,7 +472,7 @@ public:
   int xgroup_delconsumer(const char *key, const char *group,
                           const char *consumer);
 
-  /**
+ /**
    * Completely destroys a consumer group
    * @param key
    * @param group
@@ -462,11 +490,96 @@ public:
   bool xgroup_setid(const char* key, const char *group, const char *id);
 
   /**
+   * Returns the list of consumers that belong to the `group` consumer
+   * group of the stream stored at `key`
+   * @param key
+   * @param group
+   * @returns A formatted vector<String>
+   */
+  std::vector<String> xinfo_consumers(const char *key, const char* group);
+
+  /**
+   * Returns the list of all consumer groups of the stream stored at `key`
+   * group of the stream stored at `key`
+   * @param key
+   * @returns A formatted vector<String>
+   */
+  std::vector<String> xinfo_groups(const char *key);
+
+  /**
+   * Returns the list of all consumer groups of the stream stored at `key`
+   * group of the stream stored at `key`
+   * @param key
+   * @param full
+   * @param count
+   * @returns A formatted vector<String>
+   */
+  std::vector<String> xinfo_stream(const char *key, bool full,
+                                    unsigned int count);
+
+  /**
    * Returns the number of entries inside a stream at the specified key.
    * @param key
    * @returns Number of entries inside the stream
    */
   int xlen(const char *key);
+
+  /**
+   * Inspect the list of pending messages
+   * @param key
+   * @param group
+   * @param min_idle_time
+   * @param start
+   * @param end
+   * @param count
+   * @param consumer
+   */
+  std::vector<String> xpending(const char *key, const char* group,
+    unsigned int min_idle_time, const char *start, const char *end,
+    unsigned int count, const char *consumer);
+
+  /**
+   * Returns the stream entries matching a given range of IDs
+   * @param key
+   * @param start
+   * @param end
+   * @param count
+   * @returns A formatted vector<String>
+   */
+  std::vector<String> xrange(const char *key, const char *start,
+    const char *end, unsigned int count);
+
+  /**
+   * Read data from one stream, only returning entries with an ID greater than
+   * the last received ID reported by the caller
+   * @param key
+   * @param id
+   */
+  std::vector<String> xread(const char *key, const char *id);
+
+  /**
+   * XREAD version supporting groups
+   * @param group
+   * @param consumer
+   * @param count
+   * @param block
+   * @param noack
+   * @param key
+   * @param id
+   */
+  std::vector<String> xreadgroup(const char *group, const char *consumer,
+    unsigned int count, unsigned int block_ms, bool noack, const char *key,
+    const char *id);
+
+  /**
+   * Returns a range with entries in reverse order
+   * @param key
+   * @param end
+   * @param start
+   * @param count
+   */
+  std::vector<String> xrevrange(const char *key, const char *end,
+    const char* start, unsigned int count);
 
   /**
    * Trims the stream by evicting older entries if needed

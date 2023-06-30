@@ -210,9 +210,67 @@ bool Redis::xgroup_setid(const char* key, const char *group, const char *id)
   TRCMD_EXPECTOK("XGROUP", "SETID", key, group, id);
 }
 
+std::vector<String> Redis::xinfo_consumers(const char *key, const char* group)
+{
+  auto rv = RedisCommand("XINFO", ArgList{"CONSUMERS", key, group}).issue(conn);
+
+  return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+}
+
 int Redis::xlen(const char *key)
 {
   TRCMD(int, "XLEN", key);
+}
+
+std::vector<String> Redis::xrange(const char *key, const char *start,
+    const char *end, unsigned int count)
+{
+  ArgList argList;
+  if(count > 0)
+  {
+    argList = ArgList{key, start, end, "COUNT", String(count)};
+  }
+  else
+  {
+    argList = ArgList{key, start, end};
+  }
+
+  auto rv = RedisCommand("XRANGE", ArgList{key, start, end}).issue(conn);
+
+  return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+}
+
+std::vector<String> Redis::xread(const char *key, const char *id)
+{
+  auto rv = RedisCommand("XREAD", ArgList{"STREAMS", key, id}).issue(conn);
+
+  return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+}
+
+std::vector<String> Redis::xrevrange(const char *key, const char *end,
+    const char *start, unsigned int count)
+{
+  ArgList argList;
+  if(count > 0)
+  {
+    argList = ArgList{key, end, start, "COUNT", String(count)};
+  }
+  else
+  {
+    argList = ArgList{key, end, start};
+  }
+
+  auto rv = RedisCommand("XREVRANGE", ArgList{key, end, start}).issue(conn);
+
+  return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
 }
 
 int Redis::xtrim(const char *key, const char *strategy, XtrimCompareType compare,
