@@ -108,13 +108,19 @@ void test_xgroup(Redis *redis)
   sprintf(charBuf, "XINFO CONSUMERS %s %s", STREAMS_KEY, STREAMS_GROUP);
   Serial.println(charBuf);
   std::vector<String> consumers = redis->xinfo_consumers(STREAMS_KEY, STREAMS_GROUP);
-  if(consumers.size() > 0) {
-    for(uint i = 0; i < consumers.size(); i++) {
-      Serial.println(consumers.at(i));
-    }
-  } else {
-    Serial.println("Error: No info!");
-  }
+  print_vector(consumers);
+
+  // XINFO GROUPS
+  sprintf(charBuf, "XINFO GROUPS %s", STREAMS_KEY);
+  Serial.println(charBuf);
+  std::vector<String> groups = redis->xinfo_groups(STREAMS_KEY);
+  print_vector(groups);
+
+  // XINFO STREAM
+  sprintf(charBuf, "XINFO STREAM %s FULL 1", STREAMS_KEY);
+  Serial.println(charBuf);
+  std::vector<String> stream = redis->xinfo_stream(STREAMS_KEY, true, 1);
+  print_vector(stream);
 
   // XGROUP DESTROY
   sprintf(charBuf, "XGROUP DESTROY %s %s ", STREAMS_KEY, STREAMS_GROUP);

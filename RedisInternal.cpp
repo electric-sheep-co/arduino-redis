@@ -71,7 +71,7 @@ RedisArray::operator std::vector<String>() const
         String rowVal;
         uint index = i + 1;
 
-        if(obj->type() ==RedisObject::Type::Array)
+        if(obj->type() == RedisObject::Type::Array)
         {
             std::vector<String> nestedArray =
                     (std::vector<String>)*((RedisArray *)obj.get());
@@ -88,12 +88,9 @@ RedisArray::operator std::vector<String>() const
                 }
             }
         }
-        else if(obj->type() == RedisObject::Type::BulkString)
-        {
-            rowVal = String(*obj);
-            result.push_back(String(index) + ") " + rowVal);
-        }
-        else if (obj->type() == RedisObject::Type::Integer)
+        else if(obj->type() == RedisObject::Type::BulkString ||
+                obj->type() == RedisObject::SimpleString ||
+                obj->type() == RedisObject::Integer)
         {
             rowVal = String(*obj);
             result.push_back(String(index) + ") " + rowVal);
