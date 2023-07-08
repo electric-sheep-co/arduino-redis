@@ -170,21 +170,100 @@ String Redis::xadd(const char *key, const char *id, const char *field,
   TRCMD(String, "XADD", key, id, field, value);
 }
 
-// TODO:
 std::vector<String> Redis::xautoclaim(const char *key, const char* group,
-    unsigned int min_idle_time, const char *start, unsigned int count,
-    bool justid)
+    const char* consumer, unsigned int min_idle_time, const char *start,
+    unsigned int count, bool justid)
 {
-  return std::vector<String>();
+  ArgList argList = ArgList{key, group, consumer, String(min_idle_time), start};
+
+  if(count > 0)
+  {
+    argList.push_back("COUNT");
+    argList.push_back(String(count));
+  }
+
+  if(justid == true)
+  {
+    argList.push_back("JUSTID");
+  }
+
+  auto rv = RedisCommand("XAUTOCLAIM", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else if(rv->type() == RedisObject::Type::Array)
+  {
+    return (std::vector<String>)*((RedisArray *)rv.get());
+  }
+  else
+  {
+    return std::vector<String>();
+  }
 }
 
-// TODO:
-std::vector<String> Redis::xclaim(const char *key, const char* group,
-    unsigned int min_idle_time, const char *id, unsigned int idle_ms,
-    unsigned int time_ms, unsigned int retrycount, bool force, bool justid,
-    const char* lastid)
+std::vector<String> Redis::xclaim(const char *key, const char *group,
+    const char *consumer, unsigned int min_idle_time, const char *id,
+    unsigned int idle_ms, unsigned int time_ms, unsigned int retrycount,
+    bool force, bool justid, const char *lastid)
 {
-  return std::vector<String>();
+  ArgList argList = ArgList{key, group, consumer, String(min_idle_time), id};
+
+  if(idle_ms > 0)
+  {
+    argList.push_back("IDLE");
+    argList.push_back(String(idle_ms));
+  }
+
+  if(time_ms > 0)
+  {
+    argList.push_back("TIME");
+    argList.push_back(String(time_ms));
+  }
+
+  if(retrycount > 0)
+  {
+    argList.push_back("RETRYCOUNT");
+    argList.push_back(String(retrycount));
+  }
+
+  if(force == true)
+  {
+    argList.push_back("FORCE");
+  }
+
+  if(justid == true)
+  {
+    argList.push_back("JUSTID");
+  }
+
+  if(lastid != NULL && strlen(lastid) > 0)
+  {
+    argList.push_back("LASTID");
+    argList.push_back(lastid);
+  }
+
+  auto rv = RedisCommand("XCLAIM", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else if(rv->type() == RedisObject::Type::Array)
+  {
+    return (std::vector<String>)*((RedisArray *)rv.get());
+  }
+  else
+  {
+    return std::vector<String>();
+  }
 }
 
 int Redis::xdel(const char *key, const char *id)
@@ -273,12 +352,47 @@ int Redis::xlen(const char *key)
   TRCMD(int, "XLEN", key);
 }
 
-// TODO:
-std::vector<String> xpending(const char *key, const char* group,
+std::vector<String> Redis::xpending(const char *key, const char* group,
     unsigned int min_idle_time, const char *start, const char *end,
     unsigned int count, const char *consumer)
 {
-  return std::vector<String>();
+  ArgList argList = ArgList{key, group};
+
+  if(min_idle_time > 0)
+  {
+    argList.push_back("IDLE");
+    argList.push_back(String(min_idle_time));
+  }
+
+  if(start != NULL && strlen(start) > 0 && end != NULL && strlen(end) > 0)
+  {
+    argList.push_back(start);
+    argList.push_back(end);
+    argList.push_back(String(count));
+  }
+
+  if(consumer != NULL && strlen(consumer) > 0)
+  {
+    argList.push_back(consumer);
+  }
+
+  auto rv = RedisCommand("XPENDING", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else if(rv->type() == RedisObject::Type::Array)
+  {
+    return (std::vector<String>)*((RedisArray *)rv.get());
+  }
+  else
+  {
+    return std::vector<String>();
+  }
 }
 
 std::vector<String> Redis::xrange(const char *key, const char *start,
@@ -299,21 +413,82 @@ std::vector<String> Redis::xrange(const char *key, const char *start,
              : std::vector<String>();
 }
 
-std::vector<String> Redis::xread(const char *key, const char *id)
+std::vector<String> Redis::xread(unsigned int count, unsigned int block,
+    const char *key, const char *id)
 {
-  auto rv = RedisCommand("XREAD", ArgList{"STREAMS", key, id}).issue(conn);
+  ArgList argList = std::vector<String>();
+
+  if(count > 0)
+  {
+    argList.push_back("COUNT");
+    argList.push_back(String(count));
+  }
+
+  if(block > 0)
+  {
+    argList.push_back("BLOCK");
+    argList.push_back(String(block));
+  }
+
+  argList.push_back("STREAMS");
+  argList.push_back(key);
+  argList.push_back(id);
+
+  auto rv = RedisCommand("XREAD", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else if(rv->type() == RedisObject::Type::Array)
+  {
+    return (std::vector<String>)*((RedisArray *)rv.get());
+  }
+  else
+  {
+    return std::vector<String>();
+  }
+}
+
+std::vector<String> Redis::xreadgroup(const char *group, const char *consumer,
+    unsigned int count, unsigned int block_ms, bool noack, const char *key,
+    const char *id)
+{
+  ArgList argList = ArgList{"GROUP", group, consumer};
+
+  if(count > 0)
+  {
+    argList.push_back("COUNT");
+    argList.push_back(String(count));
+  }
+
+  if(block_ms > 0)
+  {
+    argList.push_back("BLOCK");
+    argList.push_back(String(block_ms));
+  }
+
+  if(noack == true)
+  {
+    argList.push_back("NOACK");
+  }
+
+  if(key != NULL && strlen(key) > 0)
+  {
+    argList.push_back("STREAMS");
+    argList.push_back(key);
+  }
+
+  argList.push_back(id);
+
+  auto rv = RedisCommand("XREADGROUP", argList).issue(conn);
 
   return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
-}
-
-// TODO:
-std::vector<String> xreadgroup(const char *group, const char *consumer,
-    unsigned int count, unsigned int block_ms, bool noack, const char *key,
-    const char *id)
-{
-  return std::vector<String>();
 }
 
 std::vector<String> Redis::xrevrange(const char *key, const char *end,

@@ -412,9 +412,9 @@ public:
    * @param count
    * @param justid
    */
-  std::vector<String> xautoclaim(const char *key, const char* group,
-    unsigned int min_idle_time, const char *start, unsigned int count,
-    bool justid);
+  std::vector<String> xautoclaim(const char *key, const char *group,
+    const char* consumer, unsigned int min_idle_time, const char *start,
+    unsigned int count, bool justid);
 
   /**
    * Change the ownership of a pending message
@@ -426,9 +426,10 @@ public:
    * @param justid
    */
   std::vector<String> xclaim(const char *key, const char* group,
+    const char *consumer,
     unsigned int min_idle_time, const char *id, unsigned int idle_ms,
     unsigned int time_ms, unsigned int retrycount, bool force, bool justid,
-    const char* lastid);
+    const char *lastid);
 
   /**
    * Removes the specified entries from a stream, and returns the number of
@@ -555,7 +556,8 @@ public:
    * @param key
    * @param id
    */
-  std::vector<String> xread(const char *key, const char *id);
+  std::vector<String> xread(unsigned int count, unsigned int block,
+    const char *key, const char *id);
 
   /**
    * XREAD version supporting groups
