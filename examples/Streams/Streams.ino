@@ -117,6 +117,11 @@ void test_xgroup(Redis *redis)
   Serial.println(charBuf);
   print_vector(redis->xinfo_consumers(STREAMS_KEY, STREAMS_GROUP_1));
 
+  Serial.println("Sending an invalid command to show internal error message");
+  sprintf(charBuf, "XINFO CONSUMERS * *");
+  Serial.println(charBuf);
+  print_vector(redis->xinfo_consumers("*", "*"));
+
   // XINFO GROUPS
   sprintf(charBuf, "XINFO GROUPS %s", STREAMS_KEY);
   Serial.println(charBuf);

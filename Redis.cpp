@@ -102,9 +102,20 @@ bool Redis::hexists(const char *key, const char *field)
 std::vector<String> Redis::lrange(const char *key, int start, int stop)
 {
   auto rv = RedisCommand("LRANGE", ArgList{key, String(start), String(stop)}).issue(conn);
-  return rv->type() == RedisObject::Type::Array
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
+  }
 }
 
 String Redis::lindex(const char *key, int index)
@@ -196,13 +207,11 @@ std::vector<String> Redis::xautoclaim(const char *key, const char* group,
     r.push_back(error_message);
     return r;
   }
-  else if(rv->type() == RedisObject::Type::Array)
-  {
-    return (std::vector<String>)*((RedisArray *)rv.get());
-  }
   else
   {
-    return std::vector<String>();
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
   }
 }
 
@@ -256,13 +265,11 @@ std::vector<String> Redis::xclaim(const char *key, const char *group,
     r.push_back(error_message);
     return r;
   }
-  else if(rv->type() == RedisObject::Type::Array)
-  {
-    return (std::vector<String>)*((RedisArray *)rv.get());
-  }
   else
   {
-    return std::vector<String>();
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
   }
 }
 
@@ -310,18 +317,38 @@ std::vector<String> Redis::xinfo_consumers(const char *key, const char* group)
 {
   auto rv = RedisCommand("XINFO", ArgList{"CONSUMERS", key, group}).issue(conn);
 
-  return rv->type() == RedisObject::Type::Array
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
+  }
 }
 
 std::vector<String> Redis::xinfo_groups(const char *key)
 {
   auto rv = RedisCommand("XINFO", ArgList{"GROUPS", key}).issue(conn);
 
-  return rv->type() == RedisObject::Type::Array
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
+  }
 }
 
 std::vector<String> Redis::xinfo_stream(const char *key, bool full,
@@ -342,9 +369,19 @@ std::vector<String> Redis::xinfo_stream(const char *key, bool full,
 
   auto rv = RedisCommand("XINFO", argList).issue(conn);
 
-  return rv->type() == RedisObject::Type::Array
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
+  }
 }
 
 int Redis::xlen(const char *key)
@@ -385,13 +422,11 @@ std::vector<String> Redis::xpending(const char *key, const char* group,
     r.push_back(error_message);
     return r;
   }
-  else if(rv->type() == RedisObject::Type::Array)
-  {
-    return (std::vector<String>)*((RedisArray *)rv.get());
-  }
   else
   {
-    return std::vector<String>();
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
   }
 }
 
@@ -408,9 +443,19 @@ std::vector<String> Redis::xrange(const char *key, const char *start,
 
   auto rv = RedisCommand("XRANGE", argList).issue(conn);
 
-  return rv->type() == RedisObject::Type::Array
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
+  }
 }
 
 std::vector<String> Redis::xread(unsigned int count, unsigned int block,
@@ -443,13 +488,11 @@ std::vector<String> Redis::xread(unsigned int count, unsigned int block,
     r.push_back(error_message);
     return r;
   }
-  else if(rv->type() == RedisObject::Type::Array)
-  {
-    return (std::vector<String>)*((RedisArray *)rv.get());
-  }
   else
   {
-    return std::vector<String>();
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
   }
 }
 
@@ -486,9 +529,19 @@ std::vector<String> Redis::xreadgroup(const char *group, const char *consumer,
 
   auto rv = RedisCommand("XREADGROUP", argList).issue(conn);
 
-  return rv->type() == RedisObject::Type::Array
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
+  }
 }
 
 std::vector<String> Redis::xrevrange(const char *key, const char *end,
@@ -504,9 +557,19 @@ std::vector<String> Redis::xrevrange(const char *key, const char *end,
 
   auto rv = RedisCommand("XREVRANGE", argList).issue(conn);
 
-  return rv->type() == RedisObject::Type::Array
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
+  }
 }
 
 int Redis::xtrim(const char *key, const char *strategy, XtrimCompareType compare,
