@@ -594,6 +594,15 @@ public:
   int xtrim(const char *key, const char *strategy, XtrimCompareType compare,
                  int threshold, int count);
 
+  // auxiliary functions
+
+  /**
+   * Check returnVec's first element for a first byte of "-":
+   * @param returnVec
+   * @returns true if returnVec is an error, false otherwise
+  */
+  bool isErrorReturn(std::vector<String>& returnVec);
+
   /**
    * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.
    * On success, this call will *block* until stopSubscribing() is called (meaning `loop()` will never be called!), and only *then* will return `RedisSubscribeSuccess`.

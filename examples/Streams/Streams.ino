@@ -23,6 +23,18 @@
 #define STREAMS_CONSUMER_1 "consumer-1"
 #define STREAMS_CONSUMER_2 "consumer-2"
 
+// This is an example to show how to use the function isErrorReturn()
+// to validate the result of functions which return std::vector<std::string>
+#define VALIDATE_VECTOR_STRING_RESULT(result, command) \
+  result = command; \
+  if(redis->isErrorReturn(result)) { \
+    Serial.println(">> This was an error <<"); \
+    Serial.println(result[0]); \
+  } else { \
+    Serial.println(">> Success <<"); \
+    print_vector(result); \
+  }
+
 void print_vector(std::vector<String> output)
 {
   if(output.size() > 0) {
@@ -99,6 +111,7 @@ void test_write(Redis *redis)
 void test_xgroup(Redis *redis)
 {
   char charBuf[60];
+  std::vector<String> result;
 
   // XGROUP CREATE
   sprintf(charBuf, "XGROUP CREATE %s %s $ MKSTREAM", STREAMS_KEY, STREAMS_GROUP_1);
@@ -120,17 +133,17 @@ void test_xgroup(Redis *redis)
   Serial.println("Sending an invalid command to show internal error message");
   sprintf(charBuf, "XINFO CONSUMERS * *");
   Serial.println(charBuf);
-  print_vector(redis->xinfo_consumers("*", "*"));
+  VALIDATE_VECTOR_STRING_RESULT(result, redis->xinfo_consumers("*", "*"));
 
   // XINFO GROUPS
   sprintf(charBuf, "XINFO GROUPS %s", STREAMS_KEY);
   Serial.println(charBuf);
-  print_vector(redis->xinfo_groups(STREAMS_KEY));
+  VALIDATE_VECTOR_STRING_RESULT(result, redis->xinfo_groups(STREAMS_KEY));
 
   // XINFO STREAM
   sprintf(charBuf, "XINFO STREAM %s FULL 1", STREAMS_KEY);
   Serial.println(charBuf);
-  print_vector(redis->xinfo_stream(STREAMS_KEY, true, 1));
+  VALIDATE_VECTOR_STRING_RESULT(result, redis->xinfo_stream(STREAMS_KEY, true, 1));
 }
 
 void test_xclaim(Redis *redis)

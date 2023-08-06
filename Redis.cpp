@@ -718,3 +718,7 @@ RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, R
 {
   return startSubscribingNonBlocking(messageCallback, []{}, errCallback);
 }
+
+bool Redis::isErrorReturn(std::vector<String>& returnVec) {
+  return ((returnVec[0].c_str())[0] == '-');
+}

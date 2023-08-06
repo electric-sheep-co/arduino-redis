@@ -145,7 +145,7 @@ public:
     RedisInternalErrorCode code() { return _code; }
     void setErrorString(String es) { data = es; }
 
-    virtual String RESP() override { return "INTERNAL ERROR " + String(_code) + (data ? ": " + data : ""); }
+    virtual String RESP() override { return "-INTERNAL ERROR " + String(_code) + (data ? ": " + data : ""); }
 
 protected:
     RedisInternalErrorCode _code;
