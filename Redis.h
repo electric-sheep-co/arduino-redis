@@ -21,6 +21,7 @@
  *  @authors ErMaVi (https://github.com/ErMaVi)
  *  @authors Craig Hollabaugh (https://github.com/holla2040)
  *  @authors Martin (https://github.com/harmrochel)
+ *  @authors Nafraf (https://github.com/nafraf)
  */
 
 #ifndef REDIS_H
