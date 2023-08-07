@@ -75,7 +75,7 @@ $(function() {
 <div class="textblock"><p>Redis-for-Arduino client interface.</p>
 <p>The sole constructor takes a reference to any instance of a Client subclass, allowing it to be used with any library that abstracts the client bytestream in this way (such as the built-in Ethernet class or the WiFiClient for devices such as the ESP8266). </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00077">77</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00086">86</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -172,6 +172,48 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a582bb46062563ad919ddab14a6520cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85b02bb3fb4d439be990fbb4054ba58d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a85b02bb3fb4d439be990fbb4054ba58d">tsadd</a> (const char *key, long timestamp, const int value)</td></tr>
 <tr class="separator:a85b02bb3fb4d439be990fbb4054ba58d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d2df166feb63e6df6bf7fbde7b25174"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a2d2df166feb63e6df6bf7fbde7b25174">xack</a> (const char *key, const char *group, const char *id)</td></tr>
+<tr class="separator:a2d2df166feb63e6df6bf7fbde7b25174"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0576f2c5a3dc164a60308982066f0157"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a0576f2c5a3dc164a60308982066f0157">xadd</a> (const char *key, const char *id, const char *field, const char *value)</td></tr>
+<tr class="separator:a0576f2c5a3dc164a60308982066f0157"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81be50d9922631146659581437ffdd2d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a81be50d9922631146659581437ffdd2d">xautoclaim</a> (const char *key, const char *group, const char *consumer, unsigned int min_idle_time, const char *start, unsigned int count, bool justid)</td></tr>
+<tr class="separator:a81be50d9922631146659581437ffdd2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8abd4aa20bab66c846ff940c167d5d36"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a8abd4aa20bab66c846ff940c167d5d36">xclaim</a> (const char *key, const char *group, const char *consumer, unsigned int min_idle_time, const char *id, unsigned int idle_ms, unsigned int time_ms, unsigned int retrycount, bool force, bool justid, const char *lastid)</td></tr>
+<tr class="separator:a8abd4aa20bab66c846ff940c167d5d36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97877bff2c2bced83d4b766a2af8a28f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a97877bff2c2bced83d4b766a2af8a28f">xdel</a> (const char *key, const char *id)</td></tr>
+<tr class="separator:a97877bff2c2bced83d4b766a2af8a28f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00d6817916e86b59660000c47b1c7a95"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a00d6817916e86b59660000c47b1c7a95">xgroup_create</a> (const char *key, const char *group, const char *id, bool mkstream)</td></tr>
+<tr class="separator:a00d6817916e86b59660000c47b1c7a95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28274b9fb3ce2ef95693230378e6cfd1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a28274b9fb3ce2ef95693230378e6cfd1">xgroup_createconsumer</a> (const char *key, const char *group, const char *consumer)</td></tr>
+<tr class="separator:a28274b9fb3ce2ef95693230378e6cfd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adda29395b6e68449594c99dae7aa9ef2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#adda29395b6e68449594c99dae7aa9ef2">xgroup_delconsumer</a> (const char *key, const char *group, const char *consumer)</td></tr>
+<tr class="separator:adda29395b6e68449594c99dae7aa9ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e0e322d5375ad22de42a406555273b5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a4e0e322d5375ad22de42a406555273b5">xgroup_destroy</a> (const char *key, const char *group)</td></tr>
+<tr class="separator:a4e0e322d5375ad22de42a406555273b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2dfba58c0fc409c2401c14e2ad12d827"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a2dfba58c0fc409c2401c14e2ad12d827">xgroup_setid</a> (const char *key, const char *group, const char *id)</td></tr>
+<tr class="separator:a2dfba58c0fc409c2401c14e2ad12d827"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af23095d69ca5a77710e814e6b66a9e52"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#af23095d69ca5a77710e814e6b66a9e52">xinfo_consumers</a> (const char *key, const char *group)</td></tr>
+<tr class="separator:af23095d69ca5a77710e814e6b66a9e52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6324be0d5d95dc5de8a2ef9ff37b6103"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a6324be0d5d95dc5de8a2ef9ff37b6103">xinfo_groups</a> (const char *key)</td></tr>
+<tr class="separator:a6324be0d5d95dc5de8a2ef9ff37b6103"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc0c3878aaa49211873cf0fb3cfeffc0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#afc0c3878aaa49211873cf0fb3cfeffc0">xinfo_stream</a> (const char *key, bool full, unsigned int count)</td></tr>
+<tr class="separator:afc0c3878aaa49211873cf0fb3cfeffc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3700e50a1e97c9013e737815607866fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a3700e50a1e97c9013e737815607866fa">xlen</a> (const char *key)</td></tr>
+<tr class="separator:a3700e50a1e97c9013e737815607866fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7fe87b7928450b9a31ce0885682c76a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#ae7fe87b7928450b9a31ce0885682c76a">xpending</a> (const char *key, const char *group, unsigned int min_idle_time, const char *start, const char *end, unsigned int count, const char *consumer)</td></tr>
+<tr class="separator:ae7fe87b7928450b9a31ce0885682c76a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa50acf056328e7d351f48c172fb42eb3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#aa50acf056328e7d351f48c172fb42eb3">xrange</a> (const char *key, const char *start, const char *end, unsigned int count)</td></tr>
+<tr class="separator:aa50acf056328e7d351f48c172fb42eb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acaae5af58d6ce28c1d923849dcd5ca91"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#acaae5af58d6ce28c1d923849dcd5ca91">xread</a> (unsigned int count, unsigned int block, const char *key, const char *id)</td></tr>
+<tr class="separator:acaae5af58d6ce28c1d923849dcd5ca91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44e8b704c2815d81cc9d5c39cd06b33c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a44e8b704c2815d81cc9d5c39cd06b33c">xreadgroup</a> (const char *group, const char *consumer, unsigned int count, unsigned int block_ms, bool noack, const char *key, const char *id)</td></tr>
+<tr class="separator:a44e8b704c2815d81cc9d5c39cd06b33c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a732b486b67942a4ad6f8544eb98ef531"><td class="memItemLeft" align="right" valign="top">std::vector&lt; String &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a732b486b67942a4ad6f8544eb98ef531">xrevrange</a> (const char *key, const char *end, const char *start, unsigned int count)</td></tr>
+<tr class="separator:a732b486b67942a4ad6f8544eb98ef531"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3f0d883e3496ab9b43e2534a6a41dfd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#ab3f0d883e3496ab9b43e2534a6a41dfd">xtrim</a> (const char *key, const char *strategy, <a class="el" href="Redis_8h.html#a7c3c2f228c437d9dab3bdb85edd3fa92">XtrimCompareType</a> compare, int threshold, int count)</td></tr>
+<tr class="separator:ab3f0d883e3496ab9b43e2534a6a41dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac30ac22c0f088ee5669325d58ec5666d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#ac30ac22c0f088ee5669325d58ec5666d">isErrorReturn</a> (std::vector&lt; String &gt; &amp;returnVec)</td></tr>
+<tr class="separator:ac30ac22c0f088ee5669325d58ec5666d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d192249d02ef9f493c2a0c52c515e7e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49a">RedisSubscribeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a8d192249d02ef9f493c2a0c52c515e7e">startSubscribing</a> (<a class="el" href="classRedis.html#ad9d632e40ead32fdbc3c1ae7157828f7">RedisMsgCallback</a> messageCallback, <a class="el" href="classRedis.html#ac7f9ff1f839e4d9dfa95469ab4822032">RedisMsgErrorCallback</a> errorCallback=nullptr)</td></tr>
 <tr class="separator:a8d192249d02ef9f493c2a0c52c515e7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a363b49f610189c0c674582b2a4750225"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Redis_8h.html#a7462db80a2c61bfcaa245b740fb9d49a">RedisSubscribeResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedis.html#a363b49f610189c0c674582b2a4750225">startSubscribingNonBlocking</a> (<a class="el" href="classRedis.html#ad9d632e40ead32fdbc3c1ae7157828f7">RedisMsgCallback</a> messageCallback, <a class="el" href="classRedis.html#aabde46a605eea49504c62be5f80cd8b2">LoopCallback</a> loopCallback, <a class="el" href="classRedis.html#ac7f9ff1f839e4d9dfa95469ab4822032">RedisMsgErrorCallback</a> errorCallback=nullptr)</td></tr>
@@ -200,7 +242,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00082">82</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00091">91</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -217,7 +259,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Called upon successful receipt of a pub/sub <code>message</code> on subscribed <code>channel</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00081">81</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00090">90</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -234,7 +276,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Called upon an error in the receipt of a pub/sub message </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00084">84</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00093">93</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -270,7 +312,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An initialized <a class="el" href="classRedis.html">Redis</a> client using <code>client</code> to communicate with the server. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00091">91</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00100">100</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -297,7 +339,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00093">93</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00102">102</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -515,7 +557,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00160">160</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00169">169</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -562,7 +604,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00169">169</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00178">178</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -616,7 +658,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00399">399</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00628">628</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -810,7 +852,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if set, <code>false</code> if was updated </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00218">218</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00227">227</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -863,7 +905,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if set, <code>false</code> if <code>field</code> already existed </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00227">227</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00236">236</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -921,7 +963,34 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00162">162</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00597">597</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ac30ac22c0f088ee5669325d58ec5666d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac30ac22c0f088ee5669325d58ec5666d">&#9670;&nbsp;</a></span>isErrorReturn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Redis::isErrorReturn </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; String &gt; &amp;&#160;</td>
+          <td class="paramname"><em>returnVec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Check returnVec's first element for a first byte of "-": </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">returnVec</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if returnVec is an error, false otherwise </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00722">722</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -959,7 +1028,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The element's contents as a String. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00110">110</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00121">121</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -986,7 +1055,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The length of the list at <code>key</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00115">115</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00126">126</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1013,7 +1082,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value of the first element, or nil when key does not exist. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00120">120</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00131">131</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1051,7 +1120,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The index of the first element, or nil when key does not exist. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00125">125</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00136">136</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1096,7 +1165,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The length of the list after the push operations. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00130">130</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00141">141</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1186,7 +1255,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value of the first element, or nil when key does not exist. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00135">135</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00146">146</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1231,7 +1300,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>success or failure </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00140">140</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00151">151</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1276,7 +1345,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>success or failure </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00145">145</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00156">156</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1401,7 +1470,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00177">177</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00186">186</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1448,7 +1517,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the expire time was set successfully, <code>false</code> otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00186">186</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00195">195</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1477,7 +1546,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Sets up a subscription for messages published to any channels matching <code>pattern</code>. May be called in any mode &amp; from message handlers. </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00360">360</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00369">369</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1512,7 +1581,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The key`s TTL in milliseconds, or a negative value signaling error: -1 if the key exists but has no associated expire, -2 if the key DNE. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00201">201</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00210">210</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1577,7 +1646,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value of the last element, or nil when key does not exist. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00167">167</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00602">602</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1622,7 +1691,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The length of the list after the push operations. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00172">172</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00607">607</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1689,7 +1758,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00398">398</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00627">627</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1726,7 +1795,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00282">282</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00717">717</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1762,7 +1831,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00203">203</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00638">638</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1790,7 +1859,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Stops message processing on receipt of next message. Can be called from message handlers. </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00393">393</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00622">622</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1819,7 +1888,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Sets up a subscription for messages published to <code>channel</code>. May be called in any mode &amp; from message handlers. </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00355">355</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00364">364</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1863,7 +1932,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00150">150</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00161">161</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
@@ -1898,7 +1967,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The key's TTL in seconds, or a negative value signaling error: -1 if the key exists but has no associated expire, -2 if the key DNE. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00209">209</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8h_source.html#l00218">218</a> of file <a class="el" href="Redis_8h_source.html">Redis.h</a>.</p>
 
 </div>
 </div>
@@ -1919,14 +1988,1030 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Removes a subscription for <code>channelOrPattern</code>. May be called from message handlers. </p>
 
-<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00190">190</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00625">625</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a2d2df166feb63e6df6bf7fbde7b25174"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d2df166feb63e6df6bf7fbde7b25174">&#9670;&nbsp;</a></span>xack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Redis::xack </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes one message from the Pending Entries List </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+    <tr><td class="paramname">id</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of the messages successfully acknowledged. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00173">173</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a0576f2c5a3dc164a60308982066f0157"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0576f2c5a3dc164a60308982066f0157">&#9670;&nbsp;</a></span>xadd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String Redis::xadd </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>field</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends the specified stream entry to the stream stored at <code>key</code>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">id</td><td></td></tr>
+    <tr><td class="paramname">field</td><td></td></tr>
+    <tr><td class="paramname">value</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00178">178</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a81be50d9922631146659581437ffdd2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81be50d9922631146659581437ffdd2d">&#9670;&nbsp;</a></span>xautoclaim()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xautoclaim </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>consumer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>min_idle_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>justid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Transfers ownership of pending stream entries that match the criteria. It is equivalent to calling XPENDING and then XCLAIM </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+    <tr><td class="paramname">min_idle_time</td><td></td></tr>
+    <tr><td class="paramname">start</td><td></td></tr>
+    <tr><td class="paramname">count</td><td></td></tr>
+    <tr><td class="paramname">justid</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00184">184</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a8abd4aa20bab66c846ff940c167d5d36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8abd4aa20bab66c846ff940c167d5d36">&#9670;&nbsp;</a></span>xclaim()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xclaim </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>consumer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>min_idle_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>idle_ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>time_ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>retrycount</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>force</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>justid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>lastid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Change the ownership of a pending message </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+    <tr><td class="paramname">min_idle_time</td><td></td></tr>
+    <tr><td class="paramname">start</td><td></td></tr>
+    <tr><td class="paramname">count</td><td></td></tr>
+    <tr><td class="paramname">justid</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00218">218</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a97877bff2c2bced83d4b766a2af8a28f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97877bff2c2bced83d4b766a2af8a28f">&#9670;&nbsp;</a></span>xdel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Redis::xdel </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes the specified entries from a stream, and returns the number of entries deleted. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">id</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of entries deleted. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00276">276</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a00d6817916e86b59660000c47b1c7a95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00d6817916e86b59660000c47b1c7a95">&#9670;&nbsp;</a></span>xgroup_create()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Redis::xgroup_create </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>mkstream</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a new consumer group uniquely identified by <code>groupname</code> for the stream stored at <code>key</code> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+    <tr><td class="paramname">id</td><td></td></tr>
+    <tr><td class="paramname">mkstream</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of the messages successfully acknowledged. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00281">281</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a28274b9fb3ce2ef95693230378e6cfd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28274b9fb3ce2ef95693230378e6cfd1">&#9670;&nbsp;</a></span>xgroup_createconsumer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Redis::xgroup_createconsumer </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>consumer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a consumer named <code>consumername</code> in the consumer group <code>groupname</code> of the stream that's stored at <code>key</code> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">id</td><td></td></tr>
+    <tr><td class="paramname">field</td><td></td></tr>
+    <tr><td class="paramname">value</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00294">294</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="adda29395b6e68449594c99dae7aa9ef2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adda29395b6e68449594c99dae7aa9ef2">&#9670;&nbsp;</a></span>xgroup_delconsumer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Redis::xgroup_delconsumer </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>consumer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Deletes <code>consumer</code> from the consumer group. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+    <tr><td class="paramname">consumer</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of pending messages that consumer had before deletion </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00300">300</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a4e0e322d5375ad22de42a406555273b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e0e322d5375ad22de42a406555273b5">&#9670;&nbsp;</a></span>xgroup_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Redis::xgroup_destroy </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Completely destroys a consumer group </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of destroyed consumer groups (0 or 1) </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00306">306</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a2dfba58c0fc409c2401c14e2ad12d827"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2dfba58c0fc409c2401c14e2ad12d827">&#9670;&nbsp;</a></span>xgroup_setid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Redis::xgroup_setid </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set the last delivered ID for a consumer group </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+    <tr><td class="paramname">id</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>OK on success </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00311">311</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="af23095d69ca5a77710e814e6b66a9e52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af23095d69ca5a77710e814e6b66a9e52">&#9670;&nbsp;</a></span>xinfo_consumers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xinfo_consumers </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the list of consumers that belong to the <code>group</code> consumer group of the stream stored at <code>key</code> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A formatted vector&lt;String&gt; </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00316">316</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a6324be0d5d95dc5de8a2ef9ff37b6103"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6324be0d5d95dc5de8a2ef9ff37b6103">&#9670;&nbsp;</a></span>xinfo_groups()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xinfo_groups </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the list of all consumer groups of the stream stored at <code>key</code> group of the stream stored at <code>key</code> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A formatted vector&lt;String&gt; </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00335">335</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="afc0c3878aaa49211873cf0fb3cfeffc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc0c3878aaa49211873cf0fb3cfeffc0">&#9670;&nbsp;</a></span>xinfo_stream()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xinfo_stream </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>full</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the list of all consumer groups of the stream stored at <code>key</code> group of the stream stored at <code>key</code> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">full</td><td></td></tr>
+    <tr><td class="paramname">count</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A formatted vector&lt;String&gt; </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00354">354</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a3700e50a1e97c9013e737815607866fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3700e50a1e97c9013e737815607866fa">&#9670;&nbsp;</a></span>xlen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Redis::xlen </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the number of entries inside a stream at the specified key. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of entries inside the stream </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00387">387</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ae7fe87b7928450b9a31ce0885682c76a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7fe87b7928450b9a31ce0885682c76a">&#9670;&nbsp;</a></span>xpending()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xpending </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>min_idle_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>consumer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Inspect the list of pending messages </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">group</td><td></td></tr>
+    <tr><td class="paramname">min_idle_time</td><td></td></tr>
+    <tr><td class="paramname">start</td><td></td></tr>
+    <tr><td class="paramname">end</td><td></td></tr>
+    <tr><td class="paramname">count</td><td></td></tr>
+    <tr><td class="paramname">consumer</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00392">392</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aa50acf056328e7d351f48c172fb42eb3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa50acf056328e7d351f48c172fb42eb3">&#9670;&nbsp;</a></span>xrange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xrange </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the stream entries matching a given range of IDs </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">start</td><td></td></tr>
+    <tr><td class="paramname">end</td><td></td></tr>
+    <tr><td class="paramname">count</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A formatted vector&lt;String&gt; </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00433">433</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="acaae5af58d6ce28c1d923849dcd5ca91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acaae5af58d6ce28c1d923849dcd5ca91">&#9670;&nbsp;</a></span>xread()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xread </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>block</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Read data from one stream, only returning entries with an ID greater than the last received ID reported by the caller </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">id</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00461">461</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a44e8b704c2815d81cc9d5c39cd06b33c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44e8b704c2815d81cc9d5c39cd06b33c">&#9670;&nbsp;</a></span>xreadgroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xreadgroup </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>consumer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>block_ms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>noack</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>XREAD version supporting groups </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">group</td><td></td></tr>
+    <tr><td class="paramname">consumer</td><td></td></tr>
+    <tr><td class="paramname">count</td><td></td></tr>
+    <tr><td class="paramname">block</td><td></td></tr>
+    <tr><td class="paramname">noack</td><td></td></tr>
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">id</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00499">499</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a732b486b67942a4ad6f8544eb98ef531"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a732b486b67942a4ad6f8544eb98ef531">&#9670;&nbsp;</a></span>xrevrange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; String &gt; Redis::xrevrange </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns a range with entries in reverse order </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">end</td><td></td></tr>
+    <tr><td class="paramname">start</td><td></td></tr>
+    <tr><td class="paramname">count</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00547">547</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ab3f0d883e3496ab9b43e2534a6a41dfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3f0d883e3496ab9b43e2534a6a41dfd">&#9670;&nbsp;</a></span>xtrim()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Redis::xtrim </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>strategy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Redis_8h.html#a7c3c2f228c437d9dab3bdb85edd3fa92">XtrimCompareType</a>&#160;</td>
+          <td class="paramname"><em>compare</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Trims the stream by evicting older entries if needed </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">key</td><td></td></tr>
+    <tr><td class="paramname">strategy</td><td></td></tr>
+    <tr><td class="paramname">exact</td><td></td></tr>
+    <tr><td class="paramname">threshold</td><td></td></tr>
+    <tr><td class="paramname">count</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Redis_8cpp_source.html#l00575">575</a> of file <a class="el" href="Redis_8cpp_source.html">Redis.cpp</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Jan 4 2023 02:51:24 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Aug 7 2023 01:05:23 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

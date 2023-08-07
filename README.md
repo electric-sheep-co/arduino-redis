@@ -31,3 +31,4 @@ To discuss the project via real-time chat with other developers, you're invited 
 * ErMaVi (https://github.com/ErMaVi)
 * Craig Hollabaugh (https://github.com/holla2040)
 * Martin (https://github.com/harmrochel)
+* Nafraf (https://github.com/nafraf)

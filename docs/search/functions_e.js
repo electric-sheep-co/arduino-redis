@@ -1,12 +1,23 @@
 var searchData=
 [
-  ['_7eredis_207',['~Redis',['../classRedis.html#a66d7c579232082c59043d0812ea07e4c',1,'Redis']]],
-  ['_7eredisarray_208',['~RedisArray',['../classRedisArray.html#a571fccaf4c6ce9cd1d91146d67eed290',1,'RedisArray']]],
-  ['_7eredisbulkstring_209',['~RedisBulkString',['../classRedisBulkString.html#abd0c5d909325d63a6d28e88f6289463d',1,'RedisBulkString']]],
-  ['_7erediscommand_210',['~RedisCommand',['../classRedisCommand.html#a1a9446e8ca698c93106e8eed96cc65a7',1,'RedisCommand']]],
-  ['_7erediserror_211',['~RedisError',['../classRedisError.html#a000a14d4ab6464515c8a149e205142d1',1,'RedisError']]],
-  ['_7eredisinteger_212',['~RedisInteger',['../classRedisInteger.html#aade36497d92bb8edcc1919936ea25331',1,'RedisInteger']]],
-  ['_7eredisinternalerror_213',['~RedisInternalError',['../classRedisInternalError.html#a21e793236eb81e0633b15c97a6e4e4e3',1,'RedisInternalError']]],
-  ['_7eredisobject_214',['~RedisObject',['../classRedisObject.html#afb97c3d71cbf908cdf15cc5a05e9ab4c',1,'RedisObject']]],
-  ['_7eredissimplestring_215',['~RedisSimpleString',['../classRedisSimpleString.html#a162b43ba7697b9ebbfea53b354efdb45',1,'RedisSimpleString']]]
+  ['xack_232',['xack',['../classRedis.html#a2d2df166feb63e6df6bf7fbde7b25174',1,'Redis']]],
+  ['xadd_233',['xadd',['../classRedis.html#a0576f2c5a3dc164a60308982066f0157',1,'Redis']]],
+  ['xautoclaim_234',['xautoclaim',['../classRedis.html#a81be50d9922631146659581437ffdd2d',1,'Redis']]],
+  ['xclaim_235',['xclaim',['../classRedis.html#a8abd4aa20bab66c846ff940c167d5d36',1,'Redis']]],
+  ['xdel_236',['xdel',['../classRedis.html#a97877bff2c2bced83d4b766a2af8a28f',1,'Redis']]],
+  ['xgroup_5fcreate_237',['xgroup_create',['../classRedis.html#a00d6817916e86b59660000c47b1c7a95',1,'Redis']]],
+  ['xgroup_5fcreateconsumer_238',['xgroup_createconsumer',['../classRedis.html#a28274b9fb3ce2ef95693230378e6cfd1',1,'Redis']]],
+  ['xgroup_5fdelconsumer_239',['xgroup_delconsumer',['../classRedis.html#adda29395b6e68449594c99dae7aa9ef2',1,'Redis']]],
+  ['xgroup_5fdestroy_240',['xgroup_destroy',['../classRedis.html#a4e0e322d5375ad22de42a406555273b5',1,'Redis']]],
+  ['xgroup_5fsetid_241',['xgroup_setid',['../classRedis.html#a2dfba58c0fc409c2401c14e2ad12d827',1,'Redis']]],
+  ['xinfo_5fconsumers_242',['xinfo_consumers',['../classRedis.html#af23095d69ca5a77710e814e6b66a9e52',1,'Redis']]],
+  ['xinfo_5fgroups_243',['xinfo_groups',['../classRedis.html#a6324be0d5d95dc5de8a2ef9ff37b6103',1,'Redis']]],
+  ['xinfo_5fstream_244',['xinfo_stream',['../classRedis.html#afc0c3878aaa49211873cf0fb3cfeffc0',1,'Redis']]],
+  ['xlen_245',['xlen',['../classRedis.html#a3700e50a1e97c9013e737815607866fa',1,'Redis']]],
+  ['xpending_246',['xpending',['../classRedis.html#ae7fe87b7928450b9a31ce0885682c76a',1,'Redis']]],
+  ['xrange_247',['xrange',['../classRedis.html#aa50acf056328e7d351f48c172fb42eb3',1,'Redis']]],
+  ['xread_248',['xread',['../classRedis.html#acaae5af58d6ce28c1d923849dcd5ca91',1,'Redis']]],
+  ['xreadgroup_249',['xreadgroup',['../classRedis.html#a44e8b704c2815d81cc9d5c39cd06b33c',1,'Redis']]],
+  ['xrevrange_250',['xrevrange',['../classRedis.html#a732b486b67942a4ad6f8544eb98ef531',1,'Redis']]],
+  ['xtrim_251',['xtrim',['../classRedis.html#ab3f0d883e3496ab9b43e2534a6a41dfd',1,'Redis']]]
 ];
