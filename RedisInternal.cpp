@@ -1,6 +1,7 @@
 #include "RedisInternal.h"
 #include <map>
 #include <limits.h>
+#include <memory>
 
 void RedisObject::init(Client &client)
 {
@@ -62,10 +63,45 @@ void RedisArray::init(Client &client)
 
 RedisArray::operator std::vector<String>() const
 {
-    std::vector<String> rv;
-    for (auto ro : vec)
-        rv.push_back((String)*ro.get());
-    return rv;
+    std::vector<String> result;
+
+    for(uint i = 0; i < vec.size(); i++)
+    {
+        std::shared_ptr<RedisObject> obj = vec.at(i);
+        String rowVal;
+        uint index = i + 1;
+
+        if(obj->type() == RedisObject::Type::Array)
+        {
+            std::vector<String> nestedArray =
+                    (std::vector<String>)*((RedisArray *)obj.get());
+
+            for(uint j = 0; j < nestedArray.size(); j++)
+            {
+                if(j == 0)
+                {
+                    result.push_back(String(index) + ") " + nestedArray.at(j));
+                }
+                else
+                {
+                    result.push_back("   " + nestedArray.at(j));
+                }
+            }
+        }
+        else if(obj->type() == RedisObject::Type::BulkString ||
+                obj->type() == RedisObject::SimpleString ||
+                obj->type() == RedisObject::Integer)
+        {
+            rowVal = String(*obj);
+            result.push_back(String(index) + ") " + rowVal);
+        }
+        else
+        {
+            rowVal = "Unknown";
+            result.push_back(String(index) + ") " + rowVal);
+        }
+    }
+    return result;
 }
 
 String RedisArray::RESP()

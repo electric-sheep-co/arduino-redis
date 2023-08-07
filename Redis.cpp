@@ -102,9 +102,20 @@ bool Redis::hexists(const char *key, const char *field)
 std::vector<String> Redis::lrange(const char *key, int start, int stop)
 {
   auto rv = RedisCommand("LRANGE", ArgList{key, String(start), String(stop)}).issue(conn);
-  return rv->type() == RedisObject::Type::Array
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
              ? (std::vector<String>)*((RedisArray *)rv.get())
              : std::vector<String>();
+  }
 }
 
 String Redis::lindex(const char *key, int index)
@@ -156,6 +167,430 @@ bool Redis::tsadd(const char *key, long timestamp, const int value)
   else
   {
     TRCMD_EXPECTOK("TS.ADD", key, String(timestamp) + "000", String(value));
+  }
+}
+
+int Redis::xack(const char *key, const char *group, const char *id)
+{
+  TRCMD(int, "XACK", key, group, id);
+}
+
+String Redis::xadd(const char *key, const char *id, const char *field,
+                   const char *value)
+{
+  TRCMD(String, "XADD", key, id, field, value);
+}
+
+std::vector<String> Redis::xautoclaim(const char *key, const char* group,
+    const char* consumer, unsigned int min_idle_time, const char *start,
+    unsigned int count, bool justid)
+{
+  ArgList argList = ArgList{key, group, consumer, String(min_idle_time), start};
+
+  if(count > 0)
+  {
+    argList.push_back("COUNT");
+    argList.push_back(String(count));
+  }
+
+  if(justid == true)
+  {
+    argList.push_back("JUSTID");
+  }
+
+  auto rv = RedisCommand("XAUTOCLAIM", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+std::vector<String> Redis::xclaim(const char *key, const char *group,
+    const char *consumer, unsigned int min_idle_time, const char *id,
+    unsigned int idle_ms, unsigned int time_ms, unsigned int retrycount,
+    bool force, bool justid, const char *lastid)
+{
+  ArgList argList = ArgList{key, group, consumer, String(min_idle_time), id};
+
+  if(idle_ms > 0)
+  {
+    argList.push_back("IDLE");
+    argList.push_back(String(idle_ms));
+  }
+
+  if(time_ms > 0)
+  {
+    argList.push_back("TIME");
+    argList.push_back(String(time_ms));
+  }
+
+  if(retrycount > 0)
+  {
+    argList.push_back("RETRYCOUNT");
+    argList.push_back(String(retrycount));
+  }
+
+  if(force == true)
+  {
+    argList.push_back("FORCE");
+  }
+
+  if(justid == true)
+  {
+    argList.push_back("JUSTID");
+  }
+
+  if(lastid != NULL && strlen(lastid) > 0)
+  {
+    argList.push_back("LASTID");
+    argList.push_back(lastid);
+  }
+
+  auto rv = RedisCommand("XCLAIM", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+int Redis::xdel(const char *key, const char *id)
+{
+  TRCMD(int, "XDEL", key, id);
+}
+
+bool Redis::xgroup_create(const char *key, const char *group, const char *id,
+                          bool mkstream)
+{
+  if(mkstream)
+  {
+    TRCMD_EXPECTOK("XGROUP", "CREATE", key, group, id, "MKSTREAM");
+  }
+  else
+  {
+    TRCMD_EXPECTOK("XGROUP", "CREATE", key, group, id);
+  }
+}
+
+int Redis::xgroup_createconsumer(const char *key, const char *group,
+                                 const char *consumer)
+{
+  TRCMD(int, "XGROUP", "CREATECONSUMER", key, group, consumer);
+}
+
+int Redis::xgroup_delconsumer(const char *key, const char *group,
+                              const char *consumer)
+{
+  TRCMD(int, "XGROUP", "DELCONSUMER", key, group, consumer);
+}
+
+int Redis::xgroup_destroy(const char *key, const char *group)
+{
+  TRCMD(int, "XGROUP", "DESTROY", key, group);
+}
+
+bool Redis::xgroup_setid(const char* key, const char *group, const char *id)
+{
+  TRCMD_EXPECTOK("XGROUP", "SETID", key, group, id);
+}
+
+std::vector<String> Redis::xinfo_consumers(const char *key, const char* group)
+{
+  auto rv = RedisCommand("XINFO", ArgList{"CONSUMERS", key, group}).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+std::vector<String> Redis::xinfo_groups(const char *key)
+{
+  auto rv = RedisCommand("XINFO", ArgList{"GROUPS", key}).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+std::vector<String> Redis::xinfo_stream(const char *key, bool full,
+                                    unsigned int count)
+{
+  ArgList argList = ArgList{"STREAM", key};
+
+  if(full == true)
+  {
+    argList.push_back("FULL");
+
+    if(count > 0)
+    {
+      argList.push_back("COUNT");
+      argList.push_back(String(count));
+    }
+  }
+
+  auto rv = RedisCommand("XINFO", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+int Redis::xlen(const char *key)
+{
+  TRCMD(int, "XLEN", key);
+}
+
+std::vector<String> Redis::xpending(const char *key, const char* group,
+    unsigned int min_idle_time, const char *start, const char *end,
+    unsigned int count, const char *consumer)
+{
+  ArgList argList = ArgList{key, group};
+
+  if(min_idle_time > 0)
+  {
+    argList.push_back("IDLE");
+    argList.push_back(String(min_idle_time));
+  }
+
+  if(start != NULL && strlen(start) > 0 && end != NULL && strlen(end) > 0)
+  {
+    argList.push_back(start);
+    argList.push_back(end);
+    argList.push_back(String(count));
+  }
+
+  if(consumer != NULL && strlen(consumer) > 0)
+  {
+    argList.push_back(consumer);
+  }
+
+  auto rv = RedisCommand("XPENDING", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+std::vector<String> Redis::xrange(const char *key, const char *start,
+    const char *end, unsigned int count)
+{
+  ArgList argList = ArgList{key, start, end};
+
+  if(count > 0)
+  {
+    argList.push_back("COUNT");
+    argList.push_back(String(count));
+  }
+
+  auto rv = RedisCommand("XRANGE", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+std::vector<String> Redis::xread(unsigned int count, unsigned int block,
+    const char *key, const char *id)
+{
+  ArgList argList = std::vector<String>();
+
+  if(count > 0)
+  {
+    argList.push_back("COUNT");
+    argList.push_back(String(count));
+  }
+
+  if(block > 0)
+  {
+    argList.push_back("BLOCK");
+    argList.push_back(String(block));
+  }
+
+  argList.push_back("STREAMS");
+  argList.push_back(key);
+  argList.push_back(id);
+
+  auto rv = RedisCommand("XREAD", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+std::vector<String> Redis::xreadgroup(const char *group, const char *consumer,
+    unsigned int count, unsigned int block_ms, bool noack, const char *key,
+    const char *id)
+{
+  ArgList argList = ArgList{"GROUP", group, consumer};
+
+  if(count > 0)
+  {
+    argList.push_back("COUNT");
+    argList.push_back(String(count));
+  }
+
+  if(block_ms > 0)
+  {
+    argList.push_back("BLOCK");
+    argList.push_back(String(block_ms));
+  }
+
+  if(noack == true)
+  {
+    argList.push_back("NOACK");
+  }
+
+  if(key != NULL && strlen(key) > 0)
+  {
+    argList.push_back("STREAMS");
+    argList.push_back(key);
+  }
+
+  argList.push_back(id);
+
+  auto rv = RedisCommand("XREADGROUP", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+std::vector<String> Redis::xrevrange(const char *key, const char *end,
+    const char *start, unsigned int count)
+{
+  ArgList argList = ArgList{key, end, start};
+
+  if(count > 0)
+  {
+    argList.push_back("COUNT");
+    argList.push_back(String(count));
+  }
+
+  auto rv = RedisCommand("XREVRANGE", argList).issue(conn);
+
+  if(rv->type() == RedisObject::Type::InternalError)
+  {
+    std::vector<String> r = std::vector<String>();
+    String error_message = (String)(((RedisInternalError *)rv.get())->RESP());
+    r.push_back(error_message);
+    return r;
+  }
+  else
+  {
+    return rv->type() == RedisObject::Type::Array
+             ? (std::vector<String>)*((RedisArray *)rv.get())
+             : std::vector<String>();
+  }
+}
+
+int Redis::xtrim(const char *key, const char *strategy, XtrimCompareType compare,
+                 const int threshold, const int count)
+{
+  if(compare == XtrimCompareAtLeast)
+  {
+    if(count > 0)
+    {
+      TRCMD(int, "XTRIM", key, strategy, String(char(compare)),
+            String(threshold), "LIMIT", String(count));
+    }
+    else
+    {
+      TRCMD(int, "XTRIM", key, strategy, String(threshold));
+    }
+  }
+  else
+  {
+      TRCMD(int, "XTRIM", key, strategy, String(char(compare)),
+          String(threshold));
   }
 }
 
@@ -282,4 +717,8 @@ RedisSubscribeResult Redis::startSubscribingNonBlocking(RedisMsgCallback message
 RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, RedisMsgErrorCallback errCallback)
 {
   return startSubscribingNonBlocking(messageCallback, []{}, errCallback);
+}
+
+bool Redis::isErrorReturn(std::vector<String>& returnVec) {
+  return ((returnVec[0].c_str())[0] == '-');
 }
