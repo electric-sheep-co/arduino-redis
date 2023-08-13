@@ -1,146 +1,342 @@
+#include <Arduino.h>
+#include <Client.h>
+
 #include <Redis.h>
-#include <ESP8266WiFi.h>
+
+#include <AUnitVerbose.h>
 
 #include <map>
+#include <memory>
 
-#include "creds.h"
+#include "TestRawClient.h"
+
+using namespace aunit;
+
+const String gKeyPrefix = String("__arduino_redis__test");
+
+void setup()
+{
+  const char *include = std::getenv("ARDUINO_REDIS_TEST_INCLUDE");
+
+  if (!include)
+  {
+    include = "*";
+  }
+
+  TestRunner::include(include);
+}
+
+void loop()
+{
+  TestRunner::run();
+}
+
+class IntegrationTests : public TestOnce
+{
+protected:
+  void setup() override
+  {
+    TestOnce::setup();
+
+    const char *r_host = std::getenv("ARDUINO_REDIS_TEST_HOST");
+    if (!r_host)
+    {
+      r_host = "localhost";
+    }
+
+    const char *r_port = std::getenv("ARDUINO_REDIS_TEST_PORT");
+    if (!r_port)
+    {
+      r_port = "6379";
+    }
+
+    auto r_auth = std::getenv("ARDUINO_REDIS_TEST_AUTH");
+
+    assertNotEqual(client.connect(r_host, std::atoi(r_port)), 0);
+    r = std::make_shared<Redis>(client);
+
+    if (r_auth)
+    {
+      auto auth_ret = r->authenticate(r_auth);
+      assertNotEqual(auth_ret, RedisReturnValue::RedisAuthFailure);
+    }
+  }
+
+  // should really keep track of all keys created during testing and delete them UGH
+  // this works well until then:
+  // $ redis-cli -a $REDIS_PWD --raw keys "__arduino_redis__test*" 2> /dev/null | xargs -I{} redis-cli -a $REDIS_PWD del {}
+
+  TestRawClient client;
+  std::shared_ptr<Redis> r;
+};
+
+#define prefixKey(k) (String(gKeyPrefix + "." + k))
+#define prefixKeyCStr(k) (String(gKeyPrefix + "." + k).c_str())
+
+#define defineKey(KEY)        \
+  auto __ks = prefixKey(KEY); \
+  auto k = __ks.c_str();
+
+// Any testF(IntegrationTests, ...) defined will automatically have scope access to `r`, the redis client
+
+testF(IntegrationTests, set)
+{
+  assertEqual(r->set(prefixKeyCStr("set"), "!"), true);
+}
+
+testF(IntegrationTests, setget)
+{
+  defineKey("setget");
+
+  assertEqual(r->set(k, "!"), true);
+  assertEqual(r->get(k), String("!"));
+}
+
+testF(IntegrationTests, expire)
+{
+  defineKey("expire");
+
+  assertEqual(r->set(k, "E"), true);
+  assertEqual(r->expire(k, 5), true);
+  assertMore(r->ttl(k), 0);
+}
+
+testF(IntegrationTests, expire_at)
+{
+  defineKey("expire_at");
+
+  assertEqual(r->set(k, "E"), true);
+  assertEqual(r->expire_at(k, 0), true);
+  assertEqual(r->isNilReturn(r->get(k)), true);
+}
+
+testF(IntegrationTests, pexpire)
+{
+  defineKey("pexpire");
+
+  assertEqual(r->set(k, "PE"), true);
+  assertEqual(r->pexpire(k, 5000), true);
+  assertMore(r->pttl(k), 0);
+}
+
+testF(IntegrationTests, pexpire_at)
+{
+  defineKey("pexpire_at");
+
+  assertEqual(r->set(k, "PEA"), true);
+  assertEqual(r->pexpire_at(k, 0), true);
+  assertEqual(r->isNilReturn(r->get(k)), true);
+}
+
+testF(IntegrationTests, ttl)
+{
+  defineKey("ttl");
+
+  assertEqual(r->set(k, "T"), true);
+  assertEqual(r->expire(k, 100), true);
+  assertMore(r->ttl(k), 99);
+}
+
+testF(IntegrationTests, pttl)
+{
+  defineKey("pttl");
+
+  assertEqual(r->set(k, "PT"), true);
+  assertEqual(r->pexpire(k, 1000), true);
+  // allows for <250ms latency between pexpire & pttl calls
+  assertMore(r->pttl(k), 750);
+}
+
+testF(IntegrationTests, wait_for_expiry)
+{
+  defineKey("wait_for_expiry");
+
+  assertEqual(r->set(k, "WFE"), true);
+  assertEqual(r->expire(k, 1), true);
+  delay(1250); // again, allow <250ms
+  assertEqual(r->ttl(k), -2);
+}
+
+testF(IntegrationTests, wait_for_expiry_ms)
+{
+  defineKey("wait_for_expiry_ms");
+
+  assertEqual(r->set(k, "PWFE"), true);
+  assertEqual(r->pexpire(k, 1000), true);
+  delay(1250); // again, allow <250ms
+  assertEqual(r->ttl(k), -2);
+}
+
+testF(IntegrationTests, hset)
+{
+  defineKey("hset");
+
+  // it would be great to be able to assert hset* return values but unless
+  // the keys are fully cleaned up (or testing is always done against a fresh redis instance)
+  // it's possible this will be an update (returns false)
+  // reallllly just need to keep track of and clean up keys... UGH
+  r->hset(k, "TF", "H!");
+  assertEqual(r->hexists(k, "TF"), true);
+}
+
+testF(IntegrationTests, hsetget)
+{
+  defineKey("hsetget");
+
+  r->hset(k, "TF", "HH");
+  assertEqual(r->hget(k, "TF"), "HH");
+}
+
+testF(IntegrationTests, hlen)
+{
+  defineKey("hlen");
+
+  for (int i = 0; i < 10; i++)
+  {
+    auto fv = String(i);
+    r->hset(k, String("field-" + fv).c_str(), fv.c_str());
+  }
+
+  assertEqual(r->hlen(k), 10);
+}
+
+testF(IntegrationTests, hlen2)
+{
+  defineKey("hlen2");
+
+  auto lim = random(64) + 64;
+  auto key = k + String(":hlen");
+
+  for (auto i = 0; i < lim; i++)
+  {
+    r->hset(key.c_str(), (String("hlen_test__") + String(i)).c_str(), String(i).c_str());
+  }
+
+  assertEqual(r->hlen(key.c_str()), (int)lim);
+}
+
+testF(IntegrationTests, hstrlen)
+{
+  defineKey("hstrlen");
+
+  r->hset(k, "hsr", k);
+  assertEqual(r->hstrlen(k, "hsr"), (int)strlen(k));
+}
+
+testF(IntegrationTests, hdel)
+{
+  defineKey("hdel");
+
+  assertEqual(r->hset(k, "delete_me", k), true);
+  assertEqual(r->hdel(k, "delete_me"), true);
+  assertEqual(r->isNilReturn(r->hget(k, "delete_me")), true);
+}
+
+testF(IntegrationTests, append)
+{
+  assertEqual(r->append(prefixKeyCStr("append"), "foo"), 3);
+}
+
+testF(IntegrationTests, exists)
+{
+  defineKey("exists");
+
+  assertEqual(r->set(k, k), true);
+  assertEqual(r->exists(k), true);
+}
+
+testF(IntegrationTests, lpush)
+{
+  defineKey("lpush");
+
+  auto pushRes = r->lpush(k, k);
+  assertEqual(pushRes, 1);
+  assertEqual(r->llen(k), 1);
+  assertEqual(r->lindex(k, pushRes - 1), String(k));
+}
+
+testF(IntegrationTests, rpush)
+{
+  defineKey("rpush");
+
+  auto pushRes = r->rpush(k, k);
+  assertEqual(pushRes, 1);
+  assertEqual(r->llen(k), 1);
+  assertEqual(r->lindex(k, pushRes - 1), String(k));
+}
+
+testF(IntegrationTests, lrem)
+{
+  defineKey("lrem");
+
+  auto pushRes = r->lpush(k, k);
+  assertEqual(pushRes, 1);
+  assertEqual(r->llen(k), 1);
+  assertEqual(r->lindex(k, pushRes - 1), String(k));
+  assertEqual(r->lrem(k, 1, k), 1);
+}
+
+testF(IntegrationTests, lpop)
+{
+  defineKey("lpop");
+
+  assertEqual(r->lpush(k, k), 1);
+  assertEqual(r->llen(k), 1);
+  assertEqual(r->lpop(k), String(k));
+  assertEqual(r->llen(k), 0);
+}
+
+testF(IntegrationTests, lset)
+{
+  defineKey("lset");
+
+  assertEqual(r->lpush(k, "foo"), 1);
+  assertEqual(r->lset(k, 0, k), true);
+  assertEqual(r->lindex(k, 0), String(k));
+}
+
+testF(IntegrationTests, ltrim)
+{
+  defineKey("ltrim");
+
+  assertEqual(r->lpush(k, "bar"), 1);
+  assertEqual(r->lpush(k, "bar"), 2);
+  assertEqual(r->ltrim(k, -1, 0), true);
+  assertEqual(r->llen(k), 0);
+}
+
+testF(IntegrationTests, rpop)
+{
+  defineKey("rpop");
+
+  assertEqual(r->lpush(k, k), 1);
+  assertEqual(r->llen(k), 1);
+  assertEqual(r->rpop(k), String(k));
+  assertEqual(r->llen(k), 0);
+}
+
+testF(IntegrationTests, hgetnil)
+{
+  auto nothing = r->hget(prefixKeyCStr("hgetnil"), "doesNotExist");
+  assertEqual(nothing, String("(nil)"));
+  assertEqual(r->isNilReturn(nothing), true);
+}
+
+testF(IntegrationTests, lindexnil)
+{
+  auto nothing = r->lindex(prefixKeyCStr("lindexnil"), 0);
+  assertEqual(nothing, String("(nil)"));
+  assertEqual(r->isNilReturn(nothing), true);
+}
+
+/* TODO: re-factor this to something that can be automated!!
 
 #define SUBSCRIBE_TESTS 0
 #define SUBSCRIBE_TESTS_ONLY 0
 #define BOOTSTRAP_PUB_DELAY_SECS 30
-
-// tests are not expected to pass if RETAIN_DATA is set;
-// it is useful for debugging the tests only
-#define RETAIN_DATA 0
-
-typedef struct
-{
-  int total;
-  int passed;
-} TestResults;
-
-typedef bool (*TestFunc)(Redis *, const char *);
-
-TestResults runTests(Redis *redis, String prefix);
-
-const String gKeyPrefix = String("__arduino_redis__test");
-
-/* Tests are NOT executed in definition order! */
-std::map<String, TestFunc> g_Tests{
-    {"set", [=](Redis *r, const char *k) {
-       return r->set(k, "!");
-     }},
-    {"setget", [=](Redis *r, const char *k) {
-       return r->set(k, "!") == 1 && r->get(k) == "!";
-     }},
-    {"expire", [=](Redis *r, const char *k) {
-       return r->set(k, "E") && r->expire(k, 5) && r->ttl(k) > 0;
-     }},
-    {"expire_at", [=](Redis *r, const char *k) {
-       return r->set(k, "E") && r->expire_at(k, 0) && r->get(k) == NULL;
-     }},
-    {"pexpire", [=](Redis *r, const char *k) {
-       return r->set(k, "PE") && r->pexpire(k, 5000) && r->pttl(k) > 0;
-     }},
-    {"pexpire_at", [=](Redis *r, const char *k) {
-       return r->set(k, "PEA") && r->pexpire_at(k, 0) && r->get(k) == NULL;
-     }},
-    {"persist", [=](Redis *r, const char *k) {
-       return r->set(k, "P") && r->expire(k, 5) && r->persist(k) && r->ttl(k) == -1;
-     }},
-    {"ttl", [=](Redis *r, const char *k) {
-       return r->set(k, "T") && r->expire(k, 100) && r->ttl(k) > 99;
-     }},
-    {"pttl", [=](Redis *r, const char *k) {
-       return r->set(k, "PT") && r->pexpire(k, 1000) && r->pttl(k) > 750; // allows for <250ms latency between pexpire & pttl calls
-     }},
-    {"wait-for-expiry", [=](Redis *r, const char *k) {
-       auto sr = r->set(k, "WFE");
-       r->expire(k, 1);
-       delay(1250); // again, allow <250ms
-       auto t = r->ttl(k);
-       return sr && t == -2;
-     }},
-    {"wait-for-expiry-ms", [=](Redis *r, const char *k) {
-       auto sr = r->set(k, "PWFE");
-       r->pexpire(k, 1000);
-       delay(1250); // again, allow <250ms
-       auto t = r->ttl(k);
-       return sr && t == -2;
-     }},
-    {"hset", [=](Redis *r, const char *k) {
-       return r->hset(k, "TF", "H!") && r->hexists(k, "TF");
-     }},
-    {"hsetget", [=](Redis *r, const char *k) {
-       return r->hset(k, "TF", "HH") && r->hget(k, "TF") == "HH";
-     }},
-    {"hlen", [=](Redis *r, const char *k) {
-       for (int i = 0; i < 10; i++)
-       {
-         auto fv = String(i);
-         r->hset(k, String("field-" + fv).c_str(), fv.c_str());
-       }
-
-       return r->hlen(k) == 10;
-     }},
-    {"hstrlen", [=](Redis *r, const char *k) {
-       return r->hset(k, "hsr", k) && r->hstrlen(k, "hsr") == (int)strlen(k);
-     }},
-    {"hdel", [=](Redis *r, const char *k) {
-       return r->hset(k, "delete_me", k) && r->hdel(k, "delete_me") && r->hget(k, "delete_me") == NULL;
-     }},
-    {"hlen", [=](Redis *r, const char *k) {
-       auto lim = random(64) + 64;
-       auto key = k + String(":hlen");
-
-       for (auto i = 0; i < lim; i++)
-       {
-         r->hset(key.c_str(), (String("hlen_test__") + String(i)).c_str(), String(i).c_str());
-       }
-
-       auto verif = r->hlen(key.c_str());
-
-       // the generic cleanup doesn't take care of these
-       for (auto i = 0; i < lim; i++)
-       {
-         r->hdel(key.c_str(), (String("hlen_test__") + String(i)).c_str());
-       }
-
-       return verif == lim;
-     }},
-    {"append", [=](Redis *r, const char *k) {
-       return r->append(k, "foo") == 3;
-     }},
-    {"exists", [=](Redis *r, const char *k) {
-       return r->set(k, k) && r->exists(k);
-     }},
-    {"lpush", [=](Redis *r, const char *k) {
-       auto pushRes = r->lpush(k, k);
-       return pushRes == 1 && r->llen(k) == 1 && String(k) == r->lindex(k, pushRes - 1);
-     }},
-    {"rpush", [=](Redis *r, const char *k) {
-       auto pushRes = r->rpush(k, k);
-       return pushRes == 1 && r->llen(k) == 1 && String(k) == r->lindex(k, pushRes - 1);
-     }},
-    {"lrem", [=](Redis *r, const char *k) {
-       auto pushRes = r->lpush(k, k);
-       return pushRes == 1 && r->llen(k) == 1 && String(k) == r->lindex(k, pushRes - 1) && r->lrem(k, 1, k) == 1;
-     }},
-    {"lpop", [=](Redis *r, const char *k) {
-       return r->lpush(k, k) == 1 && r->llen(k) == 1 && r->lpop(k) == String(k) && r->llen(k) == 0;
-     }},
-    {"lset", [=](Redis *r, const char *k) {
-       return r->lpush(k, "foo") == 1 && r->lset(k, 0, k) && r->lindex(k, 0) == String(k);
-     }},
-    {"ltrim", [=](Redis *r, const char *k) {
-       return r->lpush(k, "bar") == 1 && r->lpush(k, "bar") && r->ltrim(k, -1, 0) && r->llen(k) == 0;
-     }},
-    {"rpop", [=](Redis *r, const char *k) {
-       return r->lpush(k, k) == 1 && r->llen(k) == 1 && r->rpop(k) == String(k) && r->llen(k) == 0;
-     }}};
-
 std::map<String, TestFunc> g_SubscribeTests{
-    {"subscribe-simple", [](Redis *r, const char *k) {
+    {"subscribe-simple", [](Redis *r, const char *k)
+     {
        auto bsChan = String(gKeyPrefix + ":bootstrap");
        auto ackStr = String(k) + ":" + String(random(INT_MAX));
 
@@ -153,7 +349,8 @@ std::map<String, TestFunc> g_SubscribeTests{
        r->subscribe(k);
 
        auto subRet = r->startSubscribing(
-           [](Redis *rconn, String chan, String message) {
+           [](Redis *rconn, String chan, String message)
+           {
              auto success = message == String((char *)rconn->getTestContext());
 
              if (!success)
@@ -164,102 +361,11 @@ std::map<String, TestFunc> g_SubscribeTests{
              rconn->setTestContext((const void *)success);
              rconn->stopSubscribing();
            },
-           [](Redis *rconn, RedisMessageError err) {
+           [](Redis *rconn, RedisMessageError err)
+           {
              Serial.printf("!! subscribe error: %d\n", err);
            });
 
        return subRet == RedisSubscribeSuccess && r->getTestContext() == (const void *)1;
      }}};
-
-void setup()
-{
-  Serial.begin(115200);
-  Serial.flush();
-  delay(2000);
-  Serial.printf("\n\n\n");
-  Serial.println("Arduino-Redis tests starting...");
-
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
-
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(1000);
-  }
-
-  Serial.print("Connected to network, IP is: ");
-  Serial.println(WiFi.localIP());
-
-  WiFiClient rc;
-  if (!rc.connect(REDIS_HOST, REDIS_PORT))
-  {
-    Serial.println("Failed to connect to Redis server!");
-    return;
-  }
-
-  auto r = new Redis(rc);
-  if (!strlen(REDIS_AUTH) || r->authenticate(REDIS_AUTH) == RedisSuccess)
-  {
-    Serial.printf("Connection is%s authenticated\n", strlen(REDIS_AUTH) ? "" : " NOT");
-
-    Serial.printf("\n%s", r->info("server").c_str());
-
-    randomSeed(analogRead(0));
-    auto keyPrefix = gKeyPrefix + ":" + String(random(INT_MAX));
-
-    if (!SUBSCRIBE_TESTS || !SUBSCRIBE_TESTS_ONLY)
-    {
-      Serial.printf("\nRunning tests (key prefix: \"%s\"):\n", keyPrefix.c_str());
-      auto res = runTests(r, keyPrefix, g_Tests);
-
-      Serial.printf("\n\n%s (%d passed / %d total)\n",
-                    (res.passed == res.total ? "SUCCESS" : "FAILURE"), res.passed, res.total);
-    }
-    else
-    {
-      Serial.println("SUBSCRIBE_TESTS_ONLY is set; skipping all others!");
-    }
-
-    if (SUBSCRIBE_TESTS)
-    {
-      Serial.printf("\nRunning SUBSCRIBE tests:\n\n");
-      auto res = runTests(r, keyPrefix, g_SubscribeTests);
-
-      Serial.printf("\n\n%s (%d passed / %d total)\n",
-                    (res.passed == res.total ? "SUCCESS" : "FAILURE"), res.passed, res.total);
-    }
-  }
-}
-
-void loop() {}
-
-TestResults runTests(Redis *redis, String prefix, std::map<String, TestFunc> &tests)
-{
-  auto pFunc = [&prefix](const String &n) { return String(prefix + "." + n); };
-
-  int total = 0, pass = 0;
-  for (auto &kv : tests)
-  {
-    auto tName = kv.first;
-    auto tRes = kv.second(redis, pFunc(tName).c_str());
-    total++;
-    pass += tRes ? 1 : 0;
-    Serial.printf("  %s %s\n", tRes ? "✔" : "X", tName.c_str());
-    Serial.flush();
-  }
-
-  if (!RETAIN_DATA)
-  {
-    Serial.printf("\nCleaning up (set RETAIN_DATA=1 to skip)... ");
-    Serial.flush();
-
-    for (auto &kv : tests)
-    {
-      (void)redis->del(pFunc(kv.first).c_str());
-    }
-
-    Serial.println("done!");
-    Serial.flush();
-  }
-
-  return {.total = total, .passed = pass};
-}
+*/

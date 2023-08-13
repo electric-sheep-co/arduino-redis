@@ -1,0 +1,6 @@
+[submodule "test/deps/EpoxyDuino"]
+	path = test/deps/EpoxyDuino
+	url = https://github.com/bxparks/EpoxyDuino.git
+[submodule "test/deps/AUnit"]
+	path = test/deps/AUnit
+	url = https://github.com/bxparks/AUnit.git

@@ -1,0 +1,26 @@
+name: Testing
+
+on:
+  push:
+    branches: "**"
+  pull_request:
+    branches: "**"
+
+jobs:
+  BuildAndTest:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Submodule init
+      run: git submodule init && git submodule update --recursive
+    - name: Install redis
+      run: |
+        sudo apt -y install redis && \
+        sudo systemctl start redis && \
+        sudo systemctl status redis
+    - name: Build
+      run: cd test && make
+    - name: Test
+      run: ./test/test.out

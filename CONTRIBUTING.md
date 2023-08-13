@@ -32,4 +32,6 @@ $ git push origin <branch-name>
   
 A member of the project team will review your code and provide feedback. You may need to make additional changes based on the feedback you receive before your pull request can be merged.
 
+**PRs must pass all integration testing and include _new_ tests for any changed or added functionality.** 
+
 Thanks again for contributing to the arduino-redis project! We appreciate your help.

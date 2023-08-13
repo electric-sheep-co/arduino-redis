@@ -127,7 +127,7 @@ public:
   /**
    * Get `key`.
    * @param key The key name to retrieve.
-   * @return The key`s value as a string, null if the key does not exist.
+   * @return The key`s value as a string or "(nil)" if the key does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
    */
   String get(const char *key);
 
@@ -240,7 +240,7 @@ public:
    * Gets `field` stored in hash at `key`.
    * @param key
    * @param field
-   * @return The field`s value.
+   * @return The field`s value or "(nil)" if the key does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
    */
   String hget(const char *key, const char *field);
 
@@ -279,7 +279,7 @@ public:
    * Returns the element of the list stored at `index`.
    * @param key
    * @param end Zero-based element index.
-   * @return The element's contents as a String.
+   * @return The element's contents as a String or "(nil)" if the index does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
    */
   String lindex(const char *key, int index);
 
@@ -293,7 +293,7 @@ public:
 
   /** Removes and returns the first element of the list stored at `key`.
    *  @param key
-   *  @return The value of the first element, or nil when key does not exist.
+   *  @return The value of the first element, or nil when key does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
    */
   String lpop(const char *key);
 
@@ -347,7 +347,7 @@ public:
 
   /** Removes and returns the last element of the list stored at `key`.
    *  @param key
-   *  @return The value of the last element, or nil when key does not exist.
+   *  @return The value of the last element, or nil when key does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
    */
   String rpop(const char *key);
 
@@ -603,6 +603,13 @@ public:
    * @returns true if returnVec is an error, false otherwise
   */
   bool isErrorReturn(std::vector<String>& returnVec);
+
+  /**
+   * Check returnString for the nil return value (currently "(nil)" to match Redis' underlying value)
+   * @param returnString
+   * @returns true if returnString is the nil return value, false otherwise
+  */
+  bool isNilReturn(String returnString) { return returnString == "(nil)"; }
 
   /**
    * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.

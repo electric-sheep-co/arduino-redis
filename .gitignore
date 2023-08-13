@@ -2,3 +2,5 @@
 .vscode
 creds.h
 docs/creds*
+**/*.o
+**/*.out
