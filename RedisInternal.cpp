@@ -68,8 +68,6 @@ RedisArray::operator std::vector<String>() const
     for(uint i = 0; i < vec.size(); i++)
     {
         std::shared_ptr<RedisObject> obj = vec.at(i);
-        String rowVal;
-        uint index = i + 1;
 
         if(obj->type() == RedisObject::Type::Array)
         {
@@ -78,27 +76,18 @@ RedisArray::operator std::vector<String>() const
 
             for(uint j = 0; j < nestedArray.size(); j++)
             {
-                if(j == 0)
-                {
-                    result.push_back(String(index) + ") " + nestedArray.at(j));
-                }
-                else
-                {
-                    result.push_back("   " + nestedArray.at(j));
-                }
+                result.push_back(nestedArray.at(j));
             }
         }
         else if(obj->type() == RedisObject::Type::BulkString ||
                 obj->type() == RedisObject::SimpleString ||
                 obj->type() == RedisObject::Integer)
         {
-            rowVal = String(*obj);
-            result.push_back(String(index) + ") " + rowVal);
+            result.push_back(String(*obj));
         }
         else
         {
-            rowVal = "Unknown";
-            result.push_back(String(index) + ") " + rowVal);
+            result.push_back("Unknown");
         }
     }
     return result;

@@ -329,6 +329,22 @@ testF(IntegrationTests, lindexnil)
   assertEqual(r->isNilReturn(nothing), true);
 }
 
+testF(IntegrationTests, op_vec_string_issue67)
+{
+  defineKey("op_vec_string_issue67");
+
+  assertEqual(r->rpush(k, "1"), 1);
+  assertEqual(r->rpush(k, "2"), 2);
+  assertEqual(r->rpush(k, "3"), 3);
+
+  auto list = r->lrange(k, 0, -1);
+  assertEqual((int)list.size(), 3);
+
+  assertEqual(list[0], "1");
+  assertEqual(list[1], "2");
+  assertEqual(list[2], "3");
+}
+
 /* TODO: re-factor this to something that can be automated!!
 
 #define SUBSCRIBE_TESTS 0
