@@ -4,3 +4,6 @@
 [submodule "test/deps/AUnit"]
 	path = test/deps/AUnit
 	url = https://github.com/bxparks/AUnit.git
+[submodule "docs-deps/doxygen-awesome-css"]
+	path = docs-deps/doxygen-awesome-css
+	url = https://github.com/jothepro/doxygen-awesome-css.git

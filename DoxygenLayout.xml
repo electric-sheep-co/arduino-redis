@@ -3,24 +3,10 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="Home" />
-    <tab type="user" url="@ref Redis" title="Primary Documentation" />
-    <tab type="user" title="Latest Release" url="https://github.com/electric-sheep-co/arduino-redis/releases/latest" />
+    <tab type="user" url="@ref Redis" title="Main Documentation" />
     <tab type="user" url="@ref md_README" title="README" />
-    <tab type="pages" visible="no" title="" intro=""/>
-    <tab type="modules" visible="no" title="" intro=""/>
-    <tab type="namespaces" visible="no" title="">
-      <tab type="namespacelist" visible="yes" title="" intro=""/>
-      <tab type="namespacemembers" visible="yes" title="" intro=""/>
-    </tab>
-    <tab type="classes" visible="yes" title="">
-      <tab type="classlist" visible="yes" title="" intro=""/>
-      <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/> 
-      <tab type="hierarchy" visible="yes" title="" intro=""/>
-      <tab type="classmembers" visible="no" title="" intro=""/>
-    </tab>
-    <tab type="filelist" visible="yes" title="" intro=""/>
-    <tab type="examples" visible="yes" title="" intro=""/>  
-    <tab type="user" url="https://github.com/electric-sheep-co/arduino-redis" title="GitHub" />
+    <tab type="user" title="Latest Release" url="https://github.com/electric-sheep-co/arduino-redis/releases/latest" />
+    <tab type="user" url="https://github.com/electric-sheep-co/arduino-redis" title="GitHub" /> 
   </navindex>
 
   <!-- Layout definition for a class page -->

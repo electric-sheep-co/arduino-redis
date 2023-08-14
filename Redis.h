@@ -127,7 +127,7 @@ public:
   /**
    * Get `key`.
    * @param key The key name to retrieve.
-   * @return The key`s value as a string or "(nil)" if the key does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
+   * @return The key's value as a string or "(nil)" if the key does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
    */
   String get(const char *key);
 
@@ -240,7 +240,7 @@ public:
    * Gets `field` stored in hash at `key`.
    * @param key
    * @param field
-   * @return The field`s value or "(nil)" if the key does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
+   * @return The field's value or "(nil)" if the key does not exist. Use `isNilReturn()` to check for the latter in a future-proof way.
    */
   String hget(const char *key, const char *field);
 

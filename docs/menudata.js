@@ -22,12 +22,7 @@ for the JavaScript code in this file
 */
 var menudata={children:[
 {text:"Home",url:"index.html"},
-{text:"Primary Documentation",url:"classRedis.html"},
-{text:"Latest Release",url:"https://github.com/electric-sheep-co/arduino-redis/releases/latest"},
+{text:"Main Documentation",url:"classRedis.html"},
 {text:"README",url:"md_README.html"},
-{text:"Classes",url:"annotated.html",children:[
-{text:"Class List",url:"annotated.html"},
-{text:"Class Index",url:"classes.html"},
-{text:"Class Hierarchy",url:"inherits.html"}]},
-{text:"File List",url:"files.html"},
+{text:"Latest Release",url:"https://github.com/electric-sheep-co/arduino-redis/releases/latest"},
 {text:"GitHub",url:"https://github.com/electric-sheep-co/arduino-redis"}]}

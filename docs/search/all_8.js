@@ -5,6 +5,7 @@ var searchData=
   ['integer_35',['Integer',['../classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafea5911cba203d7332869e388cb16e8b590',1,'RedisObject']]],
   ['internalerror_36',['InternalError',['../classRedisObject.html#a53709bcd6c9b9172f48520323bf8cafea561790b79b38e2e2c4860a41dc525943',1,'RedisObject']]],
   ['iserrorreturn_37',['isErrorReturn',['../classRedis.html#ac30ac22c0f088ee5669325d58ec5666d',1,'Redis']]],
-  ['issue_38',['issue',['../classRedisCommand.html#aca229979f7552d4facbd3ca1529563df',1,'RedisCommand']]],
-  ['issue_5ftyped_39',['issue_typed',['../classRedisCommand.html#a99a13af66dddb0da5cee1e11c731e057',1,'RedisCommand::issue_typed(Client &amp;cmdClient)'],['../classRedisCommand.html#a7eef2c4af96c48edb47b071857418cb8',1,'RedisCommand::issue_typed(Client &amp;cmdClient)'],['../classRedisCommand.html#a84a02bd8b3ef143958b7fa9732230087',1,'RedisCommand::issue_typed(Client &amp;cmdClient)'],['../classRedisCommand.html#a0916ba7e9f8551a0a9d7858608240fce',1,'RedisCommand::issue_typed(Client &amp;cmdClient)']]]
+  ['isnilreturn_38',['isNilReturn',['../classRedis.html#a88f9e15ef3d261a099abd49a9ca7f1cc',1,'Redis']]],
+  ['issue_39',['issue',['../classRedisCommand.html#aca229979f7552d4facbd3ca1529563df',1,'RedisCommand']]],
+  ['issue_5ftyped_40',['issue_typed',['../classRedisCommand.html#a99a13af66dddb0da5cee1e11c731e057',1,'RedisCommand::issue_typed(Client &amp;cmdClient)'],['../classRedisCommand.html#a7eef2c4af96c48edb47b071857418cb8',1,'RedisCommand::issue_typed(Client &amp;cmdClient)'],['../classRedisCommand.html#a84a02bd8b3ef143958b7fa9732230087',1,'RedisCommand::issue_typed(Client &amp;cmdClient)'],['../classRedisCommand.html#a0916ba7e9f8551a0a9d7858608240fce',1,'RedisCommand::issue_typed(Client &amp;cmdClient)']]]
 ];
