@@ -61,36 +61,29 @@ void RedisArray::init(Client &client)
         add(RedisObject::parseType(client));
 }
 
+RedisArray::operator std::vector<std::shared_ptr<RedisObject>>() const
+{
+    return vec;
+}
+
 RedisArray::operator std::vector<String>() const
 {
-    std::vector<String> result;
-
-    for(uint i = 0; i < vec.size(); i++)
+    std::vector<String> rv;
+    for (auto ro : vec)
     {
-        std::shared_ptr<RedisObject> obj = vec.at(i);
-
-        if(obj->type() == RedisObject::Type::Array)
+        if (ro->type() == RedisObject::Type::Array)
         {
-            std::vector<String> nestedArray =
-                    (std::vector<String>)*((RedisArray *)obj.get());
-
-            for(uint j = 0; j < nestedArray.size(); j++)
+            for (auto append_inner : dynamic_cast<RedisArray*>(ro.get())->operator std::vector<String>())
             {
-                result.push_back(nestedArray.at(j));
+                rv.push_back(append_inner);
             }
-        }
-        else if(obj->type() == RedisObject::Type::BulkString ||
-                obj->type() == RedisObject::SimpleString ||
-                obj->type() == RedisObject::Integer)
-        {
-            result.push_back(String(*obj));
         }
         else
         {
-            result.push_back("Unknown");
+            rv.push_back((String)*ro.get());
         }
     }
-    return result;
+    return rv;
 }
 
 String RedisArray::RESP()
@@ -179,10 +172,9 @@ std::shared_ptr<RedisObject> RedisObject::parseTypeNonBlocking(Client &client)
     {
         auto retVal = g_TypeParseMap[typeChar](client);
 
-        if (!retVal || retVal->type() == RedisObject::Type::Error)
+        if (!retVal)
         {
-            String err = retVal ? (String)*retVal : "(nil)";
-            return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::UnknownError, err));
+            return std::shared_ptr<RedisObject>(new RedisInternalError(RedisInternalError::UnknownError, "(nil)"));
         }
 
         return std::shared_ptr<RedisObject>(retVal);

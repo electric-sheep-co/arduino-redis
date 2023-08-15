@@ -1,6 +1,17 @@
-APP_NAME := test
-ARDUINO_LIBS := ../../ AUnit
-# EPOXY_CORE_ESP8266 is used because it defines Client when the standard AVR core doesn't ...?
-# All we need is that interface and the String implementation, so this "works". Good enough!
-EPOXY_CORE := EPOXY_CORE_ESP8266
-include ./deps/EpoxyDuino/EpoxyDuino.mk
+TESTS = unit/unit-tests.out integration/integration-tests.out
+
+test : $(TESTS)
+
+unit/unit-tests.out:
+	cd unit && make
+
+integration/integration-tests.out:
+	cd integration && make
+
+run: clean test
+	./unit/unit-tests.out
+	./integration/integration-tests.out
+
+clean:
+	rm -f unit/unit-tests.out
+	rm -f integration/integration-tests.out

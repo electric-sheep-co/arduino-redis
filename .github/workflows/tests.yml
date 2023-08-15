@@ -18,9 +18,6 @@ jobs:
     - name: Install redis
       run: |
         sudo apt -y install redis && \
-        sudo systemctl start redis && \
-        sudo systemctl status redis
-    - name: Build
-      run: cd test && make
-    - name: Test
-      run: ./test/test.out
+        sudo systemctl start redis
+    - name: Build & run tests
+      run: cd test && make run
