@@ -57,8 +57,16 @@ String RedisBulkString::RESP()
 
 void RedisArray::init(Client &client)
 {
+    // Null array https://redis.io/docs/reference/protocol-spec/#null-arrays
+    if (data.toInt() == -1)
+    {
+        return;
+    }
+
     for (int i = 0; i < data.toInt(); i++)
+    {
         add(RedisObject::parseType(client));
+    }
 }
 
 RedisArray::operator std::vector<std::shared_ptr<RedisObject>>() const

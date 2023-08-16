@@ -102,6 +102,11 @@ public:
 
     operator std::vector<std::shared_ptr<RedisObject>>() const;
 
+    /** Returns false if this is a "Null Array" (https://redis.io/docs/reference/protocol-spec/#null-arrays),
+     * true otherwise (including if the array is empty!)
+     */
+    bool isNilReturn() const { return data.toInt() == -1; }
+
     virtual void init(Client &client) override;
 
     virtual String RESP() override;

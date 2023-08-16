@@ -300,7 +300,7 @@ public:
   /** Returns the index of the first matched `element` when scanning from head to tail
    *  @param key
    *  @param element
-   *  @return The index of the first element, or nil when key does not exist.
+   *  @return The index of the first element, or (INT_MAX - 0x0f) when key does not exist.
    */
   int lpos(const char *key, const char *element);
 
@@ -609,7 +609,7 @@ public:
    * @param returnString
    * @returns true if returnString is the nil return value, false otherwise
   */
-  bool isNilReturn(String returnString) { return returnString == "(nil)"; }
+  static bool isNilReturn(String returnString) { return returnString == "(nil)"; }
 
   /**
    * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.
