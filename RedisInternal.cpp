@@ -73,7 +73,7 @@ RedisArray::operator std::vector<String>() const
     {
         if (ro->type() == RedisObject::Type::Array)
         {
-            for (auto append_inner : dynamic_cast<RedisArray*>(ro.get())->operator std::vector<String>())
+            for (auto append_inner : ((RedisArray*)ro.get())->operator std::vector<String>())
             {
                 rv.push_back(append_inner);
             }
