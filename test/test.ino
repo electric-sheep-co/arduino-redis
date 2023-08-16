@@ -345,6 +345,29 @@ testF(IntegrationTests, op_vec_string_issue67)
   assertEqual(list[2], "3");
 }
 
+testF(IntegrationTests, xadd)
+{
+  int len = r->xlen("mystream");
+  auto id = r->xadd("mystream", "*", "name", "Taryssa");
+  assertEqual(r->xlen("mystream"), len + 1);
+}
+
+testF(IntegrationTests, xdel)
+{
+  int len = r->xlen("mystream");
+  auto id = r->xadd("mystream", "*", "name", "Serena");
+  assertEqual(r->xdel("mystream", String(id).c_str()), 1);
+  assertEqual(r->xlen("mystream"), len);
+}
+
+testF(IntegrationTests, xtrim)
+{
+  int len = r->xlen("mystream");
+  auto id1 = r->xadd("mystream", "*", "name", "Dani");
+  auto id2 = r->xadd("mystream", "*", "name", "Grace");
+  assertEqual(r->xtrim("mystream", "MAXLEN", XtrimCompareExact, 2, 0), len);
+}
+
 /* TODO: re-factor this to something that can be automated!!
 
 #define SUBSCRIBE_TESTS 0
