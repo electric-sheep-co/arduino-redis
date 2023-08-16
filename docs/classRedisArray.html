@@ -65,6 +65,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2118afaf808b1f4189b5e3f1af8ad62d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07aae078c2867d7a6ee6dce51b928f7f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedisArray.html#a07aae078c2867d7a6ee6dce51b928f7f">operator std::vector&lt; String &gt;</a> () const</td></tr>
 <tr class="separator:a07aae078c2867d7a6ee6dce51b928f7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46b2521de9d9f9006fe1cd1d3bbbe3c9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedisArray.html#a46b2521de9d9f9006fe1cd1d3bbbe3c9">operator std::vector&lt; std::shared_ptr&lt; RedisObject &gt;&gt;</a> () const</td></tr>
+<tr class="separator:a46b2521de9d9f9006fe1cd1d3bbbe3c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf17f41387a6819fadfb4111e7c23712"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedisArray.html#adf17f41387a6819fadfb4111e7c23712">init</a> (Client &amp;client) override</td></tr>
 <tr class="separator:adf17f41387a6819fadfb4111e7c23712"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68b029635c24b38c8b7261503f051a2c"><td class="memItemLeft" align="right" valign="top">virtual String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRedisArray.html#a68b029635c24b38c8b7261503f051a2c">RESP</a> () override</td></tr>
@@ -269,6 +271,23 @@ Inheritance diagram for RedisArray:</div>
 
 </div>
 </div>
+<a id="a46b2521de9d9f9006fe1cd1d3bbbe3c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46b2521de9d9f9006fe1cd1d3bbbe3c9">&#9670;&nbsp;</a></span>operator std::vector&lt; std::shared_ptr&lt; RedisObject &gt;&gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">RedisArray::operator std::vector&lt; std::shared_ptr&lt; <a class="el" href="classRedisObject.html">RedisObject</a> &gt;&gt; </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a07aae078c2867d7a6ee6dce51b928f7f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a07aae078c2867d7a6ee6dce51b928f7f">&#9670;&nbsp;</a></span>operator std::vector&lt; String &gt;()</h2>
 
@@ -283,8 +302,9 @@ Inheritance diagram for RedisArray:</div>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>If this is a nested array, will flatten all those within </p>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00064">64</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00069">69</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
 
 </div>
 </div>
@@ -314,7 +334,7 @@ Inheritance diagram for RedisArray:</div>
 
 <p>Implements <a class="el" href="classRedisObject.html#ab34fd619c08d43eff0941b008e2b0fca">RedisObject</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00096">96</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8cpp_source.html#l00089">89</a> of file <a class="el" href="RedisInternal_8cpp_source.html">RedisInternal.cpp</a>.</p>
 
 </div>
 </div>
@@ -339,14 +359,14 @@ Inheritance diagram for RedisArray:</div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00107">107</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RedisInternal_8h_source.html#l00110">110</a> of file <a class="el" href="RedisInternal_8h_source.html">RedisInternal.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Aug 14 2023 18:03:51 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Aug 15 2023 07:15:18 for Arduino-Redis by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>

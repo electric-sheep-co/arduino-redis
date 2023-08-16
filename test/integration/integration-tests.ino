@@ -2,13 +2,14 @@
 #include <Client.h>
 
 #include <Redis.h>
+#include <RedisInternal.h>
 
 #include <AUnitVerbose.h>
 
 #include <map>
 #include <memory>
 
-#include "TestRawClient.h"
+#include "../TestRawClient.h"
 
 using namespace aunit;
 
@@ -62,9 +63,20 @@ protected:
     }
   }
 
-  // should really keep track of all keys created during testing and delete them UGH
-  // this works well until then:
-  // $ redis-cli -a $REDIS_PWD --raw keys "__arduino_redis__test*" 2> /dev/null | xargs -I{} redis-cli -a $REDIS_PWD del {}
+  void teardown() override
+  {
+    auto keys = RedisCommand("KEYS", ArgList{String(gKeyPrefix + "*").c_str()}).issue(client);
+
+    if (keys->type() == RedisObject::Type::Array)
+    {
+      std::vector<String> as_strings = *dynamic_cast<RedisArray*>(keys.get());
+      for (const auto& key : as_strings) {
+        r->del(key.c_str());
+      }
+    }
+
+    TestOnce::teardown();
+  }
 
   TestRawClient client;
   std::shared_ptr<Redis> r;
@@ -171,11 +183,7 @@ testF(IntegrationTests, hset)
 {
   defineKey("hset");
 
-  // it would be great to be able to assert hset* return values but unless
-  // the keys are fully cleaned up (or testing is always done against a fresh redis instance)
-  // it's possible this will be an update (returns false)
-  // reallllly just need to keep track of and clean up keys... UGH
-  r->hset(k, "TF", "H!");
+  assertEqual(r->hset(k, "TF", "H!"), true);
   assertEqual(r->hexists(k, "TF"), true);
 }
 
@@ -183,7 +191,7 @@ testF(IntegrationTests, hsetget)
 {
   defineKey("hsetget");
 
-  r->hset(k, "TF", "HH");
+  assertEqual(r->hset(k, "TF", "HH"), true);
   assertEqual(r->hget(k, "TF"), "HH");
 }
 

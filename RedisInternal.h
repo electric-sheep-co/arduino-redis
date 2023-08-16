@@ -97,7 +97,10 @@ public:
 
     void add(std::shared_ptr<RedisObject> param) { vec.push_back(param); }
 
+    /** If this is a nested array, will flatten all those within */
     operator std::vector<String>() const;
+
+    operator std::vector<std::shared_ptr<RedisObject>>() const;
 
     virtual void init(Client &client) override;
 

@@ -34,22 +34,31 @@ This will download [EpoxyDuino](https://github.com/bxparks/EpoxyDuino) and [AUni
 
 ### Test harness
 
-Available in [`./test`](./test). 
+Available in [`./test`](./test). There are two variants, `unit` & `integration`.
 
 #### Build
 
 Requires the same [build depedencies as ExpoyDuino](https://github.com/bxparks/EpoxyDuino#dependencies).
 
 ```shell
-$ cd test && make
+$ cd test
+$ make
 ```
 
-This will produce a binary named `test.out` in the `test` directory.
+This will produce binaries named `<variant>.out` in the `test/<variant>` directories.
 
 #### Running
 
+(Using the `integration` tests variant as an example)
+
 ```shell
-$ ./test.out
+$ cd test
+$ make run   # will clean & rebuild
+rm unit/unit-tests.out
+rm integration/integration-tests.out
+cd unit && make
+make[1]: Entering directory '/home/ryan/arduino-redis/test/unit'
+...
 TestRunner started on 27 test(s).
 Test IntegrationTests_append passed.
 ...
