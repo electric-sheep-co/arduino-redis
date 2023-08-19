@@ -300,7 +300,7 @@ public:
   /** Returns the index of the first matched `element` when scanning from head to tail
    *  @param key
    *  @param element
-   *  @return The index of the first element, or nil when key does not exist.
+   *  @return The index of the first element, or (INT_MAX - 0x0f) when key does not exist.
    */
   int lpos(const char *key, const char *element);
 
@@ -414,8 +414,8 @@ public:
    * @param justid
    */
   std::vector<String> xautoclaim(const char *key, const char *group,
-    const char* consumer, unsigned int min_idle_time, const char *start,
-    unsigned int count, bool justid);
+                                 const char *consumer, unsigned int min_idle_time, const char *start,
+                                 unsigned int count, bool justid);
 
   /**
    * Change the ownership of a pending message
@@ -426,11 +426,11 @@ public:
    * @param count
    * @param justid
    */
-  std::vector<String> xclaim(const char *key, const char* group,
-    const char *consumer,
-    unsigned int min_idle_time, const char *id, unsigned int idle_ms,
-    unsigned int time_ms, unsigned int retrycount, bool force, bool justid,
-    const char *lastid);
+  std::vector<String> xclaim(const char *key, const char *group,
+                             const char *consumer,
+                             unsigned int min_idle_time, const char *id, unsigned int idle_ms,
+                             unsigned int time_ms, unsigned int retrycount, bool force, bool justid,
+                             const char *lastid);
 
   /**
    * Removes the specified entries from a stream, and returns the number of
@@ -472,9 +472,9 @@ public:
    * @returns The number of pending messages that consumer had before deletion
    */
   int xgroup_delconsumer(const char *key, const char *group,
-                          const char *consumer);
+                         const char *consumer);
 
- /**
+  /**
    * Completely destroys a consumer group
    * @param key
    * @param group
@@ -489,7 +489,7 @@ public:
    * @param id
    * @returns OK on success
    */
-  bool xgroup_setid(const char* key, const char *group, const char *id);
+  bool xgroup_setid(const char *key, const char *group, const char *id);
 
   /**
    * Returns the list of consumers that belong to the `group` consumer
@@ -498,7 +498,7 @@ public:
    * @param group
    * @returns A formatted vector<String>
    */
-  std::vector<String> xinfo_consumers(const char *key, const char* group);
+  std::vector<String> xinfo_consumers(const char *key, const char *group);
 
   /**
    * Returns the list of all consumer groups of the stream stored at `key`
@@ -517,7 +517,7 @@ public:
    * @returns A formatted vector<String>
    */
   std::vector<String> xinfo_stream(const char *key, bool full,
-                                    unsigned int count);
+                                   unsigned int count);
 
   /**
    * Returns the number of entries inside a stream at the specified key.
@@ -536,9 +536,9 @@ public:
    * @param count
    * @param consumer
    */
-  std::vector<String> xpending(const char *key, const char* group,
-    unsigned int min_idle_time, const char *start, const char *end,
-    unsigned int count, const char *consumer);
+  std::vector<String> xpending(const char *key, const char *group,
+                               unsigned int min_idle_time, const char *start, const char *end,
+                               unsigned int count, const char *consumer);
 
   /**
    * Returns the stream entries matching a given range of IDs
@@ -549,7 +549,7 @@ public:
    * @returns A formatted vector<String>
    */
   std::vector<String> xrange(const char *key, const char *start,
-    const char *end, unsigned int count);
+                             const char *end, unsigned int count);
 
   /**
    * Read data from one stream, only returning entries with an ID greater than
@@ -558,7 +558,7 @@ public:
    * @param id
    */
   std::vector<String> xread(unsigned int count, unsigned int block,
-    const char *key, const char *id);
+                            const char *key, const char *id);
 
   /**
    * XREAD version supporting groups
@@ -571,8 +571,8 @@ public:
    * @param id
    */
   std::vector<String> xreadgroup(const char *group, const char *consumer,
-    unsigned int count, unsigned int block_ms, bool noack, const char *key,
-    const char *id);
+                                 unsigned int count, unsigned int block_ms, bool noack, const char *key,
+                                 const char *id);
 
   /**
    * Returns a range with entries in reverse order
@@ -582,7 +582,7 @@ public:
    * @param count
    */
   std::vector<String> xrevrange(const char *key, const char *end,
-    const char* start, unsigned int count);
+                                const char *start, unsigned int count);
 
   /**
    * Trims the stream by evicting older entries if needed
@@ -593,7 +593,7 @@ public:
    * @param count
    */
   int xtrim(const char *key, const char *strategy, XtrimCompareType compare,
-                 int threshold, int count);
+            int threshold, int count);
 
   // auxiliary functions
 
@@ -601,15 +601,15 @@ public:
    * Check returnVec's first element for a first byte of "-":
    * @param returnVec
    * @returns true if returnVec is an error, false otherwise
-  */
-  bool isErrorReturn(std::vector<String>& returnVec);
+   */
+  bool isErrorReturn(std::vector<String> &returnVec);
 
   /**
    * Check returnString for the nil return value (currently "(nil)" to match Redis' underlying value)
    * @param returnString
    * @returns true if returnString is the nil return value, false otherwise
-  */
-  bool isNilReturn(String returnString) { return returnString == "(nil)"; }
+   */
+  static bool isNilReturn(String returnString) { return returnString == "(nil)"; }
 
   /**
    * Enters subscription mode and subscribes to all channels/patterns setup via `subscribe()`/`psubscribe()`.

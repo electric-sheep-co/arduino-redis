@@ -57,8 +57,16 @@ String RedisBulkString::RESP()
 
 void RedisArray::init(Client &client)
 {
+    // Null array https://redis.io/docs/reference/protocol-spec/#null-arrays
+    if (data.toInt() == -1)
+    {
+        return;
+    }
+
     for (int i = 0; i < data.toInt(); i++)
+    {
         add(RedisObject::parseType(client));
+    }
 }
 
 RedisArray::operator std::vector<std::shared_ptr<RedisObject>>() const
@@ -73,7 +81,7 @@ RedisArray::operator std::vector<String>() const
     {
         if (ro->type() == RedisObject::Type::Array)
         {
-            for (auto append_inner : ((RedisArray*)ro.get())->operator std::vector<String>())
+            for (auto append_inner : ((RedisArray *)ro.get())->operator std::vector<String>())
             {
                 rv.push_back(append_inner);
             }
@@ -153,7 +161,8 @@ static TypeParseMap g_TypeParseMap{
 
 std::shared_ptr<RedisObject> RedisObject::parseTypeNonBlocking(Client &client)
 {
-    if (client.connected() && !client.available()) {
+    if (client.connected() && !client.available())
+    {
         return nullptr;
     }
 
@@ -164,7 +173,8 @@ std::shared_ptr<RedisObject> RedisObject::parseTypeNonBlocking(Client &client)
     }
 
     typeChar = (RedisObject::Type)client.read();
-    if (typeChar == -1 || typeChar == '\r' || typeChar == '\n') {
+    if (typeChar == -1 || typeChar == '\r' || typeChar == '\n')
+    {
         return nullptr;
     };
 
@@ -186,7 +196,8 @@ std::shared_ptr<RedisObject> RedisObject::parseTypeNonBlocking(Client &client)
 std::shared_ptr<RedisObject> RedisObject::parseType(Client &client)
 {
     std::shared_ptr<RedisObject> type = nullptr;
-    while (type==nullptr) {
+    while (type == nullptr)
+    {
         type = parseTypeNonBlocking(client);
     }
     return type;

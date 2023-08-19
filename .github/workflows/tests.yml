@@ -15,9 +15,15 @@ jobs:
     - uses: actions/checkout@v3
     - name: Submodule init
       run: git submodule init && git submodule update --recursive
-    - name: Install redis
-      run: |
-        sudo apt -y install redis && \
-        sudo systemctl start redis
-    - name: Build & run tests
+    - name: Add packages.redis.io key
+      run: curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+    - name: Install packages.redis.io key
+      run: echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+    - name: Install depedencies
+      run: sudo apt -y update && sudo apt -y install redis parallel
+    - name: Redis version check
+      run: redis-cli info | grep redis_version
+    - name: Build tests
+      run: cd test && make
+    - name: Run tests
       run: cd test && make run

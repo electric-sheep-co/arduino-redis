@@ -55,7 +55,12 @@ public:
 
     /** Produce a human-readable String representation.
      *  Base implementation only returns the type character, so should be overriden. */
-    virtual operator String() { if(data) return data; return String("(nil)");}
+    virtual operator String()
+    {
+        if (data)
+            return data;
+        return String("(nil)");
+    }
 
     Type type() const { return _type; }
 
@@ -101,6 +106,11 @@ public:
     operator std::vector<String>() const;
 
     operator std::vector<std::shared_ptr<RedisObject>>() const;
+
+    /** Returns false if this is a "Null Array" (https://redis.io/docs/reference/protocol-spec/#null-arrays),
+     * true otherwise (including if the array is empty!)
+     */
+    bool isNilReturn() const { return data.toInt() == -1; }
 
     virtual void init(Client &client) override;
 
