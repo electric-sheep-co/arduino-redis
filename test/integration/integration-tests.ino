@@ -369,10 +369,69 @@ testF(IntegrationTests, xdel)
   assertEqual(r->xlen("mystream"), len);
 }
 
+testF(IntegrationTests, xread)
+{
+  auto id1 = r->xadd("mystream", "*", "name", "Jesse");
+  auto id2 = r->xadd("mystream", "*", "name", "James");
+  std::vector<String> result = r->xread(0, 0, "mystream", String(id1).c_str());
+  assertEqual(result[0], "mystream");
+  assertEqual(result[1], String(id2));
+}
+
 testF(IntegrationTests, xtrim)
 {
   int len = r->xlen("mystream");
   auto id1 = r->xadd("mystream", "*", "name", "Dani");
   auto id2 = r->xadd("mystream", "*", "name", "Grace");
   assertEqual(r->xtrim("mystream", "MAXLEN", XtrimCompareExact, 2, 0), len);
+
+  std::vector<String> info_stream = r->xinfo_stream("mystream", false, 0);
+  assertEqual(info_stream[0], "length");
+  assertEqual(info_stream[1], 2);
+}
+
+testF(IntegrationTests, xrange)
+{
+  auto id1 = r->xadd("mystream", "*", "name", "Serena");
+  auto id2 = r->xadd("mystream", "*", "name", "Allison");
+  std::vector<String> result = r->xrange("mystream", String(id1).c_str(),
+                                        String(id2).c_str(), 0);
+  assertEqual(result[0], String(id1));
+  assertEqual(result[2], "Serena");
+  assertEqual(result[3], String(id2));
+  assertEqual(result[5], "Allison");
+}
+
+testF(IntegrationTests, xrevrange)
+{
+  auto id1 = r->xadd("mystream", "*", "name", "Serena");
+  auto id2 = r->xadd("mystream", "*", "name", "Allison");
+  std::vector<String> result = r->xrevrange("mystream", String(id2).c_str(),
+                                        String(id1).c_str(), 0);
+  assertEqual(result[0], String(id2));
+  assertEqual(result[2], "Allison");
+  assertEqual(result[3], String(id1));
+  assertEqual(result[5], "Serena");
+}
+
+testF(IntegrationTests, xgroup)
+{
+  assertEqual(r->xgroup_create("stream", "group1", "$", true), true);
+  assertEqual(r->xgroup_createconsumer("stream", "group1", "consumer1"), 1);
+
+  std::vector<String> info_consumers = r->xinfo_consumers("stream", "group1");
+  assertEqual(info_consumers[0], "name");
+  assertEqual(info_consumers[1], "consumer1");
+
+  std::vector<String> info_groups = r->xinfo_groups("stream");
+  assertEqual(info_groups[0], "name");
+  assertEqual(info_groups[1], "group1");
+  assertEqual(info_groups[2], "consumers");
+  assertEqual(info_groups[3], 1);
+
+  std::vector<String> info_stream = r->xinfo_stream("stream", false, 0);
+  assertEqual(info_stream[14], "groups");
+  assertEqual(info_stream[15], 1);
+
+  assertEqual(r->xgroup_destroy("stream", "group1"), 1);
 }
