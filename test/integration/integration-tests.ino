@@ -435,3 +435,58 @@ testF(IntegrationTests, xgroup)
 
   assertEqual(r->xgroup_destroy("stream", "group1"), 1);
 }
+
+testF(IntegrationTests, xpending_xclaim)
+{
+  auto id1 = r->xadd("stream", "*", "name", "Serena");
+  auto id2 = r->xadd("stream", "*", "name", "Allison");
+  auto id3 = r->xadd("stream", "*", "name", "Kate");
+  assertEqual(r->xgroup_create("stream", "group1", "$", true), true);
+  assertEqual(r->xgroup_createconsumer("stream", "group1", "consumer1"), 1);
+  assertEqual(r->xgroup_create("stream", "group2", "0-0", true), true);
+
+  std::vector<String> result = r->xreadgroup("group2", "consumer2", 3, 0,
+                                      false, "stream", ">");
+  assertEqual(result[0], "stream");
+  delay(100);
+
+  std::vector<String> xpending = r->xpending("stream", "group2", 0, NULL,
+                                              NULL, 0, NULL);
+  assertEqual((int)(xpending.size()), 5);
+  assertEqual(xpending[0], 1);
+  assertEqual(xpending[1], String(id1).c_str());
+  assertEqual(xpending[2], String(id3).c_str());
+  assertEqual(xpending[3], "consumer2");
+  assertEqual(xpending[4], 3);
+
+  std::vector<String> xclaim = r->xclaim("stream", "group2", "consumer2", 25,
+                                          String(id1).c_str(), 0, 0, 0, true,
+                                          true, NULL);
+  assertEqual(xclaim[0], String(id1).c_str());
+
+  assertEqual(r->xack("stream", "group2", String(id1).c_str()), 1);
+
+  std::vector<String> xpending2 = r->xpending("stream", "group2", 0, NULL,
+                                              NULL, 0, NULL);
+  assertEqual((int)(xpending2.size()), 5);
+  assertEqual(xpending2[0], 1);
+  assertEqual(xpending2[1], String(id2).c_str());
+  assertEqual(xpending2[2], String(id3).c_str());
+  assertEqual(xpending2[3], "consumer2");
+  assertEqual(xpending2[4], 2);
+
+  std::vector<String> xautoclaim = r->xautoclaim("stream", "group2",
+                                                  "consumer2", 25, "0-0", 2,
+                                                  false);
+  assertEqual((int)(xautoclaim.size()), 7);
+  assertEqual(xautoclaim[0], "0-0");
+  assertEqual(xautoclaim[1], String(id2).c_str());
+  assertEqual(xautoclaim[2], "name");
+  assertEqual(xautoclaim[3], "Allison");
+  assertEqual(xautoclaim[4], String(id3).c_str());
+  assertEqual(xautoclaim[5], "name");
+  assertEqual(xautoclaim[6], "Kate");
+
+  assertEqual(r->xgroup_destroy("stream", "group1"), 1);
+  assertEqual(r->xgroup_destroy("stream", "group2"), 1);
+}
