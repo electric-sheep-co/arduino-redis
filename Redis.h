@@ -598,6 +598,11 @@ public:
   // auxiliary functions
 
   /**
+   * Send PING command to redis to check is it alive
+  */
+  bool alive();
+
+  /**
    * Check returnVec's first element for a first byte of "-":
    * @param returnVec
    * @returns true if returnVec is an error, false otherwise
