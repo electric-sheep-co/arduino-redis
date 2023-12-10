@@ -715,9 +715,9 @@ RedisSubscribeResult Redis::startSubscribingNonBlocking(RedisMsgCallback message
   return RedisSubscribeSuccess;
 }
 
-bool Redis::alive()
+bool Redis::ping()
 {
-  TRCMD_EXPECTOK(bool, "PING", "OK");
+  TRCMD_EXPECTOK("PING", "OK");
 }
 
 

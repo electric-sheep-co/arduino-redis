@@ -598,9 +598,9 @@ public:
   // auxiliary functions
 
   /**
-   * Send PING command to redis to check is it alive
+   * Send PING command to redis to check if it is alive
   */
-  bool alive();
+  bool ping();
 
   /**
    * Check returnVec's first element for a first byte of "-":
