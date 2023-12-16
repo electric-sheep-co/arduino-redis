@@ -715,6 +715,12 @@ RedisSubscribeResult Redis::startSubscribingNonBlocking(RedisMsgCallback message
   return RedisSubscribeSuccess;
 }
 
+bool Redis::ping()
+{
+  TRCMD_EXPECTOK("PING", "OK");
+}
+
+
 RedisSubscribeResult Redis::startSubscribing(RedisMsgCallback messageCallback, RedisMsgErrorCallback errCallback)
 {
   return startSubscribingNonBlocking(
