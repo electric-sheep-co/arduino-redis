@@ -1,6 +1,26 @@
 #include "Redis.h"
 #include "RedisInternal.h"
 
+RedisReturnValue Redis::authenticate(const char *client, const char *password)
+{
+  if (conn.connected())
+  {
+    int clientLength = strlen(client);
+    int passwordLength = strlen(password);
+    if (passwordLength > 0 && clientLength > 0)
+    {
+      auto cmdRet = RedisCommand("AUTH", ArgList{ client, password }).issue(conn);
+      return cmdRet->type() == RedisObject::Type::SimpleString && (String)*cmdRet == "OK"
+                 ? RedisSuccess
+                 : RedisAuthFailure;
+    }
+
+    return RedisSuccess;
+  }
+
+  return RedisNotConnectedFailure;
+}
+
 RedisReturnValue Redis::authenticate(const char *password)
 {
   if (conn.connected())
@@ -8,7 +28,7 @@ RedisReturnValue Redis::authenticate(const char *password)
     int passwordLength = strlen(password);
     if (passwordLength > 0)
     {
-      auto cmdRet = RedisCommand("AUTH", ArgList{password}).issue(conn);
+      auto cmdRet = RedisCommand("AUTH", ArgList{ password }).issue(conn);
       return cmdRet->type() == RedisObject::Type::SimpleString && (String)*cmdRet == "OK"
                  ? RedisSuccess
                  : RedisAuthFailure;
