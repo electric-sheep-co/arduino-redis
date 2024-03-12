@@ -23,7 +23,21 @@ RedisReturnValue Redis::authenticate(const char *client, const char *password)
 
 RedisReturnValue Redis::authenticate(const char *password)
 {
-  return authenticate("default", password);
+  if (conn.connected())
+  {
+    int passwordLength = strlen(password);
+    if (passwordLength > 0)
+    {
+      auto cmdRet = RedisCommand("AUTH", ArgList{ password }).issue(conn);
+      return cmdRet->type() == RedisObject::Type::SimpleString && (String)*cmdRet == "OK"
+                 ? RedisSuccess
+                 : RedisAuthFailure;
+    }
+
+    return RedisSuccess;
+  }
+
+  return RedisNotConnectedFailure;
 }
 
 #define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed<t>(conn)
