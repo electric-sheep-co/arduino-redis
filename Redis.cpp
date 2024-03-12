@@ -1,14 +1,15 @@
 #include "Redis.h"
 #include "RedisInternal.h"
 
-RedisReturnValue Redis::authenticate(const char *password)
+RedisReturnValue Redis::authenticate(const char *client, const char *password)
 {
   if (conn.connected())
   {
+    int clientLength = strlen(client);
     int passwordLength = strlen(password);
-    if (passwordLength > 0)
+    if (passwordLength > 0 && clientLength > 0)
     {
-      auto cmdRet = RedisCommand("AUTH", ArgList{password}).issue(conn);
+      auto cmdRet = RedisCommand("AUTH", ArgList{ client, password }).issue(conn);
       return cmdRet->type() == RedisObject::Type::SimpleString && (String)*cmdRet == "OK"
                  ? RedisSuccess
                  : RedisAuthFailure;
@@ -18,6 +19,11 @@ RedisReturnValue Redis::authenticate(const char *password)
   }
 
   return RedisNotConnectedFailure;
+}
+
+RedisReturnValue Redis::authenticate(const char *password)
+{
+  return authenticate("default", password);
 }
 
 #define TRCMD(t, c, ...) return RedisCommand(c, ArgList{__VA_ARGS__}).issue_typed<t>(conn)

@@ -107,11 +107,18 @@ public:
   Redis &operator=(const Redis &&) = delete;
 
   /**
-   * Authenticate with the given password.
+   * Authenticate with the given password and client.
    * @param password The password with which to authenticate.
    * @returns RedisReturnValue detailing the result
    */
   RedisReturnValue authenticate(const char *password);
+  /**
+   * Authenticate with the given password.
+   * @param client The client with which to authenticate.
+   * @param password The password with which to authenticate.
+   * @returns RedisReturnValue detailing the result
+   */
+  RedisReturnValue authenticate(const char *client, const char *password);
 
   /**
    * Set `key` to `value`.
